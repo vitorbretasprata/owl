@@ -1,12 +1,28 @@
 import {} from "../Api/AuthApi";
+import constants from "./constants";
 
-export const checkLogin = () => {
+/* -- Actions states -- */ 
+
+//Action states - Login
+
+const checkLoginRequest = () => ({
+    type: constants.FETCH_LOGIN_REQUEST
+});
+
+const checkLoginSuccess = () => ({
+    type: constants.FETCH_LOGIN_SUCCESS
+});
+
+const checkLoginFailure = () => ({
+    type: constants.FETCH_LOGIN_FAILURE
+});
+
+/* -- Actions functions -- */ 
 
 
-    return {
-        type: "CHANGE_STATUS",
-        payload: {
-            status: 2
-        }
+const checkLogin = () => {
+
+    return function(dispatch) {
+
     }
 }
