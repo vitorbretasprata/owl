@@ -4,16 +4,23 @@ import {
   Text,
   StyleSheet,
   Keyboard,
-  SafeAreaView
+  Dimensions,
+  KeyboardAvoidingView,
+  AsyncStorage
 } from "react-native";
 import Animated, { Easing } from "react-native-reanimated";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { connect } from "react-redux";
 
+import Loading from "../components/loading";
 import BackgroundImage from "../components/backgroundImage";
 import AuthInput from "../components/input";
 import Submit from "../components/submit";
 import Or from "../components/or";
 import Social from "../components/social";
+import Toast from "../components/toast";
+
+import { Login } from "../../../services/Auth/action";
 
 const { 
   Value,
@@ -66,18 +73,30 @@ const RunTiming = (clock, hasKeyBoardShown) => {
       cond(state.finished,stopClock(clock)),
       interpolate(state.position, {
           inputRange: [0, 1],
-          outputRange: [-80, -120],
+          outputRange: [0, -20],
           extrapolate: Extrapolate.CLAMP
       })
   ]);
 }
 
-export default function SignIn() {
+const Screen = Dimensions.get("screen");
+
+function SignIn(props) {
+
+  const { navigation, status } = props;
 
   const [values, setValues] = useState({
       email: "",
       password: ""
   });
+
+  useEffect(() => {
+    if(props.status && getToken()) {
+
+    }    
+  }, [status]);
+
+  const getToken = async () => await AsyncStorage.getItem("token");
 
   const _handleChange = (attrName, value) => {
       setValues({
@@ -111,60 +130,103 @@ export default function SignIn() {
   }
 
   const offSetY = RunTiming(clock, hasKeyBoardShown);
+  const logoScale = 1;
+
+  const handleLogin = () => {
+    if(values['email'] || values["password"]) {
+        Login(values);
+    }
+  }
 
   return (
-    <SafeAreaView style={styles.container}>
-        <BackgroundImage />
-        
-          <Animated.View style={[styles.align, { transform: [ { translateY: offSetY }]}]}>
-            <AuthInput 
-                placeholder="Email"
-                attrName="email"
-                value={values["email"]}
-                updateMasterState={_handleChange}
-                icon="mail"
-                family="AntDesign"
-            />
+    <BackgroundImage>
+      <Loading />
+      <KeyboardAvoidingView style={styles.container} behavior="padding">
+            <Animated.Text 
+              style={[styles.Logo, {
+                transform: [
+                  { scale: logoScale }
+                ]
+              }]}
+            >
+                Logo
+            </Animated.Text>
+          
+            <Animated.View style={[styles.align, { transform: [ { translateY: offSetY }]}]}>
+              <AuthInput 
+                  placeholder="Email"
+                  attrName="email"
+                  value={values["email"]}
+                  updateMasterState={_handleChange}
+                  icon="mail"
+                  family="AntDesign"
+              />
 
-            <AuthInput 
-                placeholder="Senha"
-                attrName="password"
-                value={values["password"]}
-                updateMasterState={_handleChange}
-                icon="lock"
-                family="AntDesign"
-            />
+              <AuthInput 
+                  placeholder="Senha"
+                  attrName="password"
+                  value={values["password"]}
+                  updateMasterState={_handleChange}
+                  icon="lock"
+                  family="AntDesign"
+              />
 
-            <TouchableOpacity style={{ width: 290 }}>
-              <Text style={styles.forgotPassword}>Esqueci minha senha</Text>
-            </TouchableOpacity>
-          </Animated.View>
+              <TouchableOpacity style={styles.forgotPasswordArea} onPress={() => navigation.navigate("Reset")}>
+                <Text style={styles.forgotPassword}>Esqueci minha senha</Text>
+              </TouchableOpacity>
 
-          <View style={styles.other}>
-            <Submit title="Entrar"/>
+              <Submit title="Entrar" onSubmit={handleLogin}/>
+                  
+            </Animated.View>
 
-            <Or />
+            <View style={styles.other}>
 
-            <Social />
-          </View>          
-    </SafeAreaView>
+              <Or />
+
+              <Social />
+            </View>   
+            <Toast isError={false} ErrorMessage="Teste de mensagem"/>
+      </KeyboardAvoidingView>
+    </BackgroundImage>    
   );
 };
 
 // Coloring below is used just to easily see the different components
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
+    height: Screen.height - 50,
+    width: Screen.width - 20,
+    borderRadius: 10
   },
   align: {    
-    paddingHorizontal: 30,
-    marginTop: 300
+    paddingHorizontal: 15,
+    marginTop: 0
+  },
+  forgotPasswordArea: { 
+    width: "100%", 
+    paddingHorizontal: 15 
   },
   forgotPassword: { 
     color: "#0071c5", 
     textAlign: "right"
   },
   other: {
-    paddingHorizontal: 30
+    paddingHorizontal: 15
+  },  
+  Logo: {
+    fontSize: 50,
+    textTransform: "uppercase",
+    textAlign: "center",
+    marginTop: 40,
+    marginBottom: 50    
   }
 });
+
+const mapStateToProps = state => {
+    return {
+      status: state.auth.status
+    }
+}
+
+export default connect(mapStateToProps, { Login })(SignIn);

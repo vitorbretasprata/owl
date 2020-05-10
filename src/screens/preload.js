@@ -1,12 +1,21 @@
 import React, { useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, AsyncStorage } from "react-native";
 import { connect } from "react-redux";
 
-import { checkLogin } from "../services/Auth/action";
+import { Preloader } from "../services/Auth/action";
 
 function PreLoad(props) {
 
-    useEffect(() => props.checkLogin(), []);
+    const { Preloader } = props;
+
+    useEffect(() => {
+        _checkLogin();
+    }, []);
+
+    const _checkLogin = async () => {
+        const token = await AsyncStorage.getItem("user:token");
+        Preloader(token);
+    }
 
     return (
         <View style={styles.container}>
@@ -18,15 +27,9 @@ function PreLoad(props) {
 const styles = StyleSheet.create({
    container: {
        flex: 1,
-       alignItems: "center"
+       alignItems: "center",
+       justifyContent: "center"
    } 
 });
 
-
-const mapStateToProps = (state) => {
-    return {
-        status: state.auth.status
-    }
-}
-
-export default connect(mapStateToProps, { checkLogin })(PreLoad);
+export default connect(null, { Preloader })(PreLoad);

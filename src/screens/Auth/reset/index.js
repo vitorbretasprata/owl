@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   StyleSheet,
   Keyboard,
   SafeAreaView,
-  Dimensions
+  Dimensions,
+  Text,
+  ScrollView
 } from "react-native";
 import Animated, { Easing } from "react-native-reanimated";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
@@ -75,10 +77,12 @@ const RunTiming = (clock, hasKeyBoardShown) => {
 }
 
 const Screen = Dimensions.get("screen")
+const scrollWidth = Screen.width - 80;
 
 export default function SignUp() {
 
     const navigation = useNavigation();
+    const scrollRef = useRef(null);
 
     const [values, setValues] = useState({
         name: "",
@@ -96,6 +100,7 @@ export default function SignUp() {
 
     const clock = new Clock();
     const hasKeyBoardShown = new Value(-1);
+    let index = 1;
 
     useEffect(() => {
         const valKeyboard = Platform.select({ ios: "Will", android: "Did" });
@@ -118,6 +123,17 @@ export default function SignUp() {
         hasKeyBoardShown.setValue(0);
     }
 
+    const handleScroll = () => {
+        if(scrollRef.current && scrollRef.current.scrollTo) {
+            index++;
+            scrollRef.current.scrollTo({
+                animated: true,
+                x: scrollWidth * index,
+                y: 0
+            });
+        }
+    }
+
     const offSetY = RunTiming(clock, hasKeyBoardShown);
     const logoScale = 1;
 
@@ -128,7 +144,7 @@ export default function SignUp() {
                 <Animated.Text 
                 style={[styles.Logo, {
                     transform: [
-                    { scale: logoScale }
+                        { scale: logoScale }
                     ]
                 }]}
                 >
@@ -136,45 +152,74 @@ export default function SignUp() {
                 </Animated.Text>
                 
                 <Animated.View style={[styles.align, { transform: [ { translateY: offSetY }]}]}>
-                    <AuthInput 
-                        placeholder="Nome completo"
-                        attrName="name"
-                        value={values["name"]}
-                        updateMasterState={_handleChange}
-                        icon="user"
-                        family="AntDesign"
-                    />
+                    <ScrollView
+                        horizontal
+                        scrollEnabled={false}
+                        pagingEnabled
+                        ref={scrollRef}
+                        style={styles.scroll}
+                    >
+                        <View style={styles.page}>
+                            <Text style={styles.alignText}>
+                                Informe endereço de email que você cadastrou, 
+                                será enviado um código para a alteração de senha.
+                            </Text>
+                            <AuthInput 
+                                placeholder="Email"
+                                attrName="email"
+                                value={values["email"]}
+                                updateMasterState={_handleChange}
+                                icon="mail"
+                                family="AntDesign"
+                            />
+                        </View>
 
-                    <AuthInput 
-                        placeholder="Email"
-                        attrName="email"
-                        value={values["email"]}
-                        updateMasterState={_handleChange}
-                        icon="mail"
-                        family="AntDesign"
-                    />
+                        <View style={styles.page}>
+                            <Text style={styles.alignText}>
+                                Informe o código
+                            </Text>
+                            <AuthInput 
+                                placeholder="Código"
+                                attrName="code"
+                                value={values["code"]}
+                                updateMasterState={_handleChange}
+                                icon="mail"
+                                family="AntDesign"
+                            />
+                        </View>
 
-                    <AuthInput 
-                        placeholder="Senha"
-                        attrName="password"
-                        value={values["password"]}
-                        updateMasterState={_handleChange}
-                        icon="lock"
-                        family="AntDesign"
-                    />
+                        <View style={styles.page}>
+                            <Text style={styles.alignText}>
+                                Digite uma nova senha
+                            </Text>
+                            <AuthInput 
+                                placeholder="Senha"
+                                attrName="password"
+                                value={values["password"]}
+                                updateMasterState={_handleChange}
+                                icon="lock"
+                                family="AntDesign"
+                            />
 
-                    <AuthInput 
-                        placeholder="Confirmar senha"
-                        attrName="repeat"
-                        value={values["repeat"]}
-                        updateMasterState={_handleChange}
-                        icon="lock"
-                        family="AntDesign"
-                    />            
+                            <AuthInput 
+                                placeholder="Confirmar senha"
+                                attrName="confirm"
+                                value={values["confirm"]}
+                                updateMasterState={_handleChange}
+                                icon="lock"
+                                family="AntDesign"
+                            />
+                        </View>
+                        
+                    </ScrollView>                   
+                               
                 </Animated.View>
 
                 <View style={styles.other}>
-                    <Submit title="Cadastrar"/>
+                    <Submit 
+                        title="Enviar"
+                        onSubmit={handleScroll}
+                    />
 
                     <LinearGradient
                         colors={["#F58738", "#F8B586"]}
@@ -199,14 +244,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     height: Screen.height - 50,
     width: Screen.width - 20,
-    borderRadius: 10
+    borderRadius: 10,
+    justifyContent: "space-around"
   },
   align: {    
     paddingHorizontal: 30,
   },  
   other: {
     paddingHorizontal: 30,
-    alignItems: "center"
+    alignItems: "center",
   },
   touchable: {
     width: 50,
@@ -215,6 +261,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingRight: 5
+  },
+  scroll: {
+    width: scrollWidth,    
+  },
+  page: {
+    width: scrollWidth,
   },
   goBack: {
       width: 50,
@@ -228,5 +280,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 40,
     marginBottom: 50    
+  },
+  alignText: {
+      textAlign: "center",
+      marginBottom: 20
   }
 });

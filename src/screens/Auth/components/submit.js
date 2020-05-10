@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
         height: 40,
         justifyContent: "center",
         alignItems: "center",
-        marginTop: -45
+        marginTop: 45
     },
     text: {
         color: "#fff",

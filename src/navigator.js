@@ -6,21 +6,16 @@ import { NavigationContainer } from '@react-navigation/native';
 import PreLoad from "./screens/preload";
 import SignIn from "./screens/Auth/signin/index";
 import SignUp from "./screens/Auth/signup/index";
+import Reset from "./screens/Auth/reset/index";
 
 const Stack = createStackNavigator();
 function StackNavigator(props) {
 
-
     const { status } = props;
-
-    if(status === 2) {
-        return <PreLoad />;
-    }
-
-
 
     return (
         <Stack.Navigator>
+            <Stack.Screen name="Preload" component={PreLoad} options={{ headerShown: false }} />
             {status ? (
                     <>
             
@@ -29,6 +24,7 @@ function StackNavigator(props) {
                     <>
                         <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }}/>
                         <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }}/>
+                        <Stack.Screen name="Reset" component={Reset} options={{ headerShown: false }}/>
                     </>
                 )
             }
