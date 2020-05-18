@@ -1,25 +1,39 @@
 import React, { useEffect } from "react";
-import { View, Text, StyleSheet, AsyncStorage } from "react-native";
-import { connect } from "react-redux";
+import { View, Text, StyleSheet, AsyncStorage, TouchableWithoutFeedback } from "react-native";
+import { connect, useStore } from "react-redux";
+import { CommonActions } from "@react-navigation/native";
 
 import { Preloader } from "../services/Auth/action";
 
 function PreLoad(props) {
 
-    const { Preloader } = props;
+    const { Preloader, status, navigation } = props;
 
     useEffect(() => {
         _checkLogin();
-    }, []);
+    }, []);    
+
+    useEffect(() => {
+        if(status === 0) {
+            navigation.dispatch(
+                CommonActions.reset({
+                    index: 0,
+                    routes: [
+                        { name: "SignIn" }
+                    ]
+                })
+            );            
+        }
+    }, [status]); 
 
     const _checkLogin = async () => {
         const token = await AsyncStorage.getItem("user:token");
-        Preloader(token);
-    }
+        Preloader(token);        
+    }    
 
     return (
         <View style={styles.container}>
-            <Text>Carregando...</Text>
+            <Text>Loading</Text>            
         </View>
     );
 }
@@ -32,4 +46,10 @@ const styles = StyleSheet.create({
    } 
 });
 
-export default connect(null, { Preloader })(PreLoad);
+const mapStateToProps = state => {
+    return {
+        status: state.auth.status
+    }
+}
+
+export default connect(mapStateToProps, { Preloader })(PreLoad);

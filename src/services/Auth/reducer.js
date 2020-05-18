@@ -1,36 +1,41 @@
-import constants from "./constants";
+import constants from "../constants";
 
 const initialState = {
-    status: 0,
+    status: -1,
     loading: false,
-    error: null,
-    code: null
+    error: null
 }
 
 const AuthReducer = (state = initialState, action) => {
     switch(action.type) {
-        case constants.FETCH_REQUEST: 
+        case constants.REQUEST: 
             return {
                 ...state,
                 loading: true
             }
-        case constants.FETCH_SUCCESS: 
+        case constants.SUCCESS: 
             return {
                 ...state,
                 loading: false,
+                error: null,
                 status: action.payload.status
             }
-        case constants.FETCH_FAILURE: 
+        case constants.FAILURE: 
             return {
                 ...state,
                 loading: false,
                 error: action.payload.error
             } 
-        case constants.SET_CODE: 
+        case constants.SET_ERROR: 
             return {
                 ...state,
-                code: action.payload.code
+                error: action.payload.error
             } 
+        case constants.REMOVE_ERROR: 
+            return {
+                ...state,
+                error: null
+            }        
         default: 
             return state;
     }

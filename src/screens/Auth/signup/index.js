@@ -3,19 +3,20 @@ import {
   View,
   StyleSheet,
   Keyboard,
-  SafeAreaView,
-  Dimensions
 } from "react-native";
 import Animated, { Easing } from "react-native-reanimated";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
-import { Icon, theme } from "galio-framework";
+import { Icon, theme, Toast } from "galio-framework";
 import { LinearGradient } from "expo-linear-gradient";
-import { useNavigation } from "@react-navigation/native";
+import { connect } from "react-redux";
+import { withTimingTransition } from "react-native-redash";
 
 import Loading from "../components/loading";
 import BackgroundImage from "../components/backgroundImage";
 import AuthInput from "../components/input";
 import Submit from "../components/submit";
+import { Register } from "../../../services/Auth/action";
+
 
 const { 
   Value,
@@ -30,7 +31,8 @@ const {
   block,
   neq,
   eq,
-  and 
+  and,
+  useCode
 } = Animated;
 
 const RunTiming = (clock, hasKeyBoardShown) => {
@@ -66,19 +68,13 @@ const RunTiming = (clock, hasKeyBoardShown) => {
       ]),
       timing(clock, state, config),
       cond(state.finished,stopClock(clock)),
-      interpolate(state.position, {
-          inputRange: [0, 1],
-          outputRange: [0, -20],
-          extrapolate: Extrapolate.CLAMP
-      })
+      state.position
   ]);
 }
 
-const Screen = Dimensions.get("screen")
+function SignUp(props) {
 
-export default function SignUp() {
-
-    const navigation = useNavigation();
+    const { Register, navigation, error } = props;
 
     const [values, setValues] = useState({
         name: "",
@@ -94,8 +90,29 @@ export default function SignUp() {
         });
     }
 
+    const isEnabled = values["name"].length > 0 && 
+                    values["email"].length > 0 && 
+                    values["password"].length > 0 && 
+                    values["confirm"].length > 0;
+
     const clock = new Clock();
-    const hasKeyBoardShown = new Value(-1);
+    const hasKeyBoardShown = new Value(0);
+    const position = RunTiming(clock, hasKeyBoardShown); 
+    const offSetY = interpolate(position, {
+        inputRange: [0, 1],
+        outputRange: [0, -60],
+        extrapolate: Extrapolate.CLAMP
+    });  
+    const logoScale = interpolate(position, {
+        inputRange: [0, 1],
+        outputRange: [1, 0.6],
+        extrapolate: Extrapolate.CLAMP
+    });
+    const logoOffSetY = interpolate(position, {
+        inputRange: [0, 1],
+        outputRange: [0, -10],
+        extrapolate: Extrapolate.CLAMP
+    });
 
     useEffect(() => {
         const valKeyboard = Platform.select({ ios: "Will", android: "Did" });
@@ -118,17 +135,19 @@ export default function SignUp() {
         hasKeyBoardShown.setValue(0);
     }
 
-    const offSetY = RunTiming(clock, hasKeyBoardShown);
-    const logoScale = 1;
+    const _handleRegister = async () => {
+        await Register(values);
+    }
 
     return (
         <BackgroundImage>
             <Loading />
-            <SafeAreaView style={styles.container}>
+            <View style={styles.container}>
                 <Animated.Text 
                 style={[styles.Logo, {
                     transform: [
-                    { scale: logoScale }
+                        { scale: logoScale },
+                        { translateY: logoOffSetY }
                     ]
                 }]}
                 >
@@ -161,6 +180,7 @@ export default function SignUp() {
                         updateMasterState={_handleChange}
                         icon="lock"
                         family="AntDesign"
+                        secureTextEntry={true}
                     />
 
                     <AuthInput 
@@ -170,12 +190,16 @@ export default function SignUp() {
                         updateMasterState={_handleChange}
                         icon="lock"
                         family="AntDesign"
+                        secureTextEntry={true}
                     />            
                 </Animated.View>
 
                 <View style={styles.other}>
-                    <Submit title="Cadastrar"/>
-
+                    <Submit 
+                        title="Cadastrar" 
+                        onSubmit={_handleRegister} 
+                        isDisabled={!isEnabled}
+                    />
                     <LinearGradient
                         colors={["#F58738", "#F8B586"]}
                         start={[0.5, 0.7]}
@@ -188,45 +212,53 @@ export default function SignUp() {
                             <Icon name="left" family="AntDesign" color={theme.COLORS.WHITE} size={35} />
                         </TouchableWithoutFeedback>
                     </LinearGradient>
-                </View>          
-            </SafeAreaView>
+                </View> 
+                <Toast ErrorMessage={error}/>         
+            </View>
         </BackgroundImage>        
     );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#fff",
-    height: Screen.height - 50,
-    width: Screen.width - 20,
-    borderRadius: 10
-  },
-  align: {    
-    paddingHorizontal: 30,
-  },  
-  other: {
-    paddingHorizontal: 30,
-    alignItems: "center"
-  },
-  touchable: {
-    width: 50,
-    height: 50,
-    borderColor: "#000",
-    justifyContent: "center",
-    alignItems: "center",
-    paddingRight: 5
-  },
-  goBack: {
-      width: 50,
-      height: 50,
-      borderRadius: 25,
-      marginVertical: 20
-  },
-  Logo: {
-    fontSize: 50,
-    textTransform: "uppercase",
-    textAlign: "center",
-    marginTop: 40,
-    marginBottom: 50    
-  }
+    container: {
+        backgroundColor: "#fff",
+        borderRadius: 10,
+        height: "100%"
+    },
+    align: {    
+        paddingHorizontal: 30,
+    },  
+    other: {
+        paddingHorizontal: 30,
+        alignItems: "center"
+    },
+    touchable: {
+        width: 50,
+        height: 50,
+        borderColor: "#000",
+        justifyContent: "center",
+        alignItems: "center",
+        paddingRight: 5
+    },
+    goBack: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        marginVertical: 20
+    },
+    Logo: {
+        fontSize: 50,
+        textTransform: "uppercase",
+        textAlign: "center",
+        marginTop: 40,
+        marginBottom: 50    
+    }
 });
+
+const mapStateToProps = state => {
+    return {
+        error: state.auth.error
+    }
+}
+
+export default connect(mapStateToProps, { Register })(SignUp);

@@ -2,17 +2,16 @@ import React, { useEffect } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { connect } from "react-redux";
 
-function Loading(props) {    
-
-    if(props.isLoading) {
-        return (
-            <View style={styles.container}>
-                <Text>Loading</Text>
-            </View>   
-        );
-    }
-
-    return null;    
+function Loading(props) {  
+    
+    return props.loading ? 
+    (
+        <View style={styles.container}>
+            <Text>Loading</Text>
+        </View>
+    ) : 
+    <>
+    </>;      
     
 }
 
@@ -34,7 +33,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-        isLoading: state
+        loading: state.auth.loading
     }
 }
 

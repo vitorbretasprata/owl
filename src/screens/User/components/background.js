@@ -3,10 +3,10 @@ import { StyleSheet, ImageBackground, Dimensions } from "react-native";
 
 const Screen = Dimensions.get("screen");
 
-function BackgroundImage(props) {
+function Background(props) {
     return (
         <ImageBackground
-            source={require("../assets/img/Background.png")}
+            source={require("../assets/img/User.png")}
             style={styles.bg}
         >
             {props.children}
@@ -24,4 +24,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default memo(BackgroundImage);
+export default memo(Background);

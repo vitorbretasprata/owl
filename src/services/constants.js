@@ -1,0 +1,9 @@
+export default {
+    SUCCESS: "SUCCESS",
+    FAILURE: "FAILURE",
+    REQUEST: "REQUEST",
+    SET_TYPE: "SET_TYPE",
+    SET_CONFIG: "SET_CONFIG",
+    REMOVE_ERROR: "REMOVE_ERROR",
+    SET_ERROR: "SET_ERROR"
+};

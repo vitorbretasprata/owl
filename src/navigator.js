@@ -6,7 +6,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import PreLoad from "./screens/preload";
 import SignIn from "./screens/Auth/signin/index";
 import SignUp from "./screens/Auth/signup/index";
-import Reset from "./screens/Auth/reset/index";
+import Forgot from "./screens/Auth/reset/index";
+
+import Account from "./screens/User/Account";
+import ConfigParent from "./screens/User/Parent/config";
+import ConfigTeacher from "./screens/User/Teacher/config";
+import ConfigStudent from "./screens/User/Student/config";
+
+import { navigationRef } from "./services/navigation/RootNavigate";
 
 const Stack = createStackNavigator();
 function StackNavigator(props) {
@@ -18,13 +25,17 @@ function StackNavigator(props) {
             <Stack.Screen name="Preload" component={PreLoad} options={{ headerShown: false }} />
             {status ? (
                     <>
-            
                     </>
                 ) : (
                     <>
+                        <Stack.Screen name="ConfigParent" component={ConfigParent} options={{ headerShown: false }} />
+                        <Stack.Screen name="ConfigTeacher" component={ConfigTeacher} options={{ headerShown: false }} />
+                        <Stack.Screen name="ConfigStudent" component={ConfigStudent} options={{ headerShown: false }} />
+
+                        <Stack.Screen name="Account" component={Account} options={{ headerShown: false }} />
                         <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }}/>
                         <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }}/>
-                        <Stack.Screen name="Reset" component={Reset} options={{ headerShown: false }}/>
+                        <Stack.Screen name="Forgot" component={Forgot} options={{ headerShown: false }}/>
                     </>
                 )
             }
@@ -37,7 +48,7 @@ function StackNavigator(props) {
 function Navigators() {
 
     return (        
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
             <StackNavigator />
         </NavigationContainer>
     );
@@ -49,4 +60,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, {})(Navigators);
+export default connect(mapStateToProps, null)(Navigators);

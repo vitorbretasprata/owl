@@ -5,8 +5,7 @@ import {
   StyleSheet,
   Keyboard,
   Dimensions,
-  KeyboardAvoidingView,
-  AsyncStorage
+  Platform
 } from "react-native";
 import Animated, { Easing } from "react-native-reanimated";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -79,34 +78,23 @@ const RunTiming = (clock, hasKeyBoardShown) => {
   ]);
 }
 
-const Screen = Dimensions.get("screen");
-
 function SignIn(props) {
 
-  const { navigation, status } = props;
-
+  const { navigation, Login, error } = props;
   const [values, setValues] = useState({
       email: "",
       password: ""
   });
-
-  useEffect(() => {
-    if(props.status && getToken()) {
-
-    }    
-  }, [status]);
-
-  const getToken = async () => await AsyncStorage.getItem("token");
+  const isEnabled = values["password"].length > 0 && values["email"].length > 0;
+  const hasKeyBoardShown = new Value(-1);
+  const clock = new Clock();
 
   const _handleChange = (attrName, value) => {
       setValues({
           ...values,
           [attrName]: value
       });
-  }
-
-  const clock = new Clock();
-  const hasKeyBoardShown = new Value(-1);
+  }  
 
   useEffect(() => {
       const valKeyboard = Platform.select({ ios: "Will", android: "Did" });
@@ -132,17 +120,15 @@ function SignIn(props) {
   const offSetY = RunTiming(clock, hasKeyBoardShown);
   const logoScale = 1;
 
-  const handleLogin = () => {
-    if(values['email'] || values["password"]) {
-        Login(values);
-    }
+  const _handleLogin = () => {
+      Login(values);
   }
 
   return (
     <BackgroundImage>
       <Loading />
-      <KeyboardAvoidingView style={styles.container} behavior="padding">
-            <Animated.Text 
+      <View style={styles.container}>
+        <Animated.Text 
               style={[styles.Logo, {
                 transform: [
                   { scale: logoScale }
@@ -169,13 +155,18 @@ function SignIn(props) {
                   updateMasterState={_handleChange}
                   icon="lock"
                   family="AntDesign"
+                  secureTextEntry={true}
               />
 
-              <TouchableOpacity style={styles.forgotPasswordArea} onPress={() => navigation.navigate("Reset")}>
+              <TouchableOpacity style={styles.forgotPasswordArea} onPress={() => navigation.navigate("Forgot")}>
                 <Text style={styles.forgotPassword}>Esqueci minha senha</Text>
               </TouchableOpacity>
 
-              <Submit title="Entrar" onSubmit={handleLogin}/>
+              <Submit 
+                title="Entrar" 
+                onSubmit={_handleLogin} 
+                isDisabled={!isEnabled}
+              />
                   
             </Animated.View>
 
@@ -185,8 +176,8 @@ function SignIn(props) {
 
               <Social />
             </View>   
-            <Toast isError={false} ErrorMessage="Teste de mensagem"/>
-      </KeyboardAvoidingView>
+            <Toast ErrorMessage={error}/>
+      </View>
     </BackgroundImage>    
   );
 };
@@ -195,8 +186,6 @@ function SignIn(props) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
-    height: Screen.height - 50,
-    width: Screen.width - 20,
     borderRadius: 10
   },
   align: {    
@@ -225,7 +214,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-      status: state.auth.status
+      error: state.auth.error
     }
 }
 

@@ -1,165 +1,115 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef, useReducer } from "react";
 import {
   View,
   StyleSheet,
-  Keyboard,
   SafeAreaView,
   Dimensions,
   Text,
   ScrollView
 } from "react-native";
-import Animated, { Easing } from "react-native-reanimated";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
-import { Icon, theme } from "galio-framework";
+import { Icon, theme, Button } from "galio-framework";
 import { LinearGradient } from "expo-linear-gradient";
-import { useNavigation } from "@react-navigation/native";
+import { connect } from "react-redux";
 
 import Loading from "../components/loading";
 import BackgroundImage from "../components/backgroundImage";
 import AuthInput from "../components/input";
-import Submit from "../components/submit";
+import Toast from "../components/toast";
 
-const { 
-  Value,
-  Clock,
-  cond,
-  set,
-  timing,
-  startClock,
-  stopClock,
-  interpolate,
-  Extrapolate,
-  block,
-  neq,
-  eq,
-  and 
-} = Animated;
+import { Reset } from "../../../services/Auth/action";
+import { checkEmail } from "../../../services/Api/AuthApi";
 
-const RunTiming = (clock, hasKeyBoardShown) => {
-  const state = {
-      finished: new Value(0),
-      position: new Value(0),
-      time: new Value(0),
-      frameTime: new Value(0),
-  };
-  
-  const config = {
-      duration: 300,
-      toValue: new Value(-1),
-      easing: Easing.inOut(Easing.ease),
-  };
-  
-  return block([
-      cond(and(eq(hasKeyBoardShown, 1), neq(config.toValue, 1)), [
-          set(state.finished, 0),
-          set(state.time, 0),
-          set(state.position, 0),
-          set(state.frameTime, 0),
-          set(config.toValue, 1),
-          startClock(clock),
-      ]),
-      cond(and(eq(hasKeyBoardShown, 0), neq(config.toValue, 0)), [
-          set(state.finished, 0),
-          set(state.time, 0),
-          set(state.position, 0),
-          set(state.frameTime, 0),
-          set(config.toValue, 1),
-          startClock(clock),
-      ]),
-      timing(clock, state, config),
-      cond(state.finished,stopClock(clock)),
-      interpolate(state.position, {
-          inputRange: [0, 1],
-          outputRange: [0, -20],
-          extrapolate: Extrapolate.CLAMP
-      })
-  ]);
-}
+const scrollWidth = Dimensions.get("screen").width - 80;
 
-const Screen = Dimensions.get("screen")
-const scrollWidth = Screen.width - 80;
+function Forgot(props) {
 
-export default function SignUp() {
-
-    const navigation = useNavigation();
+    const { navigation, error } = props;
     const scrollRef = useRef(null);
+    let index = 0;
 
     const [values, setValues] = useState({
-        name: "",
         email: "",
+        code: "",
         password: "",
         repeat: ""
     });
+
+    const [savedCode, setSavedCode] = useState("");
+
+    const [loading, dispatch] = useReducer((state, action) => {
+        return !state;
+    }, false);
+
 
     const _handleChange = (attrName, value) => {
         setValues({
             ...values,
             [attrName]: value
         });
-    }
+    }  
 
-    const clock = new Clock();
-    const hasKeyBoardShown = new Value(-1);
-    let index = 1;
-
-    useEffect(() => {
-        const valKeyboard = Platform.select({ ios: "Will", android: "Did" });
-        const showEventName = `keyboard${valKeyboard}Show`;
-        const hideEventName = `keyboard${valKeyboard}Hide`;
-
-        Keyboard.addListener(showEventName, handleKbdShow);
-        Keyboard.addListener(hideEventName, handleKbdHide);
-        return () => {
-            Keyboard.removeListener(showEventName, handleKbdShow);
-            Keyboard.removeListener(hideEventName, handleKbdHide);
-        }
-    }, []); 
-
-    const handleKbdShow = () => {
-        hasKeyBoardShown.setValue(1);
-    }
-
-    const handleKbdHide = () => {
-        hasKeyBoardShown.setValue(0);
-    }
-
-    const handleScroll = () => {
+    const handleScroll = index => {
         if(scrollRef.current && scrollRef.current.scrollTo) {
-            index++;
             scrollRef.current.scrollTo({
                 animated: true,
                 x: scrollWidth * index,
                 y: 0
             });
         }
+        dispatch();
     }
 
-    const offSetY = RunTiming(clock, hasKeyBoardShown);
-    const logoScale = 1;
+    const _checkEmail = index => {
+        checkEmail()
+            .then(data => {
+                setSavedCode(data)
+                handleScroll(index);
+            }).catch(error => {
+
+            })
+    }
+
+    const _checkCode = index => {
+        if(savedCode.toString() === values["code"]) {
+            handleScroll(index);
+        } else {
+
+        }
+    }
+
+    const _handleStage = () => {
+        dispatch();
+        index++;
+        switch(index) {
+            case 1: 
+                _checkEmail(index);
+                break;
+            case 2: 
+                _checkCode(index);
+                break;   
+            case 3:
+                Reset(values); 
+                break;
+            default: 
+                break; 
+        }
+    }   
 
     return (
         <BackgroundImage>
             <Loading />
-            <SafeAreaView style={styles.container}>
-                <Animated.Text 
-                style={[styles.Logo, {
-                    transform: [
-                        { scale: logoScale }
-                    ]
-                }]}
-                >
-                    Logo
-                </Animated.Text>
+            <SafeAreaView style={styles.container}>                
                 
-                <Animated.View style={[styles.align, { transform: [ { translateY: offSetY }]}]}>
+                <View style={styles.align}>
                     <ScrollView
                         horizontal
                         scrollEnabled={false}
                         pagingEnabled
                         ref={scrollRef}
-                        style={styles.scroll}
+                        style={styles.scrollWidth}
                     >
-                        <View style={styles.page}>
+                        <View style={styles.scrollWidth}>
                             <Text style={styles.alignText}>
                                 Informe endereço de email que você cadastrou, 
                                 será enviado um código para a alteração de senha.
@@ -174,7 +124,7 @@ export default function SignUp() {
                             />
                         </View>
 
-                        <View style={styles.page}>
+                        <View style={styles.scrollWidth}>
                             <Text style={styles.alignText}>
                                 Informe o código
                             </Text>
@@ -188,7 +138,7 @@ export default function SignUp() {
                             />
                         </View>
 
-                        <View style={styles.page}>
+                        <View style={styles.scrollWidth}>
                             <Text style={styles.alignText}>
                                 Digite uma nova senha
                             </Text>
@@ -204,7 +154,7 @@ export default function SignUp() {
                             <AuthInput 
                                 placeholder="Confirmar senha"
                                 attrName="confirm"
-                                value={values["confirm"]}
+                                value={values["repeat"]}
                                 updateMasterState={_handleChange}
                                 icon="lock"
                                 family="AntDesign"
@@ -212,14 +162,19 @@ export default function SignUp() {
                         </View>
                         
                     </ScrollView>                   
-                               
-                </Animated.View>
+                    <Button
+                        onPress={_handleStage}
+                        color="#F58738"
+                        round 
+                        uppercase
+                        style={styles.submit}
+                        loading={loading}
+                    >
+                        {index < 2 ? "Próximo" : "Enviar"}
+                    </Button>
+                </View>
 
-                <View style={styles.other}>
-                    <Submit 
-                        title="Enviar"
-                        onSubmit={handleScroll}
-                    />
+                <View style={styles.other}>                   
 
                     <LinearGradient
                         colors={["#F58738", "#F8B586"]}
@@ -233,56 +188,61 @@ export default function SignUp() {
                             <Icon name="left" family="AntDesign" color={theme.COLORS.WHITE} size={35} />
                         </TouchableWithoutFeedback>
                     </LinearGradient>
-                </View>          
+                </View> 
+
+                <Toast ErrorMessage={"Este é u error"}/>     
             </SafeAreaView>
         </BackgroundImage>        
     );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#fff",
-    height: Screen.height - 50,
-    width: Screen.width - 20,
-    borderRadius: 10,
-    justifyContent: "space-around"
-  },
-  align: {    
-    paddingHorizontal: 30,
-  },  
-  other: {
-    paddingHorizontal: 30,
-    alignItems: "center",
-  },
-  touchable: {
-    width: 50,
-    height: 50,
-    borderColor: "#000",
-    justifyContent: "center",
-    alignItems: "center",
-    paddingRight: 5
-  },
-  scroll: {
-    width: scrollWidth,    
-  },
-  page: {
-    width: scrollWidth,
-  },
-  goBack: {
-      width: 50,
-      height: 50,
-      borderRadius: 25,
-      marginVertical: 20
-  },
-  Logo: {
-    fontSize: 50,
-    textTransform: "uppercase",
-    textAlign: "center",
-    marginTop: 40,
-    marginBottom: 50    
-  },
-  alignText: {
-      textAlign: "center",
-      marginBottom: 20
-  }
+    container: {
+        flex: 1,
+        backgroundColor: "#fff",    
+        borderRadius: 10,
+        justifyContent: "space-between",
+        paddingVertical: 20
+    },
+    submit: {
+        width: "100%",     
+        marginTop: 15
+    },
+    align: {    
+        paddingHorizontal: 30,
+    },  
+    other: {
+        paddingHorizontal: 30,
+        alignItems: "center",
+    },
+    touchable: {
+        width: 50,
+        height: 50,
+        borderColor: "#000",
+        justifyContent: "center",
+        alignItems: "center",
+        paddingRight: 5
+    },
+    scrollWidth: {
+        width: scrollWidth,    
+    },  
+    goBack: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        marginVertical: 20
+    },  
+    alignText: {
+        textAlign: "center",
+        marginBottom: 20
+    }
 });
+
+
+const mapStateToProps = state => {
+    return {
+        error: state.auth.error
+    }
+}
+
+export default connect(mapStateToProps, { Reset })(Forgot);
