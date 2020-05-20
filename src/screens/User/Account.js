@@ -8,6 +8,8 @@ import { SetType } from "../../services/User/action";
 
 function Account(props) {
 
+    const { SetType } = props;
+
     return (
         <Background>
             <View style={styles.container}>
@@ -20,36 +22,36 @@ function Account(props) {
                     Selecione o tipo de conta que deseja criar:
                 </Text>
 
-                <View>
-                    <View>
-                        <Button 
-                            color="#F58738"
-                            round 
-                            uppercase
-                        >
-                            Responsável
-                        </Button>
-                    </View>
+                <View style={styles.margin}>
+                    <Button 
+                        color="#F58738"
+                        round 
+                        uppercase
+                        style={styles.button}
+                        onPress={() => SetType(2, "ConfigParent")}
+                    >
+                        Responsável
+                    </Button>
 
-                    <View>
-                        <Button 
-                            color="#F58738"
-                            round 
-                            uppercase
-                        >
-                            Aluno
-                        </Button>
-                    </View>
+                    <Button 
+                        color="#F58738"
+                        round 
+                        uppercase
+                        style={styles.button}
+                        onPress={() => SetType(1, "ConfigStudent")}
+                    >
+                        Aluno
+                    </Button>
 
-                    <View>
-                        <Button 
-                            color="#F58738"
-                            round 
-                            uppercase
-                        >
-                            Professor
-                        </Button>
-                    </View>
+                    <Button 
+                        color="#F58738"
+                        round 
+                        uppercase
+                        style={styles.button}
+                        onPress={() => SetType(3, "ConfigTeacher")}
+                    >
+                        Professor
+                    </Button>
                 </View>
             </View>
         </Background>
@@ -59,8 +61,7 @@ function Account(props) {
 const styles = StyleSheet.create({
    container: {
        flex: 1,
-       borderWidth: 1,
-       borderColor: "#000"
+       alignItems: "center"
    },
    textColor: {
         color: "#fff",
@@ -68,10 +69,16 @@ const styles = StyleSheet.create({
         marginVertical: 10
    },
    textTitle: {
-        fontSize: 40
+        fontSize: 35
    },
    textDesc: {
-        fontSize: 20
+        fontSize: 15
+   },
+   button: {
+       marginVertical: 10
+   },
+   margin: {
+       marginTop: 40
    }
 });
 

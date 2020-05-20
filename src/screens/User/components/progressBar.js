@@ -16,17 +16,20 @@ function ProgressBar(props) {
 
 const styles = StyleSheet.create({
     ProgressBar: {
-        height: 30,
+        height: 22,
         borderWidth: 2,
         borderColor: "#fff",
-        borderRadius: 5
+        borderRadius: 10,
+        width: 200
     },
     absoluteFill: {
         position: "absolute",
         top: 0,
         left: 0,
         right: 0,
-        bottom: 0
+        bottom: 0,
+        backgroundColor: "#fff",
+        borderRadius: 5
     }
 })
 

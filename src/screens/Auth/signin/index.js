@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   Keyboard,
-  Dimensions,
   Platform
 } from "react-native";
 import Animated, { Easing } from "react-native-reanimated";

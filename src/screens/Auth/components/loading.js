@@ -1,6 +1,8 @@
-import React, { useEffect } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import React from "react";
+import { View, StyleSheet, Text, Dimensions } from "react-native";
 import { connect } from "react-redux";
+
+const ScreenWidth = Dimensions.get("screen").width;
 
 function Loading(props) {  
     
@@ -10,8 +12,7 @@ function Loading(props) {
             <Text>Loading</Text>
         </View>
     ) : 
-    <>
-    </>;      
+    <></>;      
     
 }
 
@@ -21,12 +22,12 @@ const styles = StyleSheet.create({
         position: "absolute",
         top: 0,
         left: 0,
-        width: "100%",
+        width: ScreenWidth,
         height: "100%",
         backgroundColor: "#fff",
         justifyContent: "center",
         alignItems: "center",
-        opacity: 0.5,
+        opacity: 0.7,
         zIndex: 1000
     }
 });

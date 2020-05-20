@@ -1,7 +1,7 @@
-import React, { memo, useRef } from "react";
+import React, { memo } from "react";
 import { StyleSheet, View } from "react-native";
-import { Input, theme } from "galio-framework";
-import PropTypes  from "prop-types";
+import { Input } from "galio-framework";
+import PropTypes from "prop-types";
 
 AuthInput.propTypes = {
     attrName: PropTypes.string.isRequired,
@@ -29,9 +29,7 @@ function AuthInput(props) {
                 icon={icon}
                 family={family}
                 value={value}
-                style={{ borderColor: theme.COLORS.WARNING }}
                 onChangeText={_handleChangeText}
-                placeholderTextColor={theme.COLORS.WARNING}
                 {...props}
             />
         </View>

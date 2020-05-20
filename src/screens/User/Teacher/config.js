@@ -2,12 +2,12 @@ import React, { useRef } from "react";
 import { 
     View, 
     Text, 
-    StyleSheet,
-    ScrollView 
+    StyleSheet,     
 } from "react-native";
-import { Button } from "galio-framework";
+import { Button, Input } from "galio-framework";
 import { connect } from "react-redux";
-import Animated from "react-native-reanimated";
+import Animated, { Easing } from "react-native-reanimated";
+import { FlatList, ScrollView } from "react-native-gesture-handler";
 
 import Background from "../components/background";
 import ProgressBar from "../components/progressBar";
@@ -27,6 +27,7 @@ const {
     neq,
     eq,
     and,
+    clockRunning,
     useCode
   } = Animated;
 
@@ -62,11 +63,13 @@ const runTiming = (clock, current, target) => {
     ]);
 }
 
-function Account(props) {
+function ConfigTeacher(props) {
 
     const scrollRef = useRef(null);
-    const clock = new Clock()
-    const Width = runTiming(clock, 0, 20);
+    const dependenteRef = useRef(null);
+
+    const clock = new Clock();
+    const Width = runTiming(clock, 0, 0);
 
     return (
         <Background>
@@ -79,48 +82,56 @@ function Account(props) {
                     ref={scrollRef}
                     style={styles.scrollWidth}
                 >
+                    <View style={[styles.scrollWidth, styles.page]}>
+                        <Text style={[styles.textColor, styles.textTitle]}>Dependentes</Text>
+                        <Text style={[styles.textColor, styles.textDesc]}>
+                            Adicione pelo menos um dependente:
+                        </Text>
+                        <View style={styles.addChild}>
+                            <Input 
+                                placeholder="Dependente" 
+                                left
+                                icon="user"
+                                family="antdesign"
+                                rounded 
+                                ref={dependenteRef}
+                                style={styles.input}
+                            />
+                            <Button 
+                                onlyIcon 
+                                icon="plus" 
+                                iconFamily="antdesign" 
+                                iconSize={30} 
+                                color="#F58738" 
+                                iconColor="#fff" 
+                                style={{ width: 40, height: 40 }}
+                            >PLUS</Button>
+                        </View>
+                        <View>
 
-                </ScrollView>
-                <Text style={[styles.textColor, styles.textTitle]}>Bem Vindo</Text>
-                <Text style={[styles.textColor, styles.textDesc]}>
-                    Antes de começarmos, precisamos 
-                    que você configure sua conta.
-                </Text>
-                <Text style={[styles.textColor, styles.textDesc]}>
-                    Selecione o tipo de conta que deseja criar:
-                </Text>
-
-                <View>
-                    <View>
-                        <Button 
-                            color="#F58738"
-                            round 
-                            uppercase
-                        >
-                            Responsável
-                        </Button>
+                        </View>
                     </View>
 
-                    <View>
-                        <Button 
-                            color="#F58738"
-                            round 
-                            uppercase
-                        >
-                            Aluno
-                        </Button>
-                    </View>
+                    <View style={[styles.scrollWidth, styles.page]}>
+                        <Text style={[styles.textColor, styles.textTitle]}>Dependentes</Text>
+                        <Text style={[styles.textColor, styles.textDesc]}>
+                            Adicione pelo menos um dependente:
+                        </Text>
+                        <View style={styles.addChild}>
+                            
+                        </View>
+                        
 
-                    <View>
-                        <Button 
-                            color="#F58738"
-                            round 
-                            uppercase
-                        >
-                            Professor
-                        </Button>
                     </View>
-                </View>
+                </ScrollView>  
+
+                <Button 
+                    color="#F58738"
+                    round
+                >
+                    Próximo
+                </Button>           
+
             </View>
         </Background>
     );
@@ -129,13 +140,24 @@ function Account(props) {
 const styles = StyleSheet.create({
    container: {
        flex: 1,
-       borderWidth: 1,
-       borderColor: "#000"
+       alignItems: "center"
    },
    scrollWidth: {
-        width: 300,
-        borderWidth: 2,
-        borderColor: "#000"
+        width: 300
+   },
+   page: {
+
+   },
+   addChild: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingHorizontal: 10
+   },
+   input: {
+        borderColor: "#fff",
+        color: "#fff",
+        width: 200
    },
    textColor: {
         color: "#fff",
@@ -143,11 +165,11 @@ const styles = StyleSheet.create({
         marginVertical: 10
    },
    textTitle: {
-        fontSize: 40
+        fontSize: 35
    },
    textDesc: {
-        fontSize: 20
+        fontSize: 15
    }
 });
 
-export default connect(null, { SetType })(Account);
+export default connect(null, { SetType })(ConfigTeacher);

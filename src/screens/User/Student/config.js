@@ -1,78 +1,55 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { Button } from "galio-framework";
-import { connect } from "react-redux";
+import React, { useState, useRef } from 'react';
+import { Text, View, StyleSheet, Button } from 'react-native';
+import { Transitioning, Transition } from 'react-native-reanimated';
 
-import Background from "../components/background";
-import { SetType } from "../../../services/User/action";
+function Sequence() {
+  const transition = (
+    <Transition.Sequence>
+      <Transition.Out type="scale" />
+      <Transition.Change interpolation="easeInOut" />
+      <Transition.In type="fade" />
+    </Transition.Sequence>
+  );
 
-function ConfigStudent(props) {
+  let [arr, setArr] = useState([1, 2, 3, 4, 5, 6, 7]);
+  const ref = useRef();
 
-    return (
-        <Background>
-            <View style={styles.container}>
-                <Text style={[styles.textColor, styles.textTitle]}>Bem Vindo</Text>
-                <Text style={[styles.textColor, styles.textDesc]}>
-                    Antes de começarmos, precisamos 
-                    que você configure sua conta.
-                </Text>
-                <Text style={[styles.textColor, styles.textDesc]}>
-                    Selecione o tipo de conta que deseja criar:
-                </Text>
+  const popArr = () => {
+        arr.pop();
+  }
 
-                <View>
-                    <View>
-                        <Button 
-                            color="#F58738"
-                            round 
-                            uppercase
-                        >
-                            Responsável
-                        </Button>
-                    </View>
-
-                    <View>
-                        <Button 
-                            color="#F58738"
-                            round 
-                            uppercase
-                        >
-                            Aluno
-                        </Button>
-                    </View>
-
-                    <View>
-                        <Button 
-                            color="#F58738"
-                            round 
-                            uppercase
-                        >
-                            Professor
-                        </Button>
-                    </View>
-                </View>
-            </View>
-        </Background>
-    );
+  return (
+    <Transitioning.View
+      ref={ref}
+      transition={transition}
+      style={styles.centerAll}>
+      <Button
+        title="show or hide"
+        color="#FF5252"
+        onPress={() => {
+          ref.current.animateNextTransition();
+          popArr();
+        }}
+      />
+      {arr.map((x, i) => (
+            <Text style={styles.text} key={i}>
+                {x}
+            </Text>
+      ))}
+    </Transitioning.View>
+  );
 }
 
 const styles = StyleSheet.create({
-   container: {
-       flex: 1,
-       borderWidth: 1,
-       borderColor: "#000"
-   },
-   textColor: {
-        color: "#fff",
-        textAlign: "center",
-        marginVertical: 10
-   },
-   textTitle: {
-        fontSize: 40
-   },
-   textDesc: {
-        fontSize: 20
-   }
+  centerAll: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  text: {
+    fontSize: 16,
+    margin: 10,
+  },
 });
 
-export default connect(null, { SetType })(ConfigStudent);
+export default Sequence;
