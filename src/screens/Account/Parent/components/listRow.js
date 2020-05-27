@@ -1,12 +1,14 @@
-import React, { memo, useState, useEffect } from 'react';
+import React, { memo, useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Button } from "galio-framework";
+import { Icon } from "galio-framework";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Transitioning, Transition } from 'react-native-reanimated';
 
-function ListRow (props) {
+function ListRow(props) {
     const { onRemove, name } = props; 
+    const animRef = useRef();
 
-    const [show, setShow] = useState(false);
+    const [show, setShow] = useState(true);
     
     const transition = (
         <Transition.Sequence>
@@ -16,32 +18,33 @@ function ListRow (props) {
         </Transition.Sequence>
     );
 
-    useEffect(() => {
-        useState(true);
-    }, []);
-
     const HandleRemove = () => {    
         if (onRemove) {
+            animRef.current.animateNextTransition();
             setShow(false);
             onRemove();
         }
     };    
 
     return (
-        <Transitioning.View transition={transition}>
+        <Transitioning.View 
+            ref={animRef}
+            transition={transition}
+        >
             {show && (
                 <View style={styles.align}>
                     <Text style={styles.childName}>{name}</Text>
-                    <Button 
-                        round 
-                        iconOnly
-                        icon="trash-o"
-                        iconFamily="FontAwesome"
-                        iconColor="#fff"
-                        iconSize={30}
-                        style={{ width: 40, height: 40 }}
+                    
+                    <TouchableWithoutFeedback
                         onPress={HandleRemove}
-                    ></Button>
+                    >
+                        <Icon 
+                            name="trash" 
+                            family="entypo" 
+                            color="#fff" 
+                            size={20}
+                        />
+                    </TouchableWithoutFeedback>
                 </View>
             )}            
         </Transitioning.View>
@@ -58,7 +61,7 @@ const styles = StyleSheet.create({
         borderColor: "#fff",
         borderWidth: 1,
         borderRadius: 2,
-        paddingVertical: 5
+        paddingVertical: 10
     },
     childName: {
         fontSize: 18,

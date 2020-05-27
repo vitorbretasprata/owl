@@ -11,7 +11,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { connect } from "react-redux";
 import { withTimingTransition } from "react-native-redash";
 
-import Loading from "../components/loading";
+import Loading from "../../../components/loading";
 import BackgroundImage from "../components/backgroundImage";
 import AuthInput from "../components/input";
 import Submit from "../components/submit";
@@ -34,6 +34,9 @@ const {
   and,
   useCode
 } = Animated;
+
+const clock = new Clock();
+const hasKeyBoardShown = new Value(-1);
 
 const RunTiming = (clock, hasKeyBoardShown) => {
   const state = {
@@ -61,9 +64,9 @@ const RunTiming = (clock, hasKeyBoardShown) => {
       cond(and(eq(hasKeyBoardShown, 0), neq(config.toValue, 0)), [
           set(state.finished, 0),
           set(state.time, 0),
-          set(state.position, 0),
+          set(state.position, 1),
           set(state.frameTime, 0),
-          set(config.toValue, 1),
+          set(config.toValue, 0),
           startClock(clock),
       ]),
       timing(clock, state, config),
@@ -71,6 +74,8 @@ const RunTiming = (clock, hasKeyBoardShown) => {
       state.position
   ]);
 }
+
+const valueKey = RunTiming(clock, hasKeyBoardShown);
 
 function SignUp(props) {
 
@@ -94,26 +99,7 @@ function SignUp(props) {
                     values["email"].length > 0 && 
                     values["password"].length > 0 && 
                     values["confirm"].length > 0;
-
-    const clock = new Clock();
-    const hasKeyBoardShown = new Value(0);
-    const position = RunTiming(clock, hasKeyBoardShown); 
-    const offSetY = interpolate(position, {
-        inputRange: [0, 1],
-        outputRange: [0, -60],
-        extrapolate: Extrapolate.CLAMP
-    });  
-    const logoScale = interpolate(position, {
-        inputRange: [0, 1],
-        outputRange: [1, 0.6],
-        extrapolate: Extrapolate.CLAMP
-    });
-    const logoOffSetY = interpolate(position, {
-        inputRange: [0, 1],
-        outputRange: [0, -10],
-        extrapolate: Extrapolate.CLAMP
-    });
-
+    
     useEffect(() => {
         const valKeyboard = Platform.select({ ios: "Will", android: "Did" });
         const showEventName = `keyboard${valKeyboard}Show`;
@@ -136,7 +122,7 @@ function SignUp(props) {
     }
 
     const _handleRegister = async () => {
-        await Register(values);
+        Register(values);
     }
 
     return (
@@ -146,15 +132,35 @@ function SignUp(props) {
                 <Animated.Text 
                 style={[styles.Logo, {
                     transform: [
-                        { scale: logoScale },
-                        { translateY: logoOffSetY }
+                        { scale: interpolate(valueKey, {
+                            inputRange: [0, 1],
+                            outputRange: [1, 0.6],
+                            extrapolate: Extrapolate.CLAMP
+                        })},
+                        { translateY: interpolate(valueKey, {
+                            inputRange: [0, 1],
+                            outputRange: [0, -10],
+                            extrapolate: Extrapolate.CLAMP
+                        })}
                     ]
                 }]}
                 >
                     Logo
                 </Animated.Text>
                 
-                <Animated.View style={[styles.align, { transform: [ { translateY: offSetY }]}]}>
+                <Animated.View style={
+                    [
+                        styles.align, { 
+                            transform: [ 
+                                { translateY: interpolate(valueKey, {
+                                    inputRange: [0, 1],
+                                    outputRange: [0, -60],
+                                    extrapolate: Extrapolate.CLAMP
+                                })}
+                            ]
+                        }
+                    ]
+                }>
                     <AuthInput 
                         placeholder="Nome completo"
                         attrName="name"

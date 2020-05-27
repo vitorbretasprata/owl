@@ -1,17 +1,17 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Button } from "galio-framework";
-import { connect } from "react-redux";
 
 import Background from "./components/background";
-import { SetType } from "../../services/User/action";
+import { SetAccountInfo } from "../../services/Account/action";
+import Loading from "../../components/loading";
 
 function Account(props) {
-
-    const { SetType } = props;
+    const { navigation } = props;
 
     return (
         <Background>
+            <Loading />
             <View style={styles.container}>
                 <Text style={[styles.textColor, styles.textTitle]}>Bem Vindo</Text>
                 <Text style={[styles.textColor, styles.textDesc]}>
@@ -28,7 +28,7 @@ function Account(props) {
                         round 
                         uppercase
                         style={styles.button}
-                        onPress={() => SetType(2, "ConfigParent")}
+                        onPress={() => navigation.navigate("ConfigParent")}
                     >
                         Responsável
                     </Button>
@@ -38,7 +38,7 @@ function Account(props) {
                         round 
                         uppercase
                         style={styles.button}
-                        onPress={() => SetType(1, "ConfigStudent")}
+                        onPress={() => SetAccountInfo({ type: 2 })}
                     >
                         Aluno
                     </Button>
@@ -48,7 +48,7 @@ function Account(props) {
                         round 
                         uppercase
                         style={styles.button}
-                        onPress={() => SetType(3, "ConfigTeacher")}
+                        onPress={() => navigation.navigate("ConfigTeacher")}
                     >
                         Professor
                     </Button>
@@ -82,4 +82,4 @@ const styles = StyleSheet.create({
    }
 });
 
-export default connect(null, { SetType })(Account);
+export default Account;

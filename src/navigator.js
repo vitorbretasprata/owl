@@ -8,10 +8,9 @@ import SignIn from "./screens/Auth/signin/index";
 import SignUp from "./screens/Auth/signup/index";
 import Forgot from "./screens/Auth/reset/index";
 
-import Account from "./screens/User/Account";
-import ConfigParent from "./screens/User/Parent/config";
-import ConfigTeacher from "./screens/User/Teacher/config";
-import ConfigStudent from "./screens/User/Student/config";
+import Account from "./screens/Account/Account";
+import ConfigParent from "./screens/Account/Parent/config";
+import ConfigTeacher from "./screens/Account/Teacher/config";
 
 import { navigationRef } from "./services/navigation/RootNavigate";
 
@@ -30,7 +29,6 @@ function StackNavigator(props) {
                     <>
                         <Stack.Screen name="ConfigParent" component={ConfigParent} options={{ headerShown: false }} />
                         <Stack.Screen name="ConfigTeacher" component={ConfigTeacher} options={{ headerShown: false }} />
-                        <Stack.Screen name="ConfigStudent" component={ConfigStudent} options={{ headerShown: false }} />
 
                         <Stack.Screen name="Account" component={Account} options={{ headerShown: false }} />
                         <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }}/>

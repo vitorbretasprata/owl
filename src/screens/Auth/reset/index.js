@@ -12,7 +12,7 @@ import { Icon, theme, Button } from "galio-framework";
 import { LinearGradient } from "expo-linear-gradient";
 import { connect } from "react-redux";
 
-import Loading from "../components/loading";
+import Loading from "../../../components/loading";
 import BackgroundImage from "../components/backgroundImage";
 import AuthInput from "../components/input";
 import Toast from "../components/toast";

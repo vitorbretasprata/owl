@@ -10,7 +10,7 @@ import Animated, { Easing } from "react-native-reanimated";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { connect } from "react-redux";
 
-import Loading from "../components/loading";
+import Loading from "../../../components/loading";
 import BackgroundImage from "../components/backgroundImage";
 import AuthInput from "../components/input";
 import Submit from "../components/submit";
@@ -35,6 +35,9 @@ const {
   eq,
   and 
 } = Animated;
+
+const clock = new Clock();
+const hasKeyBoardShown = new Value(-1);
 
 const RunTiming = (clock, hasKeyBoardShown) => {
   const state = {
@@ -62,20 +65,18 @@ const RunTiming = (clock, hasKeyBoardShown) => {
       cond(and(eq(hasKeyBoardShown, 0), neq(config.toValue, 0)), [
           set(state.finished, 0),
           set(state.time, 0),
-          set(state.position, 0),
+          set(state.position, 1),
           set(state.frameTime, 0),
-          set(config.toValue, 1),
+          set(config.toValue, 0),
           startClock(clock),
       ]),
       timing(clock, state, config),
       cond(state.finished,stopClock(clock)),
-      interpolate(state.position, {
-          inputRange: [0, 1],
-          outputRange: [0, -20],
-          extrapolate: Extrapolate.CLAMP
-      })
+      state.position
   ]);
 }
+
+const valueKey = RunTiming(clock, hasKeyBoardShown);
 
 function SignIn(props) {
 
@@ -85,8 +86,6 @@ function SignIn(props) {
       password: ""
   });
   const isEnabled = values["password"].length > 0 && values["email"].length > 0;
-  const hasKeyBoardShown = new Value(-1);
-  const clock = new Clock();
 
   const _handleChange = (attrName, value) => {
       setValues({
@@ -116,9 +115,6 @@ function SignIn(props) {
       hasKeyBoardShown.setValue(0);
   }
 
-  const offSetY = RunTiming(clock, hasKeyBoardShown);
-  const logoScale = 1;
-
   const _handleLogin = () => {
       Login(values);
   }
@@ -130,14 +126,28 @@ function SignIn(props) {
         <Animated.Text 
               style={[styles.Logo, {
                 transform: [
-                  { scale: logoScale }
+                  { scale: interpolate(valueKey, {
+                    inputRange: [0, 1],
+                    outputRange: [1, 0.7],
+                    extrapolate: Extrapolate.CLAMP
+                  })}
                 ]
               }]}
             >
                 Logo
             </Animated.Text>
           
-            <Animated.View style={[styles.align, { transform: [ { translateY: offSetY }]}]}>
+            <Animated.View style={[styles.align, 
+            { 
+              transform: [ 
+                { translateY: 
+                    interpolate(valueKey, {
+                      inputRange: [0, 1],
+                      outputRange: [0, -60],
+                      extrapolate: Extrapolate.CLAMP
+                    }) 
+                }]}
+            ]}>
               <AuthInput 
                   placeholder="Email"
                   attrName="email"

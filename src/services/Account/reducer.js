@@ -2,8 +2,7 @@ import constants from "../constants";
 
 const initialState = {
     loading: false,
-    type: null,
-    config: {}
+    error: null
 }
 
 const UserReducer = (state = initialState, action) => {
@@ -13,18 +12,18 @@ const UserReducer = (state = initialState, action) => {
                 ...state,
                 loading: true
             }        
-        case constants.SET_TYPE: 
+        case constants.SUCCESS: 
             return {
                 ...state,
                 loading: false,
-                type: action.payload.type
+                error: ""
             } 
 
-        case constants.SET_CONFIG: 
+        case constants.FAILURE: 
             return {
                 ...state,
                 loading: false,
-                config: action.payload.config
+                config: action.payload.error
             }
         default: 
             return state;

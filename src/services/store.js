@@ -4,7 +4,7 @@ import ReduxThunk from "redux-thunk";
 import { persistStore, persistReducer } from 'redux-persist';
 
 import AuthReducer from "./Auth/reducer";
-import UserReducer from "./User/reducer";
+import UserReducer from "./Account/reducer";
 
 const persistConfig = {
     key: 'root',

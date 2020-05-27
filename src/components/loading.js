@@ -2,7 +2,7 @@ import React from "react";
 import { View, StyleSheet, Text, Dimensions } from "react-native";
 import { connect } from "react-redux";
 
-const ScreenWidth = Dimensions.get("screen").width;
+const { width, height } = Dimensions.get("screen");
 
 function Loading(props) {  
     
@@ -22,8 +22,9 @@ const styles = StyleSheet.create({
         position: "absolute",
         top: 0,
         left: 0,
-        width: ScreenWidth,
-        height: "100%",
+        bottom: 0,
+        width: width,
+        height: height,
         backgroundColor: "#fff",
         justifyContent: "center",
         alignItems: "center",
