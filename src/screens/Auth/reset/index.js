@@ -106,6 +106,7 @@ function Forgot(props) {
                         horizontal
                         scrollEnabled={false}
                         pagingEnabled
+                        showsHorizontalScrollIndicator={false}
                         ref={scrollRef}
                         style={styles.scrollWidth}
                     >

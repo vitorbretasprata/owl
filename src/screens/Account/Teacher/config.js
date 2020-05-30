@@ -1,93 +1,45 @@
-import React, { useRef, useReducer, useState } from "react";
+import React, { useRef, useReducer, useState, useEffect } from "react";
 import { 
     View, 
     Text, 
     StyleSheet,
-    Dimensions,
-    Modal     
+    Dimensions,         
 } from "react-native";
-import { Input } from "galio-framework";
 import { connect } from "react-redux";
 import Animated from "react-native-reanimated";
 import { withTransition } from "react-native-redash";
-import { FlatList, ScrollView, BaseButton, State, TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { FlatList, ScrollView, BaseButton, TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 import Background from "../components/background";
 import ProgressBar from "../components/progressBar";
 import YearsModal from "../components/modal";
+import Loading from "../../components/loading";
+import InputMask from "../../../components/inputMask";
 import { SetAccountInfo } from "../../../services/Account/action";
+import { lecturesInfos } from "../constants/constants"; 
 
-const { 
-    Value,
-    cond,
-    set,
-    timing,
-    interpolate,
-    Extrapolate,
-    block,
-    neq,
-    eq,
-    and,
-    useCode
-  } = Animated;
+const { Value, interpolate } = Animated;
 
 const WidthScreen = Dimensions.get("screen").width - 80;
-const position = new Value(0);
-
-const classes = [
-    { 
-        className: "Matemática",
-        selectedClasses: []
-    },
-    { 
-        className: "Português",
-        selectedClasses: []
-    },    
-    { 
-        className: "Química",
-        selectedClasses: []
-    },
-    { 
-        className: "Biologia",
-        selectedClasses: []
-    },
-    { 
-        className: "Física",
-        selectedClasses: []
-    },
-    { 
-        className: "Ciências",
-        selectedClasses: []
-    },
-    { 
-        className: "Inglês",
-        selectedClasses: []
-    },
-    { 
-        className: "Espanhol",
-        selectedClasses: []
-    },
-    { 
-        className: "Geografia",
-        selectedClasses: []
-    },
-    { 
-        className: "História",
-        selectedClasses: []
-    },
-    { 
-        className: "Ensino Religioso",
-        selectedClasses: []
-    }        
-];
-
+const position = new Value(0.33);
 
 const initInfo = {
-    classes: [],
+    classes: {
+        "Matemática": [],
+        "Português": [],
+        "Química": [],
+        "Biologia": [],
+        "Física": [],
+        "Ciências": [],
+        "Inglês": [],
+        "Espanhol": [],
+        "Geografia": [],
+        "História": [],
+        "Ensino Religioso": []     
+    },
     lectureTime: null,
     lectureValue: null,
     movementValue: null,
-    url: null
 }
 
 function ConfigTeacher({ SetAccountInfo }) {
@@ -106,23 +58,23 @@ function ConfigTeacher({ SetAccountInfo }) {
                     ...state,
                     classes: {
                         ...state.classes,
-                        [action.payload.className]: action.payload.classContent
+                        [action.payload.className]: action.payload.selectedClasses
                     }
                 }
             case "SET_LECTURE_TIME":
                 return {
                     ...state,
-                    lectureTime: action.payload.lectureTime
+                    lectureTime: action.payload
                 }
             case "SET_LECTURE_VALUE":
                 return {
                     ...state,
-                    lectureValue: action.payload.lectureValue
-                }            
+                    lectureValue: action.payload,
+                }
             case "SET_MOVEMENT_VALUE":
                 return {
                     ...state,
-                    movementValue: action.payload.movementValue
+                    movementValue: action.payload
                 }
             case "SET_LOADING":
                 return {
@@ -132,25 +84,26 @@ function ConfigTeacher({ SetAccountInfo }) {
             default: 
                 return state;
         }
-    }, initInfo);    
+    }, initInfo);  
+    
+    useEffect(() => {
+        
+        return () => {
+            position.setValue(0.33);
+        }
+    }, []);    
 
     const submitInfo = () => {
         switch(index) {
             case 0:
-                dispatch({
-                    type: 'SET_DEPENDENTS'
-                });
                 handleScroll();
                 break;
             case 1: 
                 handleScroll();
                 break;
             case 2: 
-                handleScroll();
-                break;
-            case 3:                 
                 SetAccountInfo(Info);
-                break;
+                break;            
             default: 
                 break; 
         }
@@ -159,15 +112,22 @@ function ConfigTeacher({ SetAccountInfo }) {
     const decrement = () => {        
         if(0 <= index && 0 <= position._value) {
             index--;
-            const aux = index / 4 ;
+            const aux = index / 3 ;
             position.setValue(aux);
         }
     }
 
+    const handleChangeText = (name, value) => {
+        dispatch({
+            type: lecturesInfos[name],
+            playload: value
+        })
+    }
+
     const increment = () => {
-        if(index <= 4 && position._value <= 1) {
+        if(index <= 3 && position._value <= 0.99) {
             index++;
-            const aux = index / 4 ;
+            const aux = (index + 1) / 3;
             position.setValue(aux);
         }        
     }
@@ -183,49 +143,67 @@ function ConfigTeacher({ SetAccountInfo }) {
         }
     }
 
-    const handleModal = lecture => {
+    const handleModal = item => {
+        const lecture = {
+            className: item,
+            selectedClasses: Info.classes[item]
+        }
         setLectureSelected(lecture);
         setShowModal(true);
     }
 
     const close = () => setShowModal(false);
 
+    const handleSaveYears = (years, lecture) => {
+        dispatch({
+            type:"ADD_CLASS",
+            payload: { 
+                className: lecture,
+                selectedClasses: years
+            }
+        });
+    }
+
     return (
         <Background>
+            <Loading />
             <YearsModal 
                 showModal={showModal}
                 closeModal={close}
                 lecture={lectureSelected}
+                saveSelectedYears={(years, lecture) => handleSaveYears(years, lecture)}
             />
             <View style={styles.container}>
                 <ProgressBar progressWidth={interpolate(transPosition, {
-                    inputRange: [0, 0.25, 0.5, 0.75, 1],
-                    outputRange: [0, 50, 100, 150, 200]
+                    inputRange: [0.34, 0.67, 1],
+                    outputRange: [75, 135, 200]
                 })}/>
                 <ScrollView
                     horizontal
                     scrollEnabled={false}
                     pagingEnabled
                     ref={scrollRef}
+                    showsHorizontalScrollIndicator={false}
                     style={styles.scrollWidth}
                 >
-                    <View style={[styles.scrollWidth, styles.page]}>
+                    <View style={styles.scrollWidth}>
                         <Text style={[styles.textColor, styles.textTitle]}>Especialidades</Text>
                         <Text style={[styles.textColor, styles.textDesc]}>
                             Adicione as matérias que você deseja lecionar
                         </Text>
                         <View style={styles.scrollWidth}>
                             <FlatList 
-                                data={classes}
+                                data={Object.keys(Info.classes)}
                                 ListFooterComponent={<View />}
                                 ListFooterComponentStyle={{ marginTop: 120 }}
+                                showsVerticalScrollIndicator={false}
                                 renderItem={({ item }) => (
                                     <TouchableWithoutFeedback
                                         style={styles.lecture}
                                         onPress={() => handleModal(item)}
                                     >
                                         <Text style={styles.white}>
-                                            {item.className}
+                                            {item}
                                         </Text>
                                     </TouchableWithoutFeedback>
                                 )}
@@ -234,58 +212,62 @@ function ConfigTeacher({ SetAccountInfo }) {
                         </View>                        
                     </View>
 
-                    <View style={[styles.scrollWidth, styles.page]}>
+                    <View style={styles.scrollWidth}>
                         <Text style={[styles.textColor, styles.textTitle]}>Aulas</Text>
                         <Text style={[styles.textColor, styles.textDesc]}>
                             Informa o tempo de sua aula (em minutos)
                         </Text>
-                        <Input 
-                            placeholder="Aulas" 
-                            left
-                            keyboardType="number-pad"
-                            icon="user"
-                            family="antdesign"
-                            rounded 
-                            style={styles.input}
+                        <InputMask
+                            placeholder="0 minutos"
+                            currentValue={Info.lectureTime}
+                            name="lectureTime"
+                            updateMasterState={handleChangeText}
                         />                      
 
                     </View>
 
-                    <View style={[styles.scrollWidth, styles.page]}>
+                    <View style={styles.scrollWidth}>
                         <Text style={[styles.textColor, styles.textTitle]}>Aulas</Text>
                         <Text style={[styles.textColor, styles.textDesc]}>
                             Informa o valor de cada aula
                         </Text>
                         <View style={styles.addChild}>
-                            <Input 
-                                placeholder="R$ 0,00" 
-                                left
-                                keyboardType="decimal-pad"
-                                icon="attach-money"
-                                family="MaterialIcons"
-                                rounded 
-                                style={styles.input}
+                            <InputMask 
+                                type={'money'}
+                                placeholder="R$ 0,00"
+                                currentValue={Info.lectureValue}
+                                name="lectureValue"
+                                maskOptions={{
+                                    precision: 2,
+                                    separator: ',',
+                                    delimiter: '.',
+                                    unit: 'R$',
+                                    suffixUnit: ''
+                                }}
+                                updateMasterState={handleChangeText}
                             />                            
-                        </View>                        
-                    </View>
-
-                    <View style={[styles.scrollWidth, styles.page]}>
-                        <Text style={[styles.textColor, styles.textTitle]}>Aula</Text>
+                        </View> 
                         <Text style={[styles.textColor, styles.textDesc]}>
                             Informe uma taxa de deslocamento
-                        </Text>
+                        </Text> 
                         <View style={styles.addChild}>
-                            <Input 
-                                placeholder="R$ 0,00" 
-                                left
-                                keyboardType="decimal-pad"
-                                icon="attach-money"
-                                family="MaterialIcons"
-                                rounded 
-                                style={styles.input}
+                            <InputMask 
+                                type={'money'}
+                                placeholder="R$ 0,00"
+                                currentValue={Info.movementValue}
+                                name="movementValue"
+                                maskOptions={{
+                                    precision: 2,
+                                    separator: ',',
+                                    delimiter: '.',
+                                    unit: 'R$',
+                                    suffixUnit: ''
+                                }}
+                                updateMasterState={handleChangeText}
                             />                            
-                        </View>
-                    </View>                    
+                        </View>                      
+                    </View>
+                                        
                 </ScrollView>
                 
                 <BaseButton
@@ -293,7 +275,7 @@ function ConfigTeacher({ SetAccountInfo }) {
                     onPress={submitInfo}
                 >
                     <View accessible>
-                        <Text style={styles.textColor}>{index >= 3 ? "Concluir" : "Próximo"}</Text>
+                        <Text style={styles.textColor}>{index >= 2 ? "Concluir" : "Próximo"}</Text>
                     </View>
                 </BaseButton>                    
             </View>
@@ -332,12 +314,12 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
+        width: "100%"
    },
    input: {
         borderColor: "#fff",
-        color: "#fff",
-        width: 200
+        color: "#fff"
    },
    textColor: {
         color: "#fff",

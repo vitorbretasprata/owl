@@ -37,3 +37,9 @@ export const secondPeriod = [
     "Química",
     "Biologia"
 ];
+
+export const lecturesInfos = {
+    lectureTime: "SET_LECTURE_TIME",
+    lectureValue: "SET_LECTURE_VALUE",
+    movementValue: "SET_MOVEMENT_VALUE"
+}

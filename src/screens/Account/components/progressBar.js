@@ -25,11 +25,11 @@ const styles = StyleSheet.create({
     absoluteFill: {
         position: "absolute",
         top: 0,
-        left: 0,
+        left: -2,
         right: 0,
         bottom: 0,
         backgroundColor: "#fff",
-        borderRadius: 5
+        borderRadius: 11
     }
 })
 

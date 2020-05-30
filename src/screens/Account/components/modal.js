@@ -1,12 +1,20 @@
 import React, { memo, useEffect, useState } from "react";
-import { Modal, View, StyleSheet, Text, Dimensions, InteractionManager } from "react-native";
+import { 
+    Modal, 
+    View, 
+    StyleSheet, 
+    Text, 
+    Dimensions, 
+    InteractionManager, 
+    TouchableWithoutFeedback 
+} from "react-native";
 import Check from "./checkBox";
 import { typeOne, typeTwo, typeThree, secondPeriod } from "../constants/constants";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { Icon } from "galio-framework";
 
 const { width } = Dimensions.get("screen");
 
-function YearsModal({ showModal, closeModal, lecture }) {
+function YearsModal({ showModal, closeModal, lecture, saveSelectedYears }) {
 
     const [yearsChecked, setYearsCheked] = useState([]);
     const [yearsName, setYearsName] = useState([]);
@@ -21,17 +29,15 @@ function YearsModal({ showModal, closeModal, lecture }) {
         });
     }
 
-    const handleChangeYears = (index) => {
-        setYearsCheked(prevYearsChecked => {
-            prevYearsChecked[index] = !prevYearsChecked[index]
-        });
-        setTimeout(() => console.log(yearsChecked), 500)
-        
+    const handleChangeYears = (e, index) => {
+        const aux = yearsChecked;
+        aux[index] = e;
+        setYearsCheked(aux);
     }
 
     const handleAll = event => {
-        const all = Array.apply(null, new Array(yearsChecked.length)).map(x => event);
-        setYearsCheked(all);
+        //const all = Array.apply(null, new Array(yearsChecked.length)).map(x => event);
+        //setYearsCheked(all);
     }
 
     useEffect(() => {
@@ -40,14 +46,10 @@ function YearsModal({ showModal, closeModal, lecture }) {
         }        
     }, [yearsName]);
 
-    useEffect(() => {
-        console.log(yearsChecked)       
-    }, [yearsChecked]);
-
     const chooseYear = () => {
-        if(secondPeriod.includes(lecture.className)){
+        if(secondPeriod.includes(lecture)){
             setYearsName(typeTwo)
-        } else if (lecture.className === "Ciências") {
+        } else if (lecture === "Ciências") {
             setYearsName(typeOne);
         } else {
             setYearsName(typeThree);
@@ -55,10 +57,16 @@ function YearsModal({ showModal, closeModal, lecture }) {
     }
 
     const chooseSelectedYears = () => {
+        let newArr = Array.apply(null, new Array(yearsName.length)).map(x => false);
         if(lecture.selectedClasses.length === 0) {
-            setYearsCheked(Array.apply(null, new Array(yearsName.length)).map(x => false));
+            setYearsCheked(newArr);
         } else {
-            setYearsCheked(lecture.selectedClasses);
+            for (let index = 0; index < lecture.selectedClasses.length; index++) {
+                let i = lecture.selectedClasses[index];
+                newArr[i] = true;                
+            }    
+            
+            setYearsCheked(newArr);
         }        
         setLoadingModal(false);
     }
@@ -74,7 +82,17 @@ function YearsModal({ showModal, closeModal, lecture }) {
         setLoadingSave(true);
         if(yearsChecked.includes(true)) {
 
+            if(secondPeriod.includes(lecture.className)) {
+                const indexArr = yearsChecked.reduce((arr, e, i) => {
+                    if(e) arr.push(i);
+                    return arr;
+                }, []);
+                saveSelectedYears(indexArr, lecture.className);
+            }
+
         }
+        setLoadingSave(false);
+        cleanModal();
     }
 
     return (
@@ -95,24 +113,30 @@ function YearsModal({ showModal, closeModal, lecture }) {
                             <Text style={styles.titleModal}>Seleciona os anos que você deseja lecionar desta matéria</Text>
                             <View style={styles.checkBtns}>
                                 <Check label="Selecionar todos" onChange={handleAll} />
-                                {yearsChecked.map((y, i) => <Check label={yearsName[i]} initValue={y} onChange={() => handleChangeYears(i)} key={i} />)}
+                                {yearsChecked.map((y, i) => <Check label={yearsName[i]} initValue={y} onChange={(e) => handleChangeYears(e, i)} key={i} />)}
                             </View>
                             
                             <View style={styles.buttons}>
-                                <TouchableWithoutFeedback onPress={cleanModal}>
-                                    <Text style={[styles.btn, { color: "#707070"}]}>
-                                        Cancelar
-                                    </Text>
+                                <TouchableWithoutFeedback onPress={cleanModal} style={styles.btn}>
+                                    <Icon 
+                                        name="close" 
+                                        family="AntDesign" 
+                                        color="#707070" 
+                                        size={25} 
+                                    />
                                 </TouchableWithoutFeedback>
 
                                 <View>
                                     <Text>{loadingSave && "L"}</Text>
                                 </View>
 
-                                <TouchableWithoutFeedback onPress={saveModal}>
-                                    <Text style={[styles.btn, { color: "#F58738"}]}>
-                                        Salvar
-                                    </Text>
+                                <TouchableWithoutFeedback onPress={saveModal} style={styles.btn}>
+                                    <Icon 
+                                        name="check" 
+                                        family="AntDesign" 
+                                        color="#F58738" 
+                                        size={25} 
+                                    />
                                 </TouchableWithoutFeedback>
                             </View>
                         </>
@@ -143,15 +167,15 @@ const styles = StyleSheet.create({
     buttons: {
         flexDirection: "row",
         justifyContent: "space-between",
-        width: "100%"
+        width: "100%",
+        zIndex: 100
     },
     titleModal: {
         textAlign: "center",
         fontSize: 16
     },
     btn: {
-        fontSize: 20,
-        fontWeight: "bold"
+        paddingHorizontal: 10
     },
     checkBtns: {
         marginVertical: 15

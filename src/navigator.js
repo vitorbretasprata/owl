@@ -12,12 +12,16 @@ import Account from "./screens/Account/Account";
 import ConfigParent from "./screens/Account/Parent/config";
 import ConfigTeacher from "./screens/Account/Teacher/config";
 
+import TabBottom from "./components/bottomTabNavigator";
+
 import { navigationRef } from "./services/navigation/RootNavigate";
 
-const Stack = createStackNavigator();
-function StackNavigator(props) {
+const tabOptions = {
+    headerShown: false
+}
 
-    const { status } = props;
+const Stack = createStackNavigator();
+function StackNavigator({ status }) {
 
     return (
         <Stack.Navigator>
@@ -27,10 +31,11 @@ function StackNavigator(props) {
                     </>
                 ) : (
                     <>
+                        <Stack.Screen name="TabBottom" component={TabBottom} options={{...tabOptions}} />
                         <Stack.Screen name="ConfigParent" component={ConfigParent} options={{ headerShown: false }} />
                         <Stack.Screen name="ConfigTeacher" component={ConfigTeacher} options={{ headerShown: false }} />
-
                         <Stack.Screen name="Account" component={Account} options={{ headerShown: false }} />
+
                         <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }}/>
                         <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }}/>
                         <Stack.Screen name="Forgot" component={Forgot} options={{ headerShown: false }}/>

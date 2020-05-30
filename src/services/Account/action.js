@@ -24,12 +24,13 @@ const Failure = error => ({
 export const SetAccountInfo = (info) => {
     return dispatch => {
         dispatch(Request());
-
         setInfo(info).then(data => {
             dispatch(Success());
-            console.log(data)
             RootStack.reset(0, [
-                { name: "Home" }
+                { 
+                    name: "TabBottom",
+                    screen: "Buscar"
+                }
             ]);
 
         }).catch(error => {

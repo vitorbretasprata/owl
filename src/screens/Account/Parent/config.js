@@ -47,8 +47,7 @@ function ConfigParent({ saveAccountInfo }) {
         const first = dependents.slice(0, index);
         const second = dependents.slice(index + 1);
 
-        setDependents(first.concat(second))
-        setTimeout(() => console.log(dependents), 2000);
+        setDependents(first.concat(second));
     };
 
     const submitInfo = () => {
