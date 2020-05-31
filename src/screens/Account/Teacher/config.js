@@ -8,83 +8,53 @@ import {
 import { connect } from "react-redux";
 import Animated from "react-native-reanimated";
 import { withTransition } from "react-native-redash";
+import { TextInputMask } from 'react-native-masked-text';
 import { FlatList, ScrollView, BaseButton, TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 import Background from "../components/background";
 import ProgressBar from "../components/progressBar";
 import YearsModal from "../components/modal";
 import Loading from "../../components/loading";
-import InputMask from "../../../components/inputMask";
 import { SetAccountInfo } from "../../../services/Account/action";
-import { lecturesInfos } from "../constants/constants"; 
 
 const { Value, interpolate } = Animated;
 
 const WidthScreen = Dimensions.get("screen").width - 80;
 const position = new Value(0.33);
+let index = 0;
 
-const initInfo = {
-    classes: {
-        "Matemática": [],
-        "Português": [],
-        "Química": [],
-        "Biologia": [],
-        "Física": [],
-        "Ciências": [],
-        "Inglês": [],
-        "Espanhol": [],
-        "Geografia": [],
-        "História": [],
-        "Ensino Religioso": []     
-    },
-    lectureTime: null,
-    lectureValue: null,
-    movementValue: null,
+const emptyClasses = {    
+    "Matemática": [],
+    "Português": [],
+    "Química": [],
+    "Biologia": [],
+    "Física": [],
+    "Ciências": [],
+    "Inglês": [],
+    "Espanhol": [],
+    "Geografia": [],
+    "História": [],
+    "Ensino Religioso": []
 }
 
 function ConfigTeacher({ SetAccountInfo }) {
     
     const scrollRef = useRef(null);
-    let index = 0;
+
     const transPosition = withTransition(position);
 
     const [showModal, setShowModal] = useState(false);
     const [lectureSelected, setLectureSelected] = useState([]);
+    const [lectureTime, setLectureTime] = useState("");
+    const [lectureValue, setLectureValue] = useState("");
+    const [movementValue, setMovementValue] = useState("");
 
-    const [Info, dispatch] = useReducer((state, action) => {
-        switch(action.type){
-            case "ADD_CLASS":
-                return {
-                    ...state,
-                    classes: {
-                        ...state.classes,
-                        [action.payload.className]: action.payload.selectedClasses
-                    }
-                }
-            case "SET_LECTURE_TIME":
-                return {
-                    ...state,
-                    lectureTime: action.payload
-                }
-            case "SET_LECTURE_VALUE":
-                return {
-                    ...state,
-                    lectureValue: action.payload,
-                }
-            case "SET_MOVEMENT_VALUE":
-                return {
-                    ...state,
-                    movementValue: action.payload
-                }
-            case "SET_LOADING":
-                return {
-                    ...state,
-                    loading: !state.loading
-                }
-            default: 
-                return state;
+    const [selectedClasses, dispatch] = useReducer((state, action) => {
+        return {
+            ...state,            
+            [action.className]: action.selectedClasses
         }
-    }, initInfo);  
+    }, emptyClasses);  
     
     useEffect(() => {
         
@@ -98,10 +68,17 @@ function ConfigTeacher({ SetAccountInfo }) {
             case 0:
                 handleScroll();
                 break;
-            case 1: 
+            case 1:                 
                 handleScroll();
                 break;
             case 2: 
+                const Info = {
+                    classes: selectedClasses,
+                    lectureTime,
+                    lectureValue,
+                    movementValue
+                }
+                console.log(Info)
                 SetAccountInfo(Info);
                 break;            
             default: 
@@ -117,12 +94,9 @@ function ConfigTeacher({ SetAccountInfo }) {
         }
     }
 
-    const handleChangeText = (name, value) => {
-        dispatch({
-            type: lecturesInfos[name],
-            playload: value
-        })
-    }
+    const handleLectureTime = text => setLectureTime(text);
+    const handleLectureValue = text => setLectureValue(text);
+    const handleMovementValue = text => setMovementValue(text);
 
     const increment = () => {
         if(index <= 3 && position._value <= 0.99) {
@@ -146,7 +120,7 @@ function ConfigTeacher({ SetAccountInfo }) {
     const handleModal = item => {
         const lecture = {
             className: item,
-            selectedClasses: Info.classes[item]
+            selectedClasses: selectedClasses[item]
         }
         setLectureSelected(lecture);
         setShowModal(true);
@@ -156,11 +130,8 @@ function ConfigTeacher({ SetAccountInfo }) {
 
     const handleSaveYears = (years, lecture) => {
         dispatch({
-            type:"ADD_CLASS",
-            payload: { 
-                className: lecture,
-                selectedClasses: years
-            }
+            className: lecture,
+            selectedClasses: years
         });
     }
 
@@ -193,7 +164,7 @@ function ConfigTeacher({ SetAccountInfo }) {
                         </Text>
                         <View style={styles.scrollWidth}>
                             <FlatList 
-                                data={Object.keys(Info.classes)}
+                                data={Object.keys(selectedClasses)}
                                 ListFooterComponent={<View />}
                                 ListFooterComponentStyle={{ marginTop: 120 }}
                                 showsVerticalScrollIndicator={false}
@@ -217,12 +188,17 @@ function ConfigTeacher({ SetAccountInfo }) {
                         <Text style={[styles.textColor, styles.textDesc]}>
                             Informa o tempo de sua aula (em minutos)
                         </Text>
-                        <InputMask
-                            placeholder="0 minutos"
-                            currentValue={Info.lectureTime}
-                            name="lectureTime"
-                            updateMasterState={handleChangeText}
-                        />                      
+                        <TextInputMask 
+                            style={styles.input}
+                            type={'custom'}
+                            placeholder="em minutos"
+                            keyboardType="numeric"
+                            options={{
+                                mask: "999"
+                            }}
+                            value={lectureTime}
+                            onChangeText={handleLectureTime}                            
+                        />               
 
                     </View>
 
@@ -232,38 +208,40 @@ function ConfigTeacher({ SetAccountInfo }) {
                             Informa o valor de cada aula
                         </Text>
                         <View style={styles.addChild}>
-                            <InputMask 
+                            <TextInputMask 
+                                style={styles.input}
                                 type={'money'}
+                                keyboardType="decimal-pad"
                                 placeholder="R$ 0,00"
-                                currentValue={Info.lectureValue}
-                                name="lectureValue"
-                                maskOptions={{
+                                options={{
                                     precision: 2,
                                     separator: ',',
                                     delimiter: '.',
                                     unit: 'R$',
                                     suffixUnit: ''
                                 }}
-                                updateMasterState={handleChangeText}
+                                value={lectureValue}
+                                onChangeText={handleLectureValue}                            
                             />                            
                         </View> 
                         <Text style={[styles.textColor, styles.textDesc]}>
                             Informe uma taxa de deslocamento
                         </Text> 
                         <View style={styles.addChild}>
-                            <InputMask 
+                            <TextInputMask 
+                                style={styles.input}
                                 type={'money'}
+                                keyboardType="decimal-pad"
                                 placeholder="R$ 0,00"
-                                currentValue={Info.movementValue}
-                                name="movementValue"
-                                maskOptions={{
+                                options={{
                                     precision: 2,
                                     separator: ',',
                                     delimiter: '.',
                                     unit: 'R$',
                                     suffixUnit: ''
                                 }}
-                                updateMasterState={handleChangeText}
+                                value={movementValue}
+                                onChangeText={handleMovementValue}                                                        
                             />                            
                         </View>                      
                     </View>
@@ -319,7 +297,13 @@ const styles = StyleSheet.create({
    },
    input: {
         borderColor: "#fff",
-        color: "#fff"
+        color: "#707070",
+        height: 40,
+        width: "100%",
+        backgroundColor: "#fff",
+        borderRadius: 20,
+        paddingHorizontal: 15
+        
    },
    textColor: {
         color: "#fff",
