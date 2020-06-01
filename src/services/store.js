@@ -4,7 +4,8 @@ import ReduxThunk from "redux-thunk";
 import { persistStore, persistReducer } from 'redux-persist';
 
 import AuthReducer from "./Auth/reducer";
-import UserReducer from "./Account/reducer";
+import AccountReducer from "./Account/reducer";
+import LectureReducer from "./Lecture/reducer";
 
 const persistConfig = {
     key: 'root',
@@ -13,12 +14,15 @@ const persistConfig = {
       'auth',
     ],
     blacklist: [
+      'account',
+      'lecture'
     ],
 };
 
 const reducers = combineReducers({
     auth: AuthReducer,
-    user: UserReducer
+    account: AccountReducer,
+    lecture: LectureReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);

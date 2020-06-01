@@ -2,10 +2,7 @@ import React, { memo } from "react";
 import { StyleSheet } from "react-native";
 import { Button } from "galio-framework";
 
-function Submit(props) {
-
-    const { onSubmit, title, isDisabled } = props;
-  
+export default memo(({ onSubmit, title, isDisabled }) => {  
     return (
         <Button 
             onPress={onSubmit}
@@ -18,7 +15,7 @@ function Submit(props) {
             {title}
         </Button>             
     );
-};
+});
 
 const styles = StyleSheet.create({
     submit: {
@@ -26,5 +23,3 @@ const styles = StyleSheet.create({
         marginTop: 45
     }    
 });
-
-export default memo(Submit);

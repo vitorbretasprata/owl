@@ -19,22 +19,33 @@ const Failure = error => ({
     payload: { error }   
 });
 
+const setConfig = (type, data) => ({
+    type: type,
+    payload: data   
+});
+
 /* -- Actions functions -- */ 
 
 export const SetAccountInfo = (info) => {
+
     return dispatch => {
         dispatch(Request());
         setInfo(info).then(data => {
             dispatch(Success());
-            RootStack.reset(0, [
-                { 
-                    name: "TabBottom",
-                    screen: "Buscar"
-                }
-            ]);
-
+            saveConfig("SET_TYPE", {
+                type: data.type
+            });
+            RootStack.reset(0, [{ name: "BottomTab", screen: "Home" }]);
         }).catch(error => {
+            console.log("Fucking error", error.message);
             dispatch(Failure(error.message));
         });
+    }
+}
+
+
+export const saveConfig = (type, data) => {
+    return dispatch => {
+        dispatch(setConfig(type, data));
     }
 }

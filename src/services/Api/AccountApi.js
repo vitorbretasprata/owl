@@ -1,9 +1,7 @@
 export const setInfo = info => {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
-            resolve({                
-                userType: 0                
-            })
+            resolve(info)
         }, 5000);
     });
 }

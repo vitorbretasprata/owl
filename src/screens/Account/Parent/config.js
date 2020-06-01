@@ -21,13 +21,13 @@ import { withTransition } from "react-native-redash";
 import Background from "../components/background";
 import ProgressBar from "../components/progressBar";
 import ListRow from "./components/listRow";
-import { saveAccountInfo } from "../../../services/Account/action";
+import { SetAccountInfo } from "../../../services/Account/action";
 import Loading from "../../../components/loading";
 
 const WidthScreen = Dimensions.get("screen").width - 80;
 const position = new Value(0);
 
-function ConfigParent({ saveAccountInfo }) { 
+function ConfigParent({ SetAccountInfo }) { 
     
     const transPosition = withTransition(position);  
 
@@ -52,7 +52,7 @@ function ConfigParent({ saveAccountInfo }) {
 
     const submitInfo = () => {
         position.setValue(1);
-        saveAccountInfo({
+        SetAccountInfo({
             type: 1,
             dependents
         });
@@ -131,7 +131,8 @@ function ConfigParent({ saveAccountInfo }) {
 const styles = StyleSheet.create({
    container: {
        flex: 1,
-       alignItems: "center"
+       alignItems: "center",
+       zIndex: 0
    },
    scrollWidth: {
         width: WidthScreen
@@ -163,4 +164,4 @@ const styles = StyleSheet.create({
    }
 });
 
-export default connect(null, { saveAccountInfo })(ConfigParent);
+export default connect(null, { SetAccountInfo })(ConfigParent);

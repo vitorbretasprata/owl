@@ -15,3 +15,15 @@ export function reset(index, routesParam = []) {
         })
     );
 }
+
+export function goToTab() {
+    navigationRef.current.dispatch(
+        CommonActions.reset({
+            index: 0,
+            routes: []
+        }),
+        CommonActions.navigate("TabBottom", {
+            screen: "Home"
+        })
+    );
+}

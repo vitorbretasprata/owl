@@ -1,67 +1,65 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Button } from "galio-framework";
+import { connect } from "react-redux";
 
 import Background from "./components/background";
 import { SetAccountInfo } from "../../services/Account/action";
 import Loading from "../../components/loading";
 
-function Account(props) {
-    const { navigation } = props;
+const Account = ({ navigation, SetAccountInfo }) => (
+    <Background>
+        <Loading />
+        <View style={styles.container}>
+            <Text style={[styles.textColor, styles.textTitle]}>Bem Vindo</Text>
+            <Text style={[styles.textColor, styles.textDesc]}>
+                Antes de começarmos, precisamos 
+                que você configure sua conta.
+            </Text>
+            <Text style={[styles.textColor, styles.textDesc]}>
+                Selecione o tipo de conta que deseja criar:
+            </Text>
 
-    return (
-        <Background>
-            <Loading />
-            <View style={styles.container}>
-                <Text style={[styles.textColor, styles.textTitle]}>Bem Vindo</Text>
-                <Text style={[styles.textColor, styles.textDesc]}>
-                    Antes de começarmos, precisamos 
-                    que você configure sua conta.
-                </Text>
-                <Text style={[styles.textColor, styles.textDesc]}>
-                    Selecione o tipo de conta que deseja criar:
-                </Text>
+            <View style={styles.margin}>
+                <Button 
+                    color="#F58738"
+                    round 
+                    uppercase
+                    style={styles.button}
+                    onPress={() => navigation.navigate("ConfigParent")}
+                >
+                    Responsável
+                </Button>
 
-                <View style={styles.margin}>
-                    <Button 
-                        color="#F58738"
-                        round 
-                        uppercase
-                        style={styles.button}
-                        onPress={() => navigation.navigate("ConfigParent")}
-                    >
-                        Responsável
-                    </Button>
+                <Button 
+                    color="#F58738"
+                    round 
+                    uppercase
+                    style={styles.button}
+                    onPress={() => SetAccountInfo({ type: 2 })}
+                >
+                    Aluno
+                </Button>
 
-                    <Button 
-                        color="#F58738"
-                        round 
-                        uppercase
-                        style={styles.button}
-                        onPress={() => SetAccountInfo({ type: 2 })}
-                    >
-                        Aluno
-                    </Button>
-
-                    <Button 
-                        color="#F58738"
-                        round 
-                        uppercase
-                        style={styles.button}
-                        onPress={() => navigation.navigate("ConfigTeacher")}
-                    >
-                        Professor
-                    </Button>
-                </View>
+                <Button 
+                    color="#F58738"
+                    round 
+                    uppercase
+                    style={styles.button}
+                    onPress={() => navigation.navigate("ConfigTeacher")}
+                >
+                    Professor
+                </Button>
             </View>
-        </Background>
-    );
-}
+        </View>
+    </Background>
+);
 
 const styles = StyleSheet.create({
    container: {
        flex: 1,
-       alignItems: "center"
+       alignItems: "center",
+       zIndex: 0
    },
    textColor: {
         color: "#fff",
@@ -82,4 +80,4 @@ const styles = StyleSheet.create({
    }
 });
 
-export default Account;
+export default connect(null, { SetAccountInfo })(Account);

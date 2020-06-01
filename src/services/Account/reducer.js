@@ -2,10 +2,13 @@ import constants from "../constants";
 
 const initialState = {
     loading: false,
-    error: null
+    error: null,
+    Name: "",
+    type: 0,
+    location: null
 }
 
-const UserReducer = (state = initialState, action) => {
+const AccountReducer = (state = initialState, action) => {
     switch(action.type) {
         case constants.REQUEST: 
             return {
@@ -23,11 +26,26 @@ const UserReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                config: action.payload.error
+                error: action.payload.error
+            }
+        case constants.SET_TYPE:
+            return {
+                ...state,
+                type: action.payload.type
+            }
+        case constants.SET_NAME:
+            return {
+                ...state,
+                name: action.payload.name
+            }
+        case constants.SET_LOCATION:
+            return {
+                ...state,
+                location: action.payload.location
             }
         default: 
             return state;
     }
 }
 
-export default UserReducer;
+export default AccountReducer;
