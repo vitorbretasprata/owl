@@ -35,7 +35,7 @@ export const Login = values => {
         requestLogin(values)
             .then(data => {
                 dispatch(fetchSuccess(1));
-                switch(data.userType) {
+                switch(data.accountType) {
                     case 0:
                         RootStack.reset(0, [{ name: "Account" }]);
                         break;

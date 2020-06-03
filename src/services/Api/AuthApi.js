@@ -2,7 +2,7 @@ export const requestLogin = (values) => {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
             resolve({                
-                userType: 0                
+                accountType: 0                
             })
         }, 5000);
     });

@@ -7,9 +7,9 @@ import Background from "./components/background";
 import { SetAccountInfo } from "../../services/Account/action";
 import Loading from "../../components/loading";
 
-const Account = ({ navigation, SetAccountInfo }) => (
+const Account = ({ navigation, SetAccountInfo, loading }) => (
     <Background>
-        <Loading />
+        <Loading loading={loading} />
         <View style={styles.container}>
             <Text style={[styles.textColor, styles.textTitle]}>Bem Vindo</Text>
             <Text style={[styles.textColor, styles.textDesc]}>
@@ -80,4 +80,10 @@ const styles = StyleSheet.create({
    }
 });
 
-export default connect(null, { SetAccountInfo })(Account);
+const mapStateToProps = state => {
+    return {
+        loading: state.account.loading
+    }
+}
+
+export default connect(mapStateToProps, { SetAccountInfo })(Account);

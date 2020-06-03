@@ -37,7 +37,7 @@ export const SetAccountInfo = (info) => {
             });
             RootStack.reset(0, [{ name: "BottomTab", screen: "Home" }]);
         }).catch(error => {
-            console.log("Fucking error", error.message);
+            console.log("Fucking error: ", error.message);
             dispatch(Failure(error.message));
         });
     }

@@ -31,8 +31,7 @@ const {
   block,
   neq,
   eq,
-  and,
-  useCode
+  and
 } = Animated;
 
 const clock = new Clock();
@@ -77,9 +76,7 @@ const RunTiming = (clock, hasKeyBoardShown) => {
 
 const valueKey = RunTiming(clock, hasKeyBoardShown);
 
-function SignUp(props) {
-
-    const { Register, navigation, error } = props;
+function SignUp({ Register, navigation, error, loading }) {
 
     const [values, setValues] = useState({
         name: "",
@@ -263,7 +260,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-        error: state.auth.error
+        error: state.auth.error,
+        loading: state.auth.loading
     }
 }
 

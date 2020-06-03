@@ -27,7 +27,7 @@ import Loading from "../../../components/loading";
 const WidthScreen = Dimensions.get("screen").width - 80;
 const position = new Value(0);
 
-function ConfigParent({ SetAccountInfo }) { 
+function ConfigParent({ SetAccountInfo, loading }) { 
     
     const transPosition = withTransition(position);  
 
@@ -60,7 +60,7 @@ function ConfigParent({ SetAccountInfo }) {
 
     return (
         <Background>
-            <Loading />
+            <Loading loading={loading} />
             <View style={styles.container}>
                 <ProgressBar progressWidth={
                     interpolate(transPosition, {
@@ -164,4 +164,10 @@ const styles = StyleSheet.create({
    }
 });
 
-export default connect(null, { SetAccountInfo })(ConfigParent);
+const mapStateToProps = state => {
+    return {
+        loading: state.account.loading
+    }
+}
+
+export default connect(mapStateToProps, { SetAccountInfo })(ConfigParent);

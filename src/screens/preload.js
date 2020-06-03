@@ -1,13 +1,11 @@
 import React, { useEffect } from "react";
 import { View, Text, StyleSheet, AsyncStorage, TouchableWithoutFeedback } from "react-native";
-import { connect, useStore } from "react-redux";
+import { connect } from "react-redux";
 import { CommonActions } from "@react-navigation/native";
 
 import { Preloader } from "../services/Auth/action";
 
-function PreLoad(props) {
-
-    const { Preloader, status, navigation } = props;
+function PreLoad({ Preloader, status, navigation }) {
 
     useEffect(() => {
         _checkLogin();

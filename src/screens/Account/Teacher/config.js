@@ -37,7 +37,7 @@ const emptyClasses = {
     "Ensino Religioso": []
 }
 
-function ConfigTeacher({ SetAccountInfo }) {
+function ConfigTeacher({ SetAccountInfo, loading }) {
     
     const scrollRef = useRef(null);
 
@@ -137,7 +137,7 @@ function ConfigTeacher({ SetAccountInfo }) {
 
     return (
         <Background>
-            <Loading />
+            <Loading loading={loading} />
             <YearsModal 
                 showModal={showModal}
                 closeModal={close}
@@ -321,4 +321,10 @@ const styles = StyleSheet.create({
    }
 });
 
-export default connect(null, { SetAccountInfo })(ConfigTeacher);
+const mapStateToProps = state => {
+    return {
+        loading: state.account.loading
+    }
+}
+
+export default connect(mapStateToProps, { SetAccountInfo })(ConfigTeacher);

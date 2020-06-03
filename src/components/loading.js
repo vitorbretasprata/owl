@@ -1,20 +1,17 @@
-import React from "react";
+import React, { memo } from "react";
 import { View, StyleSheet, Text, Dimensions } from "react-native";
-import { connect } from "react-redux";
 
 const { width, height } = Dimensions.get("screen");
 
-function Loading(props) {  
-    
-    return props.loading ? 
-    (
-        <View style={styles.container}>
-            <Text>Loading</Text>
-        </View>
-    ) : 
-    <></>;      
-    
-}
+export default memo(({ loading }) => {
+    if(loading) {
+        return (
+            <View style={styles.container}>
+                <Text>Loading</Text>
+            </View>
+        );
+    }
+});
 
 const styles = StyleSheet.create({
     container: {
@@ -32,11 +29,3 @@ const styles = StyleSheet.create({
         zIndex: 1000
     }
 });
-
-const mapStateToProps = state => {
-    return {
-        loading: state.auth.loading
-    }
-}
-
-export default connect(mapStateToProps, null)(Loading);

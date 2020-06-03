@@ -22,9 +22,8 @@ import { checkEmail } from "../../../services/Api/AuthApi";
 
 const scrollWidth = Dimensions.get("screen").width - 80;
 
-function Forgot(props) {
+function Forgot({ navigation, error, loading }) {
 
-    const { navigation, error } = props;
     const scrollRef = useRef(null);
     let index = 0;
 
@@ -37,7 +36,7 @@ function Forgot(props) {
 
     const [savedCode, setSavedCode] = useState("");
 
-    const [loading, dispatch] = useReducer((state, action) => {
+    const [isLoading, dispatch] = useReducer((state, action) => {
         return !state;
     }, false);
 
@@ -98,7 +97,7 @@ function Forgot(props) {
 
     return (
         <BackgroundImage>
-            <Loading />
+            <Loading loading={loading}/>
             <SafeAreaView style={styles.container}>                
                 
                 <View style={styles.align}>
@@ -169,7 +168,7 @@ function Forgot(props) {
                         round 
                         uppercase
                         style={styles.submit}
-                        loading={loading}
+                        loading={isLoading}
                     >
                         {index < 2 ? "Próximo" : "Enviar"}
                     </Button>
@@ -242,7 +241,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-        error: state.auth.error
+        error: state.auth.error,
+        loading: state.auth.loading
     }
 }
 

@@ -78,13 +78,13 @@ const RunTiming = (clock, hasKeyBoardShown) => {
 
 const valueKey = RunTiming(clock, hasKeyBoardShown);
 
-function SignIn(props) {
+function SignIn({ navigation, Login, error, loading }) {
 
-  const { navigation, Login, error } = props;
   const [values, setValues] = useState({
       email: "",
       password: ""
   });
+  
   const isEnabled = values["password"].length > 0 && values["email"].length > 0;
 
   const _handleChange = (attrName, value) => {
@@ -121,7 +121,7 @@ function SignIn(props) {
 
   return (
     <BackgroundImage>
-      <Loading />
+      <Loading loading={loading}/>
       <View style={styles.container}>
         <Animated.Text 
               style={[styles.Logo, {
@@ -223,7 +223,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-      error: state.auth.error
+        error: state.auth.error,
+        loading: state.auth.loading
     }
 }
 
