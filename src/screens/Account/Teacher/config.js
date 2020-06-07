@@ -14,7 +14,7 @@ import { FlatList, ScrollView, BaseButton, TouchableWithoutFeedback } from "reac
 import Background from "../components/background";
 import ProgressBar from "../components/progressBar";
 import YearsModal from "../components/modal";
-import Loading from "../../components/loading";
+import Loading from "../../../components/loading";
 import { SetAccountInfo } from "../../../services/Account/action";
 
 const { Value, interpolate } = Animated;
@@ -34,7 +34,7 @@ const emptyClasses = {
     "Espanhol": [],
     "Geografia": [],
     "História": [],
-    "Ensino Religioso": []
+    "Francês": []
 }
 
 function ConfigTeacher({ SetAccountInfo, loading }) {

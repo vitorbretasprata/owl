@@ -35,12 +35,9 @@ export const requestReset = (values) => {
 
 export const preload = async token => {
     return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            if(!token) {
-                reject();
-            }
+        setTimeout(() => {           
 
-            resolve();
+            reject();
         }, 1000);
     });
 }

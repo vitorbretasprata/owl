@@ -11,11 +11,8 @@ const fetchRequest = () => ({
     type: constants.REQUEST
 });
 
-const fetchSuccess = status => ({
-    type: constants.SUCCESS,
-    payload: {
-        status
-    }
+const fetchSuccess = () => ({
+    type: constants.SUCCESS    
 });
 
 const fetchFailure = error => ({
@@ -34,7 +31,7 @@ export const Login = values => {
         dispatch(fetchRequest());
         requestLogin(values)
             .then(data => {
-                dispatch(fetchSuccess(1));
+                dispatch(fetchSuccess());
                 switch(data.accountType) {
                     case 0:
                         RootStack.reset(0, [{ name: "Account" }]);
@@ -60,7 +57,7 @@ export const Reset = values => {
         dispatch(fetchRequest());
         requestReset(values)
             .then(data => {
-                dispatch(fetchSuccess(1));   
+                dispatch(fetchSuccess());   
                 RootStack.navigate(0, [{ name: "SignIn" }]);                           
             })
             .catch(error => {
@@ -74,7 +71,7 @@ export const Register = values => {
         dispatch(fetchRequest());
         requestRegister(values)
             .then(data => {
-                dispatch(fetchSuccess(1));
+                dispatch(fetchSuccess());
             })
             .catch(error => {
                 dispatch(fetchFailure(error));
@@ -96,9 +93,23 @@ export const Preloader = token => {
     return (dispatch) => {
         preload(token)
             .then(res => {
-                dispatch(fetchSuccess(1));
+                switch(res.data.accountType) {
+                    case 0:
+                        RootStack.reset(0, [{ name: "Account" }]);
+                        break;
+                    case 1:
+                        RootStack.reset(0, [{ name: "Dashboard" }]);
+                        break;
+                    case 2 || 3:
+                        RootStack.reset(0, [{ name: "Search" }]);
+                        break;                    
+                    default: 
+                        break;
+                }
+                dispatch(fetchSuccess());
             }).catch(error => {
-                dispatch(fetchSuccess(0));
+                dispatch(fetchFailure(""));
+                RootStack.reset(0, [{ name: "SignIn" }]);
             });   
     }
 }

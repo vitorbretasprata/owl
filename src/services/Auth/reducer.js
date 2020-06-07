@@ -18,13 +18,14 @@ const AuthReducer = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 error: null,
-                status: action.payload.status
+                status: 1
             }
         case constants.FAILURE: 
             return {
                 ...state,
                 loading: false,
-                error: action.payload.error
+                error: action.payload.error,
+                status: 0
             } 
         case constants.SET_ERROR: 
             return {

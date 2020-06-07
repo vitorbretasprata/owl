@@ -35,9 +35,8 @@ export const SetAccountInfo = (info) => {
             saveConfig("SET_TYPE", {
                 type: data.type
             });
-            RootStack.reset(0, [{ name: "BottomTab", screen: "Home" }]);
+            RootStack.reset(0, [{ name: "TabBottom" }]);
         }).catch(error => {
-            console.log("Fucking error: ", error.message);
             dispatch(Failure(error.message));
         });
     }
