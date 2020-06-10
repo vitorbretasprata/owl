@@ -2,12 +2,12 @@ import React, { memo } from "react";
 import { View, Image, StyleSheet } from "react-native";
 import DefaultProfilePic from "../../assets/teacher_profile.png";
 
-export default memo(({ image }) => (
+export default memo(({ image, height, width }) => (
     <View style={styles.picture}>
         <Image 
             source={image ? image : DefaultProfilePic}
-            width={80}
-            height={80}
+            width={width}
+            height={height}
         />
     </View>
 ));

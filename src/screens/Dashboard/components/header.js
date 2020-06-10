@@ -53,17 +53,20 @@ function SearchHeader() {
     return (
         <View>
             <View style={styles.container}>
-                <BaseButton 
-                    style={styles.btn}
-                    onPress={(!(search === "") || isFocused) ? closeHeader : handleProfile}
-                >
-                    <Icon 
-                        name={(!(search === "") || isFocused) ? 'arrowleft' : 'menu'}
-                        family={(!(search === "") || isFocused) ? 'AntDesign' : 'Feather'} 
-                        color="#707070"
-                        size={22}
-                    />
-                </BaseButton>
+                {(!(search === "") || isFocused) && (
+                    <BaseButton 
+                        style={styles.btn}
+                        onPress={closeHeader}
+                    >
+                        <Icon 
+                            name={'arrowleft'}
+                            family={'AntDesign'} 
+                            color="#707070"
+                            size={22}
+                        />
+                    </BaseButton>
+                )}
+                
                 {(!(search === "") || isFocused) && (
                     <View style={styles.containerInput}>
                         <TextInput 
@@ -122,6 +125,7 @@ function SearchHeader() {
                         contentContainerStyle={styles.list}
                         renderItem={renderLecture}
                         keyExtractor={(item, index) => index}
+                        onRend
                         
                     />
                 </View>

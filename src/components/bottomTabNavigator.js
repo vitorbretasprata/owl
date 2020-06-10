@@ -5,6 +5,7 @@ import { Text } from "galio-framework";
 
 import Home from "../screens/Dashboard/Home/index";
 import Calendario from "../screens/Dashboard/Calendario/index";
+import Perfil from "../screens/Dashboard/Profile/index";
 
 const BottomTabs = createBottomTabNavigator();
 
@@ -43,7 +44,11 @@ export default memo(() => {
                         case "Calendario":
                             IconProp.name = "calendar";
                             IconProp.family = "AntDesign";
-                            break;                        
+                            break;   
+                        case "Perfil":
+                            IconProp.name = "user";
+                            IconProp.family = "EvilIcons";
+                            break;                     
                         default: 
                             break;
                     }
@@ -60,6 +65,8 @@ export default memo(() => {
         >
             <BottomTabs.Screen name="Buscar" component={Home} />
             <BottomTabs.Screen name="Calendario" component={Calendario} />
+            <BottomTabs.Screen name="Perfil" component={Perfil} />
+
         </BottomTabs.Navigator>
         
     );

@@ -15,7 +15,7 @@ export default memo(() => (
             space="between"
         >
             <Block center>
-                <ProfilePicture />
+                <ProfilePicture height={80} width={80} />
             </Block>
             <Block flex>
                 <View style={styles.space}>
