@@ -1,28 +1,27 @@
 import React, { memo } from "react";
-import { StyleSheet, Dimensions, ImageBackground } from "react-native";
-import { LienarGradient } from "expo-linear-gradient";
+import { StyleSheet, Dimensions, Image } from "react-native";
+import { LinearGradient } from 'expo-linear-gradient'
 
 const { height } = Dimensions.get("screen");
-export default function Cape({ profilePic }) {
-    return (
-        <LienarGradient
-            colors={["#F58738", "#F8B586"]}
-            start={[0.5, 0.7]}
-            style={styles.container}
-        >
-            {profilePic && (
-                <ImageBackground 
-                    source={profilePic}
-                />
-            )}
-        </LienarGradient>
-    );
-}
+export default memo(({ profilePic }) => (
+    <LinearGradient
+        colors={["#F58738", "#F8B586"]}
+        start={[0.5, 0.7]}
+        style={styles.container}
+    >
+       {profilePic && (
+           <Image 
+                source={profilePic}
+           />
+       )}
+    </LinearGradient>
+));
 
 const styles = StyleSheet.create({
     container: {
-        height: height - 300, 
-        borderWidth: 1,
-        borderColor: "#000",
+        height: height - 400,         
+        width: "100%",
+        position: "absolute",
+        top: 0
     }
 });

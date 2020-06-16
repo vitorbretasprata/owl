@@ -8,7 +8,15 @@ import Cape from "../components/cape";
 
 const { width, height } = Dimensions.get("screen");
 
-function Profile() {
+function Profile({ navigation }) {
+
+    const navigateToConfig = () => {
+        navigation.navigate("Configuration");
+    }
+
+    const logOut = () => {
+        
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -33,11 +41,12 @@ function Profile() {
                 </View>
                 <BaseButton
                     style={styles.btn}
+                    onPress={navigateToConfig}
                 >
                     <Icon 
-                        family="EvilIcons"
-                        name="gear"
-                        size={30}
+                        family="Entypo"
+                        name="cog"
+                        size={22}
                         color="#707070"
                     />
                     <Text style={styles.btnText}>
@@ -50,7 +59,7 @@ function Profile() {
                     <Icon 
                         family="AntDesign"
                         name="logout"
-                        size={22}
+                        size={20}
                         color="#707070"
                     />
                     <Text style={styles.btnText}>
@@ -69,6 +78,9 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     roundSquare: {
+        position: "absolute",
+        top: 200,
+        backgroundColor: "#fff",
         width: width - 100,
         borderRadius: 20,
         elevation: 3

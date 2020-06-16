@@ -44,7 +44,7 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
     const transPosition = withTransition(position);
 
     const [showModal, setShowModal] = useState(false);
-    const [lectureSelected, setLectureSelected] = useState([]);
+    const [lectureSelected, setLectureSelected] = useState({});
     const [lectureTime, setLectureTime] = useState("");
     const [lectureValue, setLectureValue] = useState("");
     const [movementValue, setMovementValue] = useState("");
@@ -78,7 +78,6 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
                     lectureValue,
                     movementValue
                 }
-                console.log(Info)
                 SetAccountInfo(Info);
                 break;            
             default: 

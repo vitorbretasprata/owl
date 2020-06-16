@@ -13,11 +13,20 @@ import ConfigParent from "./screens/Account/Parent/config";
 import ConfigTeacher from "./screens/Account/Teacher/config";
 
 import TabBottom from "./components/bottomTabNavigator";
+import Configuration from "./screens/Dashboard/Configuration/index";
 
 import { navigationRef } from "./services/navigation/RootNavigate";
 
 const tabOptions = {
     headerShown: false
+}
+
+const headerStyle = {
+    headerTitle: 'Configurações',
+    headerStyle: {
+        backgroundColor: '#F58738',
+    },
+    headerTintColor: '#fff'
 }
 
 const Stack = createStackNavigator();
@@ -32,6 +41,7 @@ function StackNavigator({ status }) {
                 ) : (
                     <>
                         <Stack.Screen name="TabBottom" component={TabBottom} options={{...tabOptions}} />
+                        <Stack.Screen name="Configuration" component={Configuration} options={{...headerStyle}} />
                         <Stack.Screen name="ConfigParent" component={ConfigParent} options={{ headerShown: false }} />
                         <Stack.Screen name="ConfigTeacher" component={ConfigTeacher} options={{ headerShown: false }} />
                         <Stack.Screen name="Account" component={Account} options={{ headerShown: false }} />

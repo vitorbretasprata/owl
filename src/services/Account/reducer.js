@@ -5,7 +5,14 @@ const initialState = {
     error: null,
     Name: "",
     type: 0,
-    location: null
+    location: null,
+    extraInfo: {
+        dependents: [],
+        lectures: {},
+        paymentMethods: [],
+        days: [],
+        lectureInfo: {}
+    }
 }
 
 const AccountReducer = (state = initialState, action) => {
@@ -43,6 +50,21 @@ const AccountReducer = (state = initialState, action) => {
                 ...state,
                 location: action.payload.location
             }
+
+        case constants.SET_EXTRA_INFO_ALL:
+            return {
+                ...state,
+                extraInfo: action.payload
+            }
+        
+        case constants.SET_EXTRA_INFO:
+            return {
+                ...state,
+                extraInfo: {
+                    ...state.extraInfo,
+                    [action.payload.name]: action.payload.data
+                }
+            }        
         default: 
             return state;
     }
