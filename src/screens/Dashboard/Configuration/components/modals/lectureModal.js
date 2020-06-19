@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useState } from "react";
 import { 
     Modal, 
     View, 
@@ -14,55 +14,42 @@ import { Icon } from "galio-framework";
 
 const { width } = Dimensions.get("screen");
 
-function YearsModal({ showModal, closeModal, selectedItem, handleLectures }) {
-
+export default memo(({ showModal, closeModal, selectedItem, selectedItemArr, saveSelectedYears }) => {
     const [yearsChecked, setYearsCheked] = useState([]);
     const [loadingModal, setLoadingModal] = useState(true);
     const [loadingSave, setLoadingSave] = useState(false);
 
     const handleShow = () => {
         InteractionManager.runAfterInteractions(() => {
-            if(lecture) {
-                chooseYear();                
+            if(selectedItem) {
+                chooseSelectedYears();
+                setLoadingModal(false);
             }            
         });
-    }
-
-    const handleChangeYears = (e, index) => {
-        const aux = yearsChecked;
-        aux[index] = e;
-        setYearsCheked(aux);
-    }
+    }    
 
     const handleAll = event => {
-        //const all = Array.apply(null, new Array(yearsChecked.length)).map(x => event);
-        //setYearsCheked(all);
-    }
+        console.log(event) 
 
-    useEffect(() => {
-        if(yearsName.length !== 0) {
-            chooseSelectedYears();
-        }        
-    }, [yearsName]);   
+        const all = Array.apply(null, new Array(yearsChecked.length)).map(x => event);
+        setYearsCheked(all);
+    }
 
     const chooseSelectedYears = () => {
         let newArr = Array.apply(null, new Array(yearsName.length)).map(x => false);
-        if(lecture.selectedClasses.length === 0) {
-            setYearsCheked(newArr);
-        } else {
-            for (let index = 0; index < lecture.selectedClasses.length; index++) {
-                let i = lecture.selectedClasses[index];
+        if(selectedItemArr && selectedItemArr.length !== 0) {
+            for (let index = 0; index < selectedItemArr.length; index++) {
+                let i = selectedItemArr[index];
                 newArr[i] = true;                
-            }    
-            
-            setYearsCheked(newArr);
-        }        
+            }
+        } 
+        
+        setYearsCheked(newArr);
         setLoadingModal(false);
     }
 
     const cleanModal = () => {
         setYearsCheked([]);
-        setYearsName([]);
         closeModal();
         setLoadingModal(true);
     }
@@ -71,17 +58,23 @@ function YearsModal({ showModal, closeModal, selectedItem, handleLectures }) {
         setLoadingSave(true);
         if(yearsChecked.includes(true)) {
 
-            if(secondPeriod.includes(lecture.className)) {
-                const indexArr = yearsChecked.reduce((arr, e, i) => {
-                    if(e) arr.push(i);
-                    return arr;
-                }, []);
-                saveSelectedYears(indexArr, lecture.className);
-            }
+            const indexArr = yearsChecked.reduce((arr, e, i) => {
+                if(e) arr.push(i);
+                return arr;
+            }, []);
+            
+            saveSelectedYears(indexArr, selectedItem);
 
         }
         setLoadingSave(false);
         cleanModal();
+    }
+
+    const update = position => {
+        const aux = yearsChecked;
+        aux[position] = !aux[position];
+
+        setYearsCheked(aux);
     }
 
     return (
@@ -101,8 +94,8 @@ function YearsModal({ showModal, closeModal, selectedItem, handleLectures }) {
                         <>
                             <Text style={styles.titleModal}>Seleciona os anos que você deseja lecionar desta matéria</Text>
                             <View style={styles.checkBtns}>
-                                <Check label="Selecionar todos" onChange={handleAll} />
-                                {yearsChecked.map((y, i) => <Check label={yearsName[i]} initValue={y} onChange={(e) => handleChangeYears(e, i)} key={i} />)}
+                                <Check label="Selecionar todos" updateAll={handleAll} initValue={yearsChecked.includes(false) ? false : true} />
+                                {yearsChecked.map((y, i) => <Check label={yearsName[i]} initValue={y} updateCheck={update} key={i} position={i} />)}
                             </View>
                             
                             <View style={styles.buttons}>
@@ -133,8 +126,8 @@ function YearsModal({ showModal, closeModal, selectedItem, handleLectures }) {
                 </View>
             </View>
         </Modal>
-    )
-}
+    );
+});  
 
 const styles = StyleSheet.create({
     modal: {
@@ -146,7 +139,7 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     body: {
-        width: width - 100,
+        width: width - 50,
         borderRadius: 10,
         backgroundColor: "#fff",
         justifyContent: "center",
@@ -157,7 +150,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         width: "100%",
-        zIndex: 100
+        zIndex: 100,
+        paddingHorizontal: 20
     },
     titleModal: {
         textAlign: "center",
@@ -170,5 +164,3 @@ const styles = StyleSheet.create({
         marginVertical: 15
     }
 });
-
-export default memo(YearsModal);

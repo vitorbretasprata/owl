@@ -61,7 +61,7 @@ function DependentsComponent() {
                     
                 <FlatList 
                     data={dependents}
-                    renderItem={handleDependents}
+                    renderItem={handleItemMethod}
                     keyExtractor={handleKey}
                 />
 

@@ -37,7 +37,6 @@ function YearsModal({ showModal, closeModal, lecture, saveSelectedYears }) {
 
     const chooseSelectedYears = () => {
         let newArr = Array.apply(null, new Array(yearsName.length)).map(x => false);
-        newArr[2] = true;
         if(lecture && lecture.selectedClasses.length === 0) {
             setYearsCheked(newArr);
         } else {
@@ -61,13 +60,12 @@ function YearsModal({ showModal, closeModal, lecture, saveSelectedYears }) {
         setLoadingSave(true);
         if(yearsChecked.includes(true)) {
 
-            if(secondPeriod.includes(lecture.className)) {
-                const indexArr = yearsChecked.reduce((arr, e, i) => {
-                    if(e) arr.push(i);
-                    return arr;
-                }, []);
-                saveSelectedYears(indexArr, lecture.className);
-            }
+            const indexArr = yearsChecked.reduce((arr, e, i) => {
+                if(e) arr.push(i);
+                return arr;
+            }, []);
+            
+            saveSelectedYears(indexArr, lecture.className);
 
         }
         setLoadingSave(false);
@@ -77,7 +75,6 @@ function YearsModal({ showModal, closeModal, lecture, saveSelectedYears }) {
     const update = position => {
         const aux = yearsChecked;
         aux[position] = !aux[position];
-        console.log(position, aux)
 
         setYearsCheked(aux);
     }

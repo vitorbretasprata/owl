@@ -1,7 +1,11 @@
-export const setInfo = info => {
+export const setInfo = (type, info) => {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
-            resolve(info)
+            const data = {
+                type,
+                info
+            }
+            resolve(data);
         }, 5000);
     });
 }

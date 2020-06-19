@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import { 
     Modal, 
     View, 
@@ -8,16 +8,25 @@ import {
 import { connect } from "react-redux";
 import { Text, Input, Icon } from "galio-framework";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { TextInputMask } from 'react-native-masked-text';
 
-import { setDependents } from "../../../../../services/Account/action";
+import { setPaymentMethods } from "../../../../../services/Account/action";
 
 const { width } = Dimensions.get("screen");
 
-function DependentModal({ showModal, closeModal, setDependents }) {
+export default memo(({ showModal, closeModal }) => {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [value, setValue] = useState("initialState");
+    const [value, setValue] = useState("");
+
+    const [cardNumber, setCardNumber] = useState("");
+    const [cardDate, setCardDate] = useState("");
+    const [cardDigits, setCardDigits] = useState("");
+
+    const handleCardNumber = text => setCardNumber(text);
+    const handleCardDate = text => setCardDate(text);
+    const handleCardDigits = text => setCardDigits(text);
 
     const saveModal = () => {
         setLoading(true);
@@ -33,8 +42,6 @@ function DependentModal({ showModal, closeModal, setDependents }) {
             cleanModal();
         }
     }
-
-    const handleValue = text => setValue(text);
     
     const cleanModal = () => {
         closeModal();
@@ -47,25 +54,54 @@ function DependentModal({ showModal, closeModal, setDependents }) {
             visible={showModal}
             onDismiss={cleanModal}
             onRequestClose={cleanModal}
-
         >
             <View style={styles.modal}>
                 <View style={styles.body}>
-                    <Text>Novo dependente</Text>
+                    <Text style={styles.title}>Adicionar novo metodo de pagamento</Text>
                     <View style={styles.input}>
-                        <Input
-                            placeholder="Novo dependent"
-                            right
-                            icon="user"
-                            family="antdesign"
-                            iconSize={14}
-                            iconColor="#707070"
-                            onChangeText={handleValue}
+                        <TextInputMask 
+                            style={styles.input}
+                            type={'credit-card'}
+                            placeholder="Numero do cartão"
+                            keyboardType="numeric"
+                            options={{
+                              obfuscated: false,
+                              issuer: 'amex'
+                            }}
+                            value={cardNumber}
+                            onChangeText={handleCardNumber}                            
+                        />
+                    </View>
+
+                    <View style={styles.alignInputs}>
+                        <TextInputMask 
+                            style={styles.input}
+                            type={'datetime'}
+                            options={{
+                              format: 'MM/YY'
+                            }}
+                            value={cardDate}
+                            onChangeText={handleCardDate}                            
+                        />
+
+                        <TextInputMask 
+                            style={styles.input}
+                            type={'only-numbers'}
+                            placeholder="Digitos"
+                            keyboardType="numeric"
+                            options={{
+                                mask: "999"
+                            }}
+                            value={cardDigits}
+                            onChangeText={handleCardDigits}                            
                         />
                     </View>
 
                     <View style={styles.buttons}>
-                        <TouchableWithoutFeedback onPress={cleanModal} style={styles.btn}>
+                        <TouchableWithoutFeedback 
+                          onPress={cleanModal} 
+                          style={styles.btn}
+                        >
                             <Icon 
                                 name="close" 
                                 family="AntDesign" 
@@ -78,7 +114,10 @@ function DependentModal({ showModal, closeModal, setDependents }) {
                             <Text>{loading && "L"}</Text>
                         </View>
 
-                        <TouchableWithoutFeedback onPress={saveModal} style={styles.btn}>
+                        <TouchableWithoutFeedback 
+                          onPress={saveModal} 
+                          style={styles.btn}
+                        >
                             <Icon 
                                 name="check" 
                                 family="AntDesign" 
@@ -94,7 +133,7 @@ function DependentModal({ showModal, closeModal, setDependents }) {
             </View>
         </Modal>
     );
-}   
+});
 
 const styles = StyleSheet.create({
     modal: {
@@ -106,15 +145,27 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     body: {
-        width: width - 100,
+        width: width - 50,
+        borderRadius: 10,
+        padding: 10,
         backgroundColor: "#fff",
+    },
+    title: {
+      textAlign: "center",
+      fontSize: 16,
+      marginTop: 10
     },
     buttons: {
         flexDirection: "row",
         justifyContent: "space-between",
         width: "100%",
         zIndex: 100
-    },    
+    }, 
+    alignInputs: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      paddingHorizontal: 15
+    },   
     btn: {
         padding: 20
     },
@@ -134,5 +185,3 @@ const styles = StyleSheet.create({
         justifyContent: "center"
     }
 });
-
-export default connect(null, { setDependents })(DependentModal);

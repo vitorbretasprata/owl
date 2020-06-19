@@ -2,6 +2,7 @@ import { AsyncStorage } from "react-native";
 import { applyMiddleware, createStore, combineReducers } from "redux";
 import ReduxThunk from "redux-thunk";
 import { persistStore, persistReducer } from 'redux-persist';
+import { createLogger } from "redux-logger";
 
 import AuthReducer from "./Auth/reducer";
 import AccountReducer from "./Account/reducer";
@@ -25,8 +26,10 @@ const reducers = combineReducers({
     lecture: LectureReducer
 });
 
+const logger = createLogger();
+
 const persistedReducer = persistReducer(persistConfig, reducers);
-const store = createStore(persistedReducer, applyMiddleware(ReduxThunk));
+const store = createStore(persistedReducer, applyMiddleware(ReduxThunk, logger));
 
 let persistor = persistStore(store);
 

@@ -14,8 +14,6 @@ export default Check = memo((props) => {
         }
     }
 
-
-
     return (
         <View style={styles.check}>
             <CheckBox
@@ -43,7 +41,7 @@ const styles = StyleSheet.create({
 
 Check.propTypes = {
     label: PropTypes.string.isRequired,
-    position: PropTypes.number.isRequired,
+    position: PropTypes.number,
     updateCheck: PropTypes.func,
     updateAll: PropTypes.func
 }

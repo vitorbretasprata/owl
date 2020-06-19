@@ -11,3 +11,13 @@ export const Lectures = [
     "História",
     "Francês"
 ];
+
+export const daysArr = [
+    "Domingo", 
+    "Segunda", 
+    "Terça", 
+    "Quarta", 
+    "Quinta", 
+    "Sexta", 
+    "Sábado"
+];

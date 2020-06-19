@@ -16,6 +16,7 @@ import ProgressBar from "../components/progressBar";
 import YearsModal from "../components/modal";
 import Loading from "../../../components/loading";
 import { SetAccountInfo } from "../../../services/Account/action";
+import LectureItem from "./components/lectureItem";
 
 const { Value, interpolate } = Animated;
 
@@ -57,11 +58,13 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
     }, emptyClasses);  
     
     useEffect(() => {
+        console.log(index)
         
         return () => {
             position.setValue(0.33);
+            index = 0;
         }
-    }, []);    
+    }, []);   
 
     const submitInfo = () => {
         switch(index) {
@@ -72,13 +75,15 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
                 handleScroll();
                 break;
             case 2: 
+                const type = 3;
                 const Info = {
-                    classes: selectedClasses,
+                    days: [],
+                    lectures: selectedClasses,
                     lectureTime,
                     lectureValue,
                     movementValue
                 }
-                SetAccountInfo(Info);
+                SetAccountInfo(type, Info);
                 break;            
             default: 
                 break; 
@@ -131,7 +136,7 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
         dispatch({
             className: lecture,
             selectedClasses: years
-        });
+        });        
     }
 
     return (
@@ -141,7 +146,7 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
                 showModal={showModal}
                 closeModal={close}
                 lecture={lectureSelected}
-                saveSelectedYears={(years, lecture) => handleSaveYears(years, lecture)}
+                saveSelectedYears={handleSaveYears}
             />
             <View style={styles.container}>
                 <ProgressBar progressWidth={interpolate(transPosition, {
@@ -167,16 +172,13 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
                                 ListFooterComponent={<View />}
                                 ListFooterComponentStyle={{ marginTop: 120 }}
                                 showsVerticalScrollIndicator={false}
-                                renderItem={({ item }) => (
-                                    <TouchableWithoutFeedback
-                                        style={styles.lecture}
-                                        onPress={() => handleModal(item)}
-                                    >
-                                        <Text style={styles.white}>
-                                            {item}
-                                        </Text>
-                                    </TouchableWithoutFeedback>
-                                )}
+                                renderItem={({ item }) => 
+                                    <LectureItem 
+                                        arrayLength={selectedClasses[item].length} 
+                                        handleClickModal={handleModal} 
+                                        itemName={item}
+                                    />                                    
+                                }
                                 keyExtractor={(item, index) => index.toString()}
                             />                            
                         </View>                        
@@ -275,17 +277,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         borderRadius: 25,
         height: 50
-   },
-   lecture: {
-        width: "100%",
-        borderColor: "#fff",
-        borderWidth: 2,
-        justifyContent: "center",
-        paddingHorizontal: 15,
-        alignItems: "flex-start",
-        borderRadius: 20,
-        height: 45,
-        marginVertical: 5
    },
    addChild: {
         flexDirection: "row",

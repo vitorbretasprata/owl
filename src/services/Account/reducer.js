@@ -6,13 +6,7 @@ const initialState = {
     Name: "",
     type: 0,
     location: null,
-    extraInfo: {
-        dependents: [],
-        lectures: {},
-        paymentMethods: [],
-        days: [],
-        lectureInfo: {}
-    }
+    extraInfo: {}
 }
 
 const AccountReducer = (state = initialState, action) => {
@@ -64,7 +58,18 @@ const AccountReducer = (state = initialState, action) => {
                     ...state.extraInfo,
                     [action.payload.name]: action.payload.data
                 }
-            }        
+            } 
+        case constants.UPDATE_LECTURES:
+            return {
+                ...state,
+                extraInfo: {
+                    ...state.extraInfo,
+                    lectures: {
+                        ...state.extraInfo.lectures,
+                        [action.payload.name]: action.payload.arr
+                    }
+                }
+            }         
         default: 
             return state;
     }

@@ -37,17 +37,28 @@ const setAccountExtraInfo = (data, name) => ({
     }
 });
 
+const updateLectures = (arr, name) => ({
+    type: constants.UPDATE_LECTURES,
+    payload: {
+        name,
+        arr
+    }
+});
+
 /* -- Actions functions -- */ 
 
-export const SetAccountInfo = (info) => {
+export const SetAccountInfo = (type, info) => {
 
     return dispatch => {
         dispatch(Request());
-        setInfo(info).then(data => {
+        setInfo(type, info).then(data => {
             dispatch(Success());
-            saveConfig("SET_TYPE", {
+
+            dispatch(saveConfig("SET_TYPE", {
                 type: data.type
-            });
+            }));
+            dispatch(setAccountExtraInfoAll(data.info));
+            
             RootStack.reset(0, [{ name: "TabBottom" }]);
         }).catch(error => {
             dispatch(Failure(error.message));
@@ -77,16 +88,7 @@ export const setDays = (type) => {
     }
 }
 
-export const setLectures = (type) => {
-    return dispatch => {
-        dispatch(Request());
-        getInfoAccountAPI.then(data => {
-            dispatch(setAccountExtraInfo(data, "lectures"));
-        }).catch(error => {
-            dispatch(Failure(error.message));
-        });
-    }
-}
+export const setLectures = (arr, name) => dispatch => dispatch(updateLectures(arr, name));
 
 export const setPaymentMethods = (type) => {
     return dispatch => {
@@ -96,6 +98,14 @@ export const setPaymentMethods = (type) => {
         }).catch(error => {
             dispatch(Failure(error.message));
         });
+    }
+}
+
+export const setLectureInfo = (lectureTime, lectureValue, movementValue ) => {
+    return dispatch => {
+        dispatch(setAccountExtraInfo(lectureTime, "lectureTime"));
+        dispatch(setAccountExtraInfo(lectureValue, "lectureValue"));
+        dispatch(setAccountExtraInfo(movementValue, "movementValue"));        
     }
 }
 
@@ -109,7 +119,6 @@ export const setDependents = (type) => {
         });
     }
 }
-
 
 export const saveConfig = (type, data) => {
     return dispatch => {

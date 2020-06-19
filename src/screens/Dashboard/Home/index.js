@@ -13,9 +13,9 @@ const Dados = [1, 2, 3 , 4]
 
 const { width } = Dimensions.get("screen");
 
-function Home({ getProfessors, professors, loading }) {
+function Home({ getProfessors, professors, loading, data }) {
 
-    const [isRefreshing, setisRefreshing] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     useEffect(() => {
 
@@ -28,6 +28,8 @@ function Home({ getProfessors, professors, loading }) {
             mountFilter(location);
         })();
 
+        console.log(data)
+
     }, []);
 
     const mountFilter = location => {
@@ -39,7 +41,7 @@ function Home({ getProfessors, professors, loading }) {
         getProfessors(filter);
     }
 
-    const renderEmptyList = () =>  <Text>Lista está vazia!</Text>
+    const renderEmptyList = () => <Text>Lista está vazia!</Text>
 
     const renderFooter = () => {
         if(professors.length !== 0) {
@@ -49,7 +51,7 @@ function Home({ getProfessors, professors, loading }) {
         return null;
     }
 
-    const renderProfessor = (item, index) => {
+    const renderProfessor = ({ item, index }) => {
         return (
             <>
                 <TeacherBlock />
@@ -58,13 +60,9 @@ function Home({ getProfessors, professors, loading }) {
         );
     }
 
-    const renderMore = () => {
-        console.log()
-    }
+    const renderMore = () => {}
 
-    const refresh = () => {
-
-    }
+    const refresh = () => {}
 
     return (
         <SafeAreaView style={styles.container}>
@@ -72,7 +70,7 @@ function Home({ getProfessors, professors, loading }) {
             <FlatList 
                 contentContainerStyle={styles.list}
                 data={Dados}
-                renderItem={({ item, index }) => renderProfessor(item, index)}
+                renderItem={renderProfessor}
                 keyExtractor={(item, index) => index}
                 ListEmptyComponent={renderEmptyList}
                 ListFooterComponent={renderFooter}
@@ -102,7 +100,8 @@ const styles = StyleSheet.create({
 const MapStateToProps = state => {
     return {
         professors: state.lecture.professors,
-        loading: state.lecture.loading
+        loading: state.lecture.loading,
+        data: state.account
     }
 }
 

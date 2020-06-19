@@ -1,38 +1,31 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, SafeAreaView, View } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
 import { Text, Icon } from "galio-framework";
-import { RectButton, FlatList } from "react-native-gesture-handler";
+import { RectButton, ScrollView, TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 import Modal from "../components/modal";
 import DependentsComponent from "./components/dependentsComponent";
+import PaymentModal from "./components/modals/paymentModal";
 import LectureComponents from "./components/lecturesComponents";
 import { setPaymentMethods } from "../../../services/Account/action";
 
 const paymentMethod = [1, 2, 3, 4, 5];
 
-function Configuration({ navigation, getInfoAccount, type, setPaymentMethods }) {
+function Configuration({ getInfoAccount, type, setPaymentMethods, extraInfo }) {
 
     const [showModal, setShowModal] = useState(false);
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
 
-    const goback = () => {
-        navigation.goBack();
-    }
+    const handleLong = () => setShowModal(true);
+    const close = () => setShowModal(false);
 
-    const handleLong = () => {
-        setShowModal(true);
-    }
+    const handlePaymentModal = () => setShowPaymentModal(true);
+    const closePaymentModal = () => setShowModal(false);
 
-    const close = () => {
-        setShowModal(false);
-    }
-
-    const logOut = () => {
-        
-    }
-
-    const handleItemMethod = ({ item }) => (
+    const handleItemMethod = (item, index) => (
         <RectButton
+            key={index}
             onPress={handleLong}
         >
             <View style={styles.option}>
@@ -53,55 +46,62 @@ function Configuration({ navigation, getInfoAccount, type, setPaymentMethods }) 
 
     }
 
-    const handleKey = (index) => index.toString(); 
-
     return (
-        <SafeAreaView style={styles.container}>
+        <ScrollView style={styles.container}>
             <Modal 
                 showModal={showModal}
                 closeModal={close}
                 selectedItem={1}
                 deleteSelected={delItem}
             />
+            <PaymentModal 
+                showModal={showPaymentModal}
+                closeModal={closePaymentModal}
+            />
             <View style={styles.section}>
                 <View style={styles.sectionTitle}>
                     <Text style={styles.title}>
                         Formas de pagamento
                     </Text>
-
+                    <TouchableWithoutFeedback
+                        onPress={handlePaymentModal}
+                    >
+                        <Icon 
+                            family="AntDesign"
+                            name="plus"
+                            color="#F58738"
+                            size={25}
+                        />
+                    </TouchableWithoutFeedback>                    
                 </View>
                 
-                    <View style={styles.options}>
-                        <RectButton
-                            onPress={handleLong}
-                        >
-                            <View style={styles.option}>
-                                <Icon 
-                                    family="MaterialIcons"
-                                    name="attach-money" 
-                                    size={25}
-                                    color="#707070"
-                                />
-                                <Text style={styles.optionText}>
-                                    Dinheiro
-                                </Text>                            
-                            </View>  
-                        </RectButton>                                         
-                    </View>
+                <View style={styles.options}>
+                    <RectButton
+                        onPress={handleLong}
+                    >
+                        <View style={styles.option}>
+                            <Icon 
+                                family="MaterialIcons"
+                                name="attach-money" 
+                                size={25}
+                                color="#707070"
+                            />
+                            <Text style={styles.optionText}>
+                                Dinheiro
+                            </Text>                            
+                        </View>  
+                    </RectButton>                                         
+                </View>
 
-                <FlatList 
-                    data={paymentMethod}
-                    renderItem={handleItemMethod}
-                    keyExtractor={handleKey}
-                />
+                {paymentMethod.map((item, index) => handleItemMethod(item, index))}                
 
                 <View style={styles.separator} />            
-                {type === 1 && <LectureComponents lectures={extraInfo.lectures} days={extraInfo.days} />}
+                {type === 3 && <LectureComponents lectures={extraInfo.lectures} days={extraInfo.days} />}
 
-                {type === 3 && <DependentsComponent dependents={extraInfo.dependents} />}
+                {type === 1 && <DependentsComponent dependents={extraInfo.dependents} />}
 
             </View>
-        </SafeAreaView>
+        </ScrollView>
     );
 };
 
@@ -129,7 +129,9 @@ const styles = StyleSheet.create({
         marginLeft: 10
     },
     sectionTitle: {
-        paddingHorizontal: 30             
+        paddingHorizontal: 30,
+        flexDirection: "row",
+        justifyContent: "space-between"            
     },
     title: {
         fontSize: 20,
