@@ -12,6 +12,8 @@ import Account from "./screens/Account/Account";
 import ConfigParent from "./screens/Account/Parent/config";
 import ConfigTeacher from "./screens/Account/Teacher/config";
 
+import Lecture from "./screens/Dashboard/Calendario/lecture";
+
 import TabBottom from "./components/bottomTabNavigator";
 import Configuration from "./screens/Dashboard/Configuration/index";
 
@@ -23,6 +25,14 @@ const tabOptions = {
 
 const headerStyle = {
     headerTitle: 'Configurações',
+    headerStyle: {
+        backgroundColor: '#F58738',
+    },
+    headerTintColor: '#fff'
+}
+
+const headerLectureStyle = {
+    headerTitle: 'Aula',
     headerStyle: {
         backgroundColor: '#F58738',
     },
@@ -41,6 +51,7 @@ function StackNavigator({ status }) {
                 ) : (
                     <>
                         <Stack.Screen name="TabBottom" component={TabBottom} options={{...tabOptions}} />
+                        <Stack.Screen name="Lecture" component={Lecture} options={{...headerLectureStyle}} />
                         <Stack.Screen name="Configuration" component={Configuration} options={{...headerStyle}} />
                         <Stack.Screen name="ConfigParent" component={ConfigParent} options={{ headerShown: false }} />
                         <Stack.Screen name="ConfigTeacher" component={ConfigTeacher} options={{ headerShown: false }} />

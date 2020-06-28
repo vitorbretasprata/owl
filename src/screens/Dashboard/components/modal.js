@@ -10,11 +10,11 @@ import { Text } from "galio-framework";
 
 const { width } = Dimensions.get("screen");
 
-export default memo(({ showModal, closeModal, deleteSelected, selectedItem }) => {   
+export default memo(({ showModal, closeModal, deleteSelected }) => {   
  
 
     const deleteItem = () => {
-        deleteSelected(selectedItem);
+        deleteSelected();
         closeModal();
     }
 

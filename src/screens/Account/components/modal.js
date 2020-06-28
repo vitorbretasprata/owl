@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     body: {
-        width: width - 100,
+        width: width - 50,
         borderRadius: 10,
         backgroundColor: "#fff",
         justifyContent: "center",
@@ -152,7 +152,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         width: "100%",
-        zIndex: 100
+        zIndex: 100,
+        paddingHorizontal: 20
     },
     titleModal: {
         textAlign: "center",

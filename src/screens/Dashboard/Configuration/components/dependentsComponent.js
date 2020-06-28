@@ -1,17 +1,22 @@
 import React, { useState } from "react";
 import { StyleSheet, SafeAreaView, View } from "react-native";
-import { connect } from "react-redux";
 import { Text, Icon } from "galio-framework";
-import { RectButton, FlatList } from "react-native-gesture-handler";
+import { connect } from "react-redux";
 
-import Modal from "./modals/dependentModal";
-const dependents = [1, 2, 3, 4, 5];
+import DependentItem from "./dependentItem";
+import DependentModal from "./modals/dependentModal";
+import OptionsDependentModal from "../../components/modal";
 
-function DependentsComponent() {
+import { setDependents } from "../../../../services/Account/action";
+
+function dependentComponent({ dependents, setDependents }) {
 
     const [showModal, setShowModal] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(-1);
+    const [showOptionsModal, setshowOptionsModal] = useState(false);
 
-    const handleLong = () => {
+    const showDependentOptions = index => {
+        setSelectedItem(index);
         setShowModal(true);
     }
 
@@ -19,100 +24,101 @@ function DependentsComponent() {
         setShowModal(false);
     }
 
-    const handleItemMethod = ({ item, index }) => (
-        <RectButton
-            onPress={handleLong}
-        >
-            <View style={styles.option}>
-                <Icon 
-                    family="AntDesign"
-                    name="user" 
-                    size={25}
-                    color="#707070"
-                />
-                <Text style={styles.optionText}>
-                    `Dependente ${index}`
-                </Text>                            
-            </View>  
-        </RectButton> 
-    );
+    const closeOptions = () => {
+        setshowOptionsModal(false);
+    }
 
-    const delItem = () => {
-
+    const removeDependent = () => {
+        close();
+        const depArr = dependents.splice(selectedItem, 1);
+        setDependents(depArr);
     }
     
     const handleSave = name => setDependents(name);
-    const handleKey = (index) => index.toString(); 
 
     return (
         <SafeAreaView style={styles.container}>
-            <Modal 
+            <DependentModal 
                 showModal={showModal}
                 closeModal={close}
-                selectedItem={1}
+                addDependent={handleSave}
             />
-            <View style={styles.section}>
-                <View style={styles.sectionTitle}>
-                    <Text style={styles.title}>
-                        Formas de pagamento
-                    </Text>
-
-                </View>               
+            <OptionsDependentModal 
+                showModal={showOptionsModal}
+                closeModal={closeOptions}  
+                deleteSelected={removeDependent}                              
+            />
+            <View style={styles.section}>                               
                     
-                <FlatList 
-                    data={dependents}
-                    renderItem={handleItemMethod}
-                    keyExtractor={handleKey}
-                />
+                <View style={[styles.sectionTitle, styles.editButtons]}>
+                    <View style={styles.sectionTitle}>
+                        <Text style={styles.title}>
+                            Formas de pagamento
+                        </Text>
 
-                <View style={styles.separator} />            
-                
-            </View>
+                    </View>
+
+                    <View style={styles.alignIcons}>
+                        <TouchableWithoutFeedback
+                            onPress={editMode}
+                        >
+                            <Icon 
+                                family="AntDesign"
+                                name="edit"
+                                color="#F58738"
+                                size={25}
+                            />
+                        </TouchableWithoutFeedback>
+                    </View>  
+
+                    <View style={styles.dependentsList}>
+                        {dependents.length === 0 ? (
+                            <Text style={styles.emptyList}>
+                                Você não tem dependentes cadastrados.
+                            </Text>
+                        ) : (
+                            dependents.map((dependent, index) => 
+                                <DependentItem 
+                                    dependent={dependent} 
+                                    index={index} 
+                                    showDependentOptions={showDependentOptions}
+                                />
+                            )
+                        )}
+                    </View>                          
+                </View>                
+            </View>            
         </SafeAreaView>
     );
-};
+} 
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        
+        flex: 1,        
     },
     section: {
         paddingTop: 30,
         paddingBottom: 25
     },
-    options: {
-        paddingTop: 10
-    },
-    option: {
-        paddingHorizontal: 40,
-        paddingVertical: 15,
-        flexDirection: "row",
-        justifyContent: "flex-start",
-        alignItems: "center",
-    },
-    optionText: {
-        color: "#707070",
-        fontSize: 18,
-        marginLeft: 10
-    },
     sectionTitle: {
         paddingHorizontal: 30             
+    },
+    editButtons: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        paddingHorizontal: 30,
+        alignItems: "center"
     },
     title: {
         fontSize: 20,
         color: "#707070"
-    },
-    separator: {
-        height: 1,
-        backgroundColor: "#e3e3e3"
-    }
+    },   
 });
 
-const MapStateToProps = state => {
-    return {        
-        type: state.account.type
+const mapStateToProps = state => {
+    return {
+        dependents: state.account.extraInfo.dependents
     }
 }
 
-export default connect(MapStateToProps, null)(DependentsComponent);
+export default connect(mapStateToProps, { setDependents })(dependentComponent);

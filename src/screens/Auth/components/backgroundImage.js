@@ -1,27 +1,23 @@
 import React, { memo } from "react";
 import { StyleSheet, ImageBackground, Dimensions } from "react-native";
 
-const Screen = Dimensions.get("screen");
+const { height, width } = Dimensions.get("screen");
 
-function BackgroundImage(props) {
-    return (
-        <ImageBackground
-            source={require("../assets/img/Background.png")}
-            style={styles.bg}
-        >
-            {props.children}
-        </ImageBackground>
-    );  
-}
+export default memo(({ children }) => (
+    <ImageBackground
+        source={require("../assets/img/Background.png")}
+        style={styles.bg}
+    >
+        {children}
+    </ImageBackground>
+));
 
 const styles = StyleSheet.create({
     bg: {
         resizeMode: "cover",
         paddingVertical: 25,
         paddingHorizontal: 15,
-        width: Screen.width,
-        height: Screen.height
+        width,
+        height
     }
-})
-
-export default memo(BackgroundImage);
+});

@@ -75,8 +75,9 @@ export default memo(({ showModal, closeModal }) => {
 
                     <View style={styles.alignInputs}>
                         <TextInputMask 
-                            style={styles.input}
+                            style={{...styles.input, flex: 1, marginRight: 10 }}
                             type={'datetime'}
+                            placeholder="Data"
                             options={{
                               format: 'MM/YY'
                             }}
@@ -85,12 +86,13 @@ export default memo(({ showModal, closeModal }) => {
                         />
 
                         <TextInputMask 
-                            style={styles.input}
+                            style={{...styles.input, flex: 1, marginLeft: 10}}
                             type={'only-numbers'}
                             placeholder="Digitos"
                             keyboardType="numeric"
                             options={{
-                                mask: "999"
+                                mask: "999",
+                                
                             }}
                             value={cardDigits}
                             onChangeText={handleCardDigits}                            
@@ -147,13 +149,14 @@ const styles = StyleSheet.create({
     body: {
         width: width - 50,
         borderRadius: 10,
-        padding: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
         backgroundColor: "#fff",
     },
     title: {
       textAlign: "center",
       fontSize: 16,
-      marginTop: 10
+      marginVertical: 10
     },
     buttons: {
         flexDirection: "row",
@@ -163,8 +166,7 @@ const styles = StyleSheet.create({
     }, 
     alignInputs: {
       flexDirection: "row",
-      justifyContent: "space-between",
-      paddingHorizontal: 15
+      justifyContent: "space-between"
     },   
     btn: {
         padding: 20
@@ -181,7 +183,10 @@ const styles = StyleSheet.create({
         fontSize: 16
     },
     input: {
-        paddingVertical: 5,
-        justifyContent: "center"
+        marginVertical: 5,
+        paddingHorizontal: 5,
+        justifyContent: "center",
+        backgroundColor: "#e3e3e3",
+        height: 40
     }
 });

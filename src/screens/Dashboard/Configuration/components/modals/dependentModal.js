@@ -1,19 +1,16 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { 
     Modal, 
     View, 
     StyleSheet, 
     Dimensions, 
 } from "react-native";
-import { connect } from "react-redux";
 import { Text, Input, Icon } from "galio-framework";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
-import { setDependents } from "../../../../../services/Account/action";
-
 const { width } = Dimensions.get("screen");
 
-function DependentModal({ showModal, closeModal, setDependents }) {
+export default memo(({ showModal, closeModal, addDependent }) => {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -25,11 +22,8 @@ function DependentModal({ showModal, closeModal, setDependents }) {
         if(value === "" || rg.test(value)) {
             setError("O valor do campo está vazio ou inválido.");
             setLoading(false);
-
         } else {
-            setError("");
-            setLoading(false);
-            setDependents(value);
+            addDependent(value);
             cleanModal();
         }
     }
@@ -37,6 +31,9 @@ function DependentModal({ showModal, closeModal, setDependents }) {
     const handleValue = text => setValue(text);
     
     const cleanModal = () => {
+        setError("");
+        setLoading(false);
+        setValue("");
         closeModal();
     }
 
@@ -54,7 +51,7 @@ function DependentModal({ showModal, closeModal, setDependents }) {
                     <Text>Novo dependente</Text>
                     <View style={styles.input}>
                         <Input
-                            placeholder="Novo dependent"
+                            placeholder="Novo dependente"
                             right
                             icon="user"
                             family="antdesign"
@@ -94,7 +91,7 @@ function DependentModal({ showModal, closeModal, setDependents }) {
             </View>
         </Modal>
     );
-}   
+}); 
 
 const styles = StyleSheet.create({
     modal: {
@@ -135,4 +132,3 @@ const styles = StyleSheet.create({
     }
 });
 
-export default connect(null, { setDependents })(DependentModal);

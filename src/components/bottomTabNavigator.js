@@ -6,6 +6,7 @@ import { Text } from "galio-framework";
 import Home from "../screens/Dashboard/Home/index";
 import Calendario from "../screens/Dashboard/Calendario/index";
 import Perfil from "../screens/Dashboard/Profile/index";
+import Notificacoes from "../screens/Dashboard/Notifications/index";
 
 const BottomTabs = createBottomTabNavigator();
 
@@ -20,6 +21,15 @@ export default memo(() => {
                                     color: focused ? "#F58738" : "#707070"
                                 }}>
                                     Calendário
+                                </Text>;
+                    }
+
+                    if(route.name === "Notificacoes") {
+                        return <Text 
+                                style={{ 
+                                    color: focused ? "#F58738" : "#707070"
+                                }}>
+                                    Notificações
                                 </Text>;
                     }
 
@@ -48,7 +58,11 @@ export default memo(() => {
                         case "Perfil":
                             IconProp.name = "user";
                             IconProp.family = "EvilIcons";
-                            break;                     
+                            break;
+                        case "Notificacoes":
+                            IconProp.name = "notifications";
+                            IconProp.family = "MaterialIcons";
+                            break;                      
                         default: 
                             break;
                     }
@@ -57,7 +71,7 @@ export default memo(() => {
                                 name={IconProp.name} 
                                 family={IconProp.family} 
                                 color={focused ? "#F58738" : "#707070"} 
-                                size={22} 
+                                size={IconProp.name === "user" ? 32 : 22} 
                             />;
                 },
                 
@@ -66,6 +80,7 @@ export default memo(() => {
             <BottomTabs.Screen name="Buscar" component={Home} />
             <BottomTabs.Screen name="Calendario" component={Calendario} />
             <BottomTabs.Screen name="Perfil" component={Perfil} />
+            <BottomTabs.Screen name="Notificacoes" component={Notificacoes} />
 
         </BottomTabs.Navigator>
         

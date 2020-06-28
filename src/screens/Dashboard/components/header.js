@@ -93,28 +93,18 @@ function SearchHeader() {
                     </View>                
                 )}
                 <View style={styles.row}>
-                    {!isFocused && (
-                        <>
-                            <BaseButton style={styles.btn}>
-                                <Icon 
-                                    name="notifications"
-                                    family="MaterialIcons" 
-                                    color="#707070"
-                                    size={22} 
-                                />
-                            </BaseButton>
-                            <BaseButton 
-                                style={styles.btn}
-                                onPress={search === "" ? openHeader : handleFilter}
-                            >
-                                <Icon 
-                                    name={search === "" ? 'search' : 'filter'}
-                                    family="Feather" 
-                                    color="#707070"
-                                    size={22} 
-                                />
-                            </BaseButton>
-                        </>
+                    {!isFocused && (                            
+                        <BaseButton 
+                            style={styles.btn}
+                            onPress={search === "" ? openHeader : handleFilter}
+                        >
+                            <Icon 
+                                name={search === "" ? 'search' : 'filter'}
+                                family="Feather" 
+                                color="#707070"
+                                size={22} 
+                            />
+                        </BaseButton>
                     )}                
                 </View>
             </View>
