@@ -3,7 +3,7 @@ import {
     View, 
     Text, 
     StyleSheet, 
-    Dimensions    
+    Dimensions,    
 } from "react-native";
 import { Button, Input } from "galio-framework";
 import { connect } from "react-redux";
@@ -11,11 +11,7 @@ import {
     Value,
     interpolate,
     Extrapolate,
-    eq,
-    not,
-    useCode
 } from "react-native-reanimated";
-import { FlatList } from "react-native-gesture-handler";
 import { withTransition } from "react-native-redash";
 
 import Background from "../components/background";
@@ -26,36 +22,31 @@ import Loading from "../../../components/loading";
 
 const WidthScreen = Dimensions.get("screen").width - 80;
 const position = new Value(0);
+const transPosition = withTransition(position);  
 
-function ConfigParent({ SetAccountInfo, loading }) { 
-    
-    const transPosition = withTransition(position);  
+function ConfigParent({ SetAccountInfo, loading }) {     
 
     const [dependents, setDependents] = useState([]);
     const [dependentInput, setDependentInput] = useState("");
 
     const handleAdd = () => {
-        if(dependentInput !== "" && !dependentInput.match("\\d+")) {
+        if(dependentInput !== "" && !dependentInput.match("\\d+") ) {
             setDependents([...dependents, dependentInput]);
             setDependentInput("");
         }        
     }    
 
     const handleChange = text => setDependentInput(text);
-
     const handleRemove = index => {
-        const first = dependents.slice(0, index);
-        const second = dependents.slice(index + 1);
-
-        setDependents(first.concat(second));
+        const target = dependents[index];
+        const newArr = dependents.filter(e => e != target);      
+         
+        setDependents(newArr);
     };
 
     const submitInfo = () => {
         position.setValue(1);
-        SetAccountInfo({
-            type: 1,
-            dependents
-        });
+        SetAccountInfo(1, dependents);
     }   
 
     return (
@@ -72,7 +63,7 @@ function ConfigParent({ SetAccountInfo, loading }) {
                 <View style={[styles.scrollWidth, styles.page]}>
                     <Text style={[styles.textColor, styles.textTitle]}>Dependentes</Text>
                     <Text style={[styles.textColor, styles.textDesc]}>
-                        Adicione pelo menos um dependente:
+                        Adicione pelo menos um dependente (máximo de 6 dependentes):
                     </Text>
                     <View style={styles.addChild}>
                         <Input 
@@ -98,19 +89,15 @@ function ConfigParent({ SetAccountInfo, loading }) {
                             style={{ width: 40, height: 40 }}
                         >PLUS</Button>
                     </View>
-                    <View>
-                        <FlatList 
-                            style={{ marginTop: 20 }}
-                            data={dependents}
-                            renderItem={({ item, index }) => (
-                                <ListRow
-                                name={item}
+                    <View style={styles.padding}>
+                        {dependents.map((element, index) => (
+                            <ListRow
+                                key={"Elemento_" + index}
+                                name={element}
                                 index={index}
                                 onRemove={() => handleRemove(index)}
-                                />
-                            )}
-                            keyExtractor={(item, index) => index.toString()}
-                        />
+                            />
+                        ))}                        
                     </View>
                 </View>               
                 
@@ -161,6 +148,9 @@ const styles = StyleSheet.create({
    },
    button: {
        zIndex: 0
+   },
+   padding: {
+       paddingVertical: 10
    }
 });
 

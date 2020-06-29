@@ -19,7 +19,7 @@ LocaleConfig.defaultLocale = 'pt';
 const dates = { 
     "2020-06-27": [
         {
-            aluno: "Vitor Prata",
+            nome: "Vitor Prata",
             horarioInicio: "9:30",
             horarioTermino: "10:30",
             materia: "Matemática",
@@ -27,7 +27,7 @@ const dates = {
             local: "Gilberto Salomão"
         },
         {
-            aluno: "Vitor Prata",
+            nome: "Vitor Prata",
             horarioInicio: "11:30",
             horarioTermino: "12:30",
             materia: "Português",
@@ -36,7 +36,7 @@ const dates = {
         }],
     '2020-06-28': [
         {
-            aluno: "José Abreu",
+            nome: "José Abreu",
             horarioInicio: "15:30",
             horarioTermino: "16:30",
             materia: "História",
@@ -44,7 +44,7 @@ const dates = {
             local: "Colégio Mackenzie"
         },
         {
-            aluno: "Fábio Prata",
+            nome: "Fábio Prata",
             horarioInicio: "7:30",
             horarioTermino: "8:30",
             materia: "Biologia",
@@ -53,7 +53,7 @@ const dates = {
         }],
     '2020-06-29': [
         {
-            aluno: "Jessica Prata",
+            nome: "Jessica Prata",
             horarioInicio: "9:30",
             horarioTermino: "10:30",
             materia: "Fisica",
@@ -61,7 +61,7 @@ const dates = {
             local: "Hospital Brasília"
         },
         {
-            aluno: "Ana",
+            nome: "Ana",
             horarioInicio: "17:30",
             horarioTermino: "18:30",
             materia: "Português",
@@ -70,7 +70,7 @@ const dates = {
         }],
     '2020-06-30': [
         {
-            aluno: "Rodrigo Alvez",
+            nome: "Rodrigo Alvez",
             horarioInicio: "14:30",
             horarioTermino: "15:30",
             materia: "Matemática",
@@ -97,7 +97,7 @@ function Calendario({ navigation }) {
         );
     }
 
-    const viewLecture = () => navigation.navigate("Lecture");
+    const viewLecture = (item) => navigation.navigate("Lecture", item);
 
     const isDayAvailable = (date) => {
         let dt = new Date(date.year, date.month, date.day);
@@ -117,10 +117,10 @@ function Calendario({ navigation }) {
         </View>
     )
 
-    const renderClass = (item, firstItemOFTheDay) =>  (
-        <TouchableWithoutFeedback onPress={viewLecture}>
+    const renderClass = item =>  (
+        <TouchableWithoutFeedback onPress={() => viewLecture(item)}>
             <View style={styles.agendaDay}>
-                <Text style={styles.cardTitle}>{item.aluno}</Text>
+                <Text style={styles.cardTitle}>{item.nome}</Text>
                 <Text style={styles.cardTime}>{item.horarioInicio} - {item.horarioTermino}</Text>
                 <Text style={styles.cardLecture}>{item.materia}</Text>
                 <Text style={styles.cardValue}>{item.valor}</Text>

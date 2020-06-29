@@ -32,12 +32,18 @@ export default memo(({ showModal, closeModal, deleteSelected }) => {
         >
             <View style={styles.modal}>
                 <View style={styles.body}>
-                    <RectButton
-                        onPress={deleteItem} 
-                        style={styles.btn}
-                    >
-                        <Text style={styles.text}>Delete</Text>
-                    </RectButton>
+                    <Text style={styles.warning}>
+                        Tem certeza que deseja cancelar esta aula? 
+                        (Uma taxa de R$ 8,00 será cobrada pelo cancelamento)
+                    </Text>
+                    <View style={styles.buttons}>
+                        <RectButton onPress={cleanModal}>
+                            <Text style={{...styles.text, color: "#707070"}}>Não</Text>
+                        </RectButton>
+                        <RectButton onPress={deleteItem}>
+                            <Text style={{...styles.text, color: "#F58738"}}>Sim</Text>
+                        </RectButton>
+                    </View>                    
                 </View>                
             </View>
         </Modal>
@@ -56,9 +62,20 @@ const styles = StyleSheet.create({
     body: {
         width: width - 100,
         backgroundColor: "#fff",
-    },    
-    btn: {
-        padding: 20
+        borderRadius: 5,
+        padding: 10
+    }, 
+    buttons: {
+        width: "100%",
+        paddingHorizontal: 20,
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },   
+    warning: {
+        color: "#707070",
+        padding: 5,
+        marginBottom: 15,
+        textAlign: "center"
     },
     text: {
         fontSize: 20

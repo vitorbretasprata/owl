@@ -28,8 +28,6 @@ function Home({ getProfessors, professors, loading, data }) {
             mountFilter(location);
         })();
 
-        console.log(data)
-
     }, []);
 
     const mountFilter = location => {
@@ -71,7 +69,7 @@ function Home({ getProfessors, professors, loading, data }) {
                 contentContainerStyle={styles.list}
                 data={Dados}
                 renderItem={renderProfessor}
-                keyExtractor={(item, index) => index}
+                keyExtractor={(item, index) => index.toString()}
                 ListEmptyComponent={renderEmptyList}
                 ListFooterComponent={renderFooter}
                 onEndReached={renderMore}

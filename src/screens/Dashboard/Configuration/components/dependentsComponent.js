@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, SafeAreaView, View } from "react-native";
 import { Text, Icon } from "galio-framework";
 import { connect } from "react-redux";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 import DependentItem from "./dependentItem";
 import DependentModal from "./modals/dependentModal";

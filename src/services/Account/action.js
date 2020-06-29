@@ -52,9 +52,10 @@ export const SetAccountInfo = (type, info) => {
     return dispatch => {
         dispatch(Request());
         setInfo(type, info).then(data => {
+            console.log(data)
             dispatch(Success());
 
-            dispatch(saveConfig("SET_TYPE", {
+            dispatch(setConfig("SET_TYPE", {
                 type: data.type
             }));
             dispatch(setAccountExtraInfoAll(data.info));
