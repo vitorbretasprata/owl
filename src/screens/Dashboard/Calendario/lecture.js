@@ -4,8 +4,9 @@ import { connect } from "react-redux";
 import { BaseButton } from "react-native-gesture-handler";
 
 import Modal from "./components/modalLecture";
+import { removeLecture } from "../../../services/Account/action";
 
-function Lecture({ route }) {
+function Lecture({ route, removeLecture }) {
 
     const [loading, setLoading] = useState(true);
     const [params, setParams] = useState({});
@@ -111,4 +112,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default connect(null, null)(Lecture);
+export default connect(null, { removeLecture })(Lecture);

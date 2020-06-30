@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, SafeAreaView, InteractionManager, StatusBar } from "react-native";
+import { View, Text, StyleSheet, SafeAreaView, InteractionManager } from "react-native";
 import { connect } from "react-redux";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Agenda, LocaleConfig } from "react-native-calendars";
@@ -16,72 +16,10 @@ LocaleConfig.locales['pt'] = {
 
 LocaleConfig.defaultLocale = 'pt';
 
-const dates = { 
-    "2020-06-27": [
-        {
-            nome: "Vitor Prata",
-            horarioInicio: "9:30",
-            horarioTermino: "10:30",
-            materia: "Matemática",
-            valor: "R$ 84,00",
-            local: "Gilberto Salomão"
-        },
-        {
-            nome: "Vitor Prata",
-            horarioInicio: "11:30",
-            horarioTermino: "12:30",
-            materia: "Português",
-            valor: "R$ 84,00",
-            local: "Minha residência"
-        }],
-    '2020-06-28': [
-        {
-            nome: "José Abreu",
-            horarioInicio: "15:30",
-            horarioTermino: "16:30",
-            materia: "História",
-            valor: "R$ 84,00",
-            local: "Colégio Mackenzie"
-        },
-        {
-            nome: "Fábio Prata",
-            horarioInicio: "7:30",
-            horarioTermino: "8:30",
-            materia: "Biologia",
-            valor: "R$ 84,00",
-            local: "Parque da cidade"
-        }],
-    '2020-06-29': [
-        {
-            nome: "Jessica Prata",
-            horarioInicio: "9:30",
-            horarioTermino: "10:30",
-            materia: "Fisica",
-            valor: "R$ 84,00",
-            local: "Hospital Brasília"
-        },
-        {
-            nome: "Ana",
-            horarioInicio: "17:30",
-            horarioTermino: "18:30",
-            materia: "Português",
-            valor: "R$ 84,00",
-            local: "Minha residência"
-        }],
-    '2020-06-30': [
-        {
-            nome: "Rodrigo Alvez",
-            horarioInicio: "14:30",
-            horarioTermino: "15:30",
-            materia: "Matemática",
-            valor: "R$ 84,00",
-            local: "Minha residência"
-        }]
-}
-
-function Calendario({ navigation }) {
+function Calendario({ navigation, dates }) {
 
     const [loading, setLoading] = useState(true);
+    const [daySelected, setDaySelected] = useState("");
 
     useEffect(() => {
         InteractionManager.runAfterInteractions(() => {
@@ -97,7 +35,14 @@ function Calendario({ navigation }) {
         );
     }
 
-    const viewLecture = (item) => navigation.navigate("Lecture", item);
+    const selectDay = day => console.log(day);
+    const viewLecture = (item) => {
+        const indexLecture = dates[day].indexOf(item);
+        
+        console.log(item, indexLecture);
+        item["date"] = daySelected;
+        //navigation.navigate("Lecture", item);
+    }
 
     const isDayAvailable = (date) => {
         let dt = new Date(date.year, date.month, date.day);
@@ -151,6 +96,7 @@ function Calendario({ navigation }) {
                 }} 
                 renderItem={renderClass}
                 renderEmptyData={handleEmptyData} 
+                onDayPress={selectDay}
             />
         </SafeAreaView>
     );
@@ -210,7 +156,8 @@ const styles = StyleSheet.create({
 
 const MapStateToProps = state => {
     return {
-        loading: state.lecture.loading
+        loading: state.lecture.loading,
+        dates: state.account.dates
     }
 }
 
