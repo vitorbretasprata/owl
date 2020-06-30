@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, SafeAreaView, InteractionManager } from "react-
 import { connect } from "react-redux";
 import { BaseButton } from "react-native-gesture-handler";
 
-import { Icon } from "galio-framework";
 import Modal from "./components/modalLecture";
 
 function Lecture({ route }) {
@@ -18,6 +17,8 @@ function Lecture({ route }) {
             
             if(route.params) {
                 setParams(route.params);
+            } else {
+                setError("Informações da aula não encontrado, tente novamente mais tarde.");
             }
 
             setLoading(false);
@@ -109,6 +110,5 @@ const styles = StyleSheet.create({
         borderRadius: 10
     }
 });
-
 
 export default connect(null, null)(Lecture);

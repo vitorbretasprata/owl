@@ -5,7 +5,7 @@ import {
     StyleSheet, 
     Dimensions, 
 } from "react-native";
-import { RectButton } from "react-native-gesture-handler";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Text } from "galio-framework";
 
 const { width } = Dimensions.get("screen");
@@ -28,7 +28,6 @@ export default memo(({ showModal, closeModal, deleteSelected }) => {
             visible={showModal}
             onDismiss={cleanModal}
             onRequestClose={cleanModal}
-
         >
             <View style={styles.modal}>
                 <View style={styles.body}>
@@ -37,12 +36,12 @@ export default memo(({ showModal, closeModal, deleteSelected }) => {
                         (Uma taxa de R$ 8,00 será cobrada pelo cancelamento)
                     </Text>
                     <View style={styles.buttons}>
-                        <RectButton onPress={cleanModal}>
+                        <TouchableWithoutFeedback onPress={cleanModal}>
                             <Text style={{...styles.text, color: "#707070"}}>Não</Text>
-                        </RectButton>
-                        <RectButton onPress={deleteItem}>
+                        </TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback onPress={deleteItem}>
                             <Text style={{...styles.text, color: "#F58738"}}>Sim</Text>
-                        </RectButton>
+                        </TouchableWithoutFeedback>
                     </View>                    
                 </View>                
             </View>
