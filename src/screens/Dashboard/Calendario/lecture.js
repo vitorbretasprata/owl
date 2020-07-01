@@ -6,7 +6,7 @@ import { BaseButton } from "react-native-gesture-handler";
 import Modal from "./components/modalLecture";
 import { removeLecture } from "../../../services/Account/action";
 
-function Lecture({ route, removeLecture }) {
+function Lecture({ route, removeLecture, navigation }) {
 
     const [loading, setLoading] = useState(true);
     const [params, setParams] = useState({});
@@ -14,8 +14,7 @@ function Lecture({ route, removeLecture }) {
     const [show, setShow] = useState(false);
 
     useEffect(() => {
-        InteractionManager.runAfterInteractions(() => {
-            
+        InteractionManager.runAfterInteractions(() => {            
             if(route.params) {
                 setParams(route.params);
             } else {
@@ -26,8 +25,9 @@ function Lecture({ route, removeLecture }) {
         });        
     }, []);
 
-    const removeLecture = () => {
-        console.log("Veio até aqui")
+    const rmLecture = () => {
+        removeLecture(params.day, params.item);
+        navigation.goBack();
     }
 
     const close = () => setShow(false);
@@ -48,21 +48,21 @@ function Lecture({ route, removeLecture }) {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container}>            
             <Modal 
                 showModal={show}
-                deleteSelected={removeLecture}
+                deleteSelected={rmLecture}
                 closeModal={close}
             />
-            <Text style={styles.name}>{params.nome}</Text>
+            <Text style={styles.name}>{params.item.nome}</Text>
             <View style={styles.subContainer}>
                 <View>
-                    <Text style={{...styles.dataInfo, marginBottom: 15 }}>Matéria: {params.materia}</Text>
-                    <Text style={styles.dataInfo}>Horário: {params.horarioInicio} - {params.horarioTermino}</Text>
+                    <Text style={{...styles.dataInfo, marginBottom: 15 }}>Matéria: {params.item.materia}</Text>
+                    <Text style={styles.dataInfo}>Horário: {params.item.horarioInicio} - {params.item.horarioTermino}</Text>
                 </View>
                 <View>
-                    <Text style={{...styles.dataInfo, marginBottom: 15 }}>Local: {params.local}</Text>
-                    <Text style={styles.dataInfo}>Valor: {params.valor}</Text>
+                    <Text style={{...styles.dataInfo, marginBottom: 15 }}>Local: {params.item.local}</Text>
+                    <Text style={styles.dataInfo}>Valor: {params.item.valor}</Text>
                 </View>
             </View>         
             <View style={styles.buttons}>

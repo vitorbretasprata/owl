@@ -131,7 +131,17 @@ const AccountReducer = (state = initialState, action) => {
                         [action.payload.name]: action.payload.arr
                     }
                 }
-            }         
+            }  
+        case constants.REMOVE_SCHEDULE:
+            return {
+                ...state,
+                dates: {
+                    ...state.dates,
+                    [action.payload.date]: [
+                        ...(state.dates[action.payload.date].filter(item => (item !== action.payload.lecture))),
+                    ]
+                }
+            }       
         default: 
             return state;
     }

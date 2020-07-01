@@ -23,6 +23,12 @@ const { Value, interpolate } = Animated;
 const WidthScreen = Dimensions.get("screen").width - 80;
 const position = new Value(0.33);
 let index = 0;
+const transPosition = withTransition(position);
+
+const positionTrans = interpolate(transPosition, {
+    inputRange: [0.34, 0.67, 1],
+    outputRange: [75, 135, 200]
+});
 
 const emptyClasses = {    
     "Matemática": [],
@@ -42,7 +48,6 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
     
     const scrollRef = useRef(null);
 
-    const transPosition = withTransition(position);
 
     const [showModal, setShowModal] = useState(false);
     const [lectureSelected, setLectureSelected] = useState({});
@@ -57,9 +62,7 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
         }
     }, emptyClasses);  
     
-    useEffect(() => {
-        console.log(index)
-        
+    useEffect(() => {       
         return () => {
             position.setValue(0.33);
             index = 0;
@@ -149,10 +152,7 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
                 saveSelectedYears={handleSaveYears}
             />
             <View style={styles.container}>
-                <ProgressBar progressWidth={interpolate(transPosition, {
-                    inputRange: [0.34, 0.67, 1],
-                    outputRange: [75, 135, 200]
-                })}/>
+                <ProgressBar progressWidth={positionTrans}/>
                 <ScrollView
                     horizontal
                     scrollEnabled={false}

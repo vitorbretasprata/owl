@@ -101,7 +101,7 @@ function YearsModal({ showModal, closeModal, lecture, saveSelectedYears }) {
                             </View>
                             
                             <View style={styles.buttons}>
-                                <TouchableWithoutFeedback onPress={cleanModal} style={styles.btn}>
+                                <TouchableWithoutFeedback onPress={cleanModal}>
                                     <Icon 
                                         name="close" 
                                         family="AntDesign" 
@@ -114,7 +114,7 @@ function YearsModal({ showModal, closeModal, lecture, saveSelectedYears }) {
                                     <Text>{loadingSave && "L"}</Text>
                                 </View>
 
-                                <TouchableWithoutFeedback onPress={saveModal} style={styles.btn}>
+                                <TouchableWithoutFeedback onPress={saveModal}>
                                     <Icon 
                                         name="check" 
                                         family="AntDesign" 
@@ -153,15 +153,12 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         width: "100%",
         zIndex: 100,
-        paddingHorizontal: 20
+        paddingHorizontal: 30
     },
     titleModal: {
         textAlign: "center",
         fontSize: 16
-    },
-    btn: {
-        paddingHorizontal: 10
-    },
+    },    
     checkBtns: {
         marginVertical: 15
     }

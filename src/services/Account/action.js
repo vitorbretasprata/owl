@@ -45,6 +45,14 @@ const updateLectures = (arr, name) => ({
     }
 });
 
+const updateSchedule = (type, date, lecture) => ({
+    type,
+    payload: {
+        date,
+        lecture
+    }
+})
+
 /* -- Actions functions -- */ 
 
 export const SetAccountInfo = (type, info) => {
@@ -52,7 +60,6 @@ export const SetAccountInfo = (type, info) => {
     return dispatch => {
         dispatch(Request());
         setInfo(type, info).then(data => {
-            console.log(data)
             dispatch(Success());
 
             dispatch(setConfig("SET_TYPE", {
@@ -91,9 +98,9 @@ export const setDays = (type) => {
 
 export const setLectures = (arr, name) => dispatch => dispatch(updateLectures(arr, name));
 
-export const removeLecture = lecture => {
-    return dispatch => {
-        
+export const removeLecture = (date, lecture) => {
+    return dispatch => {        
+        dispatch(updateSchedule(constants.REMOVE_SCHEDULE, date, lecture));
     }
 }
 

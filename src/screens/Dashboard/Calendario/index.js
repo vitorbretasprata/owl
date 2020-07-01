@@ -35,13 +35,16 @@ function Calendario({ navigation, dates }) {
         );
     }
 
-    const selectDay = day => console.log(day);
-    const viewLecture = (item) => {
-        const indexLecture = dates[day].indexOf(item);
+    const selectDay = day => {
         
-        console.log(item, indexLecture);
-        item["date"] = daySelected;
-        //navigation.navigate("Lecture", item);
+        setDaySelected(day.dateString);
+    }
+
+    const viewLecture = (item) => {        
+        navigation.navigate("Lecture", {
+            item,
+            day: daySelected
+        });
     }
 
     const isDayAvailable = (date) => {
@@ -62,7 +65,7 @@ function Calendario({ navigation, dates }) {
         </View>
     )
 
-    const renderClass = item =>  (
+    const renderItems = (item) => (
         <TouchableWithoutFeedback onPress={() => viewLecture(item)}>
             <View style={styles.agendaDay}>
                 <Text style={styles.cardTitle}>{item.nome}</Text>
@@ -71,7 +74,7 @@ function Calendario({ navigation, dates }) {
                 <Text style={styles.cardValue}>{item.valor}</Text>
                 <Text style={styles.cardLocation}>Local: {item.local}</Text>
             </View>
-        </TouchableWithoutFeedback>        
+        </TouchableWithoutFeedback>
     );
 
     const renderDay = (day, item) => {
@@ -94,9 +97,10 @@ function Calendario({ navigation, dates }) {
                     agendaTodayColor: 'red',
                     agendaKnobColor: 'orange'
                 }} 
-                renderItem={renderClass}
+                renderItem={renderItems}
                 renderEmptyData={handleEmptyData} 
                 onDayPress={selectDay}
+                onDayChange={selectDay}
             />
         </SafeAreaView>
     );

@@ -21,8 +21,14 @@ import { SetAccountInfo } from "../../../services/Account/action";
 import Loading from "../../../components/loading";
 
 const WidthScreen = Dimensions.get("screen").width - 80;
-const position = new Value(0);
+const position = new Value(1);
 const transPosition = withTransition(position);  
+
+const positionTrans = interpolate(transPosition, {
+    inputRange: [0, 1],
+    outputRange: [0, 200],
+    extrapolate: Extrapolate.CLAMP
+});
 
 function ConfigParent({ SetAccountInfo, loading }) {     
 
@@ -45,7 +51,6 @@ function ConfigParent({ SetAccountInfo, loading }) {
     };
 
     const submitInfo = () => {
-        position.setValue(1);
         SetAccountInfo(1, dependents);
     }   
 
@@ -53,12 +58,7 @@ function ConfigParent({ SetAccountInfo, loading }) {
         <Background>
             <Loading loading={loading} />
             <View style={styles.container}>
-                <ProgressBar progressWidth={
-                    interpolate(transPosition, {
-                        inputRange: [0, 1],
-                        outputRange: [0, 200],
-                        extrapolate: Extrapolate.CLAMP
-                })}/>
+                <ProgressBar progressWidth={positionTrans}/>
                 
                 <View style={[styles.scrollWidth, styles.page]}>
                     <Text style={[styles.textColor, styles.textTitle]}>Dependentes</Text>
