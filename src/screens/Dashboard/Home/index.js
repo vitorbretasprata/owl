@@ -49,6 +49,8 @@ function Home({ getProfessors, professors, loading, data }) {
         return null;
     }
 
+    const extractor = (item, index) => index.toString();
+
     const renderProfessor = ({ item, index }) => {
         return (
             <>
@@ -69,7 +71,7 @@ function Home({ getProfessors, professors, loading, data }) {
                 contentContainerStyle={styles.list}
                 data={Dados}
                 renderItem={renderProfessor}
-                keyExtractor={(item, index) => index.toString()}
+                keyExtractor={extractor}
                 ListEmptyComponent={renderEmptyList}
                 ListFooterComponent={renderFooter}
                 onEndReached={renderMore}
@@ -86,7 +88,8 @@ const styles = StyleSheet.create({
     },
     list: {
         width,
-        paddingHorizontal: 5     
+        paddingHorizontal: 5,
+        zIndex: 0 
     },
     dividor: {
         height: 1,

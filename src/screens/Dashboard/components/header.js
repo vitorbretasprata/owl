@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, StyleSheet, Dimensions, StatusBar, TextInput } from "react-native";
+import { View, StyleSheet, Dimensions, StatusBar } from "react-native";
 import { connect } from "react-redux";
 import { BaseButton, FlatList } from "react-native-gesture-handler";
 import { Icon } from "galio-framework";
+import AutoComplete from "react-native-autocomplete-input";
 
 import LectureItem from "../components/lectureItem";
 import { Lectures } from "../constants/constants";
@@ -22,7 +23,10 @@ function SearchHeader() {
         }        
     }, [isFocused]);
 
+    const data = Lectures.filter(lecture => lecture.includes(search));
+
     const handleInput = (text) => {
+        console.log(text);
         setSearch(text);
     }
 
@@ -38,8 +42,8 @@ function SearchHeader() {
 
     const choose = (text) => setSearch(text);
 
-    const renderLecture = ({ item, index }) => <LectureItem item={item} index={index} condition={index === (Lectures.length - 1)} chooseLecture={choose} />
-
+    const renderLecture = ({ item, index }) => <LectureItem item={item} condition={index === (Lectures.length - 1)} chooseLecture={choose} />
+    const extractor = (item, i) => i.toString();
     const handleProfile = () => alert("Profile");
 
     const handleFilter = () => alert("Filter");
@@ -69,14 +73,22 @@ function SearchHeader() {
                 
                 {(!(search === "") || isFocused) && (
                     <View style={styles.containerInput}>
-                        <TextInput 
-                            style={styles.searchInput}
-                            value={search}
-                            onChangeText={handleInput}
-                            ref={inputRef}
-                            onFocus={openHeader}
-                            onBlur={closeHeader}
-                        />   
+                        <View style={styles.autoCompleteInput}>
+                            <AutoComplete
+                                data={data} 
+                                defaultValue={search}
+                                onChangeText={handleInput}
+                                ref={inputRef}
+                                renderItem={renderLecture}
+                                onFocus={openHeader}
+                                keyExtractor={extractor}
+                                onBlur={closeHeader}
+                                inputContainerStyle={styles.autoCompleteContainer}
+                                listContainerStyle={styles.autoCompleteListContainer}
+                                listStyle={styles.autoCompleteList}
+                                containerStyle={styles.containerAutoComplete}
+                            />  
+                        </View>                         
                         {!(search === "") && (
                             <BaseButton 
                                 style={styles.roundButton}
@@ -107,19 +119,7 @@ function SearchHeader() {
                         </BaseButton>
                     )}                
                 </View>
-            </View>
-            {isFocused && (
-                <View style={styles.sugestions}>
-                    <FlatList 
-                        data={Lectures}
-                        contentContainerStyle={styles.list}
-                        renderItem={renderLecture}
-                        keyExtractor={(item, index) => index}
-                        onRend
-                        
-                    />
-                </View>
-            )}           
+            </View>                       
         </View>                        
     );
 }
@@ -134,8 +134,35 @@ const styles = StyleSheet.create({
         marginTop: StatusBar.currentHeight
     }, 
     row: {
-        flexDirection: "row"
-    },   
+        flexDirection: "row",
+        alignItems: "flex-end",
+        justifyContent: "flex-end",
+        width: "100%"
+    }, 
+    containerAutoComplete: {
+        zIndex: 1000
+    },
+    autoCompleteContainer: {
+        flex: 1,
+        flexDirection: "row",
+        width: width - 90,
+        borderWidth: 0,
+        backgroundColor: "#fff",
+        paddingHorizontal: 5
+    },
+    autoCompleteListContainer: {
+        height,
+        width,
+        backgroundColor: "#e3e3e3",
+        position: "absolute",
+        left: 0,
+        marginLeft: -72,
+        top: 45,
+        zIndex: 1000
+    },
+    autoCompleteList: {
+        width: "100%"
+    },
     roundButton: {
         borderRadius: 20,
         marginRight: 15
@@ -150,16 +177,40 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
     },
+    autoCompleteInput: {
+        flex: 1,
+        left: 0,
+        position: 'absolute',
+        right: 0,
+        top: 0,
+        width: 100
+    },    
     searchInput: {
        flex: 1,
        color: "#707070",
-       paddingLeft: 10
+       paddingLeft: 10,
+       position: "relative",
+       width: "100%",
     },
     sugestions: {
-        height,
-        width,
-        backgroundColor: "#e3e3e3" 
+        
     }    
 })
 
 export default connect(null, null)(SearchHeader);
+
+/**
+ * 
+ * {isFocused && (
+                <View style={styles.sugestions}>
+                    <FlatList 
+                        data={Lectures}
+                        contentContainerStyle={styles.list}
+                        renderItem={renderLecture}
+                        keyExtractor={(item, index) => index}
+                        onRend
+                        
+                    />
+                </View>
+            )}
+ */
