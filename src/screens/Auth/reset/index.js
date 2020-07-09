@@ -20,7 +20,8 @@ import Toast from "../components/toast";
 import { Reset } from "../../../services/Auth/action";
 import { checkEmail } from "../../../services/Api/AuthApi";
 
-const scrollWidth = Dimensions.get("screen").width - 80;
+const { height, width } = Dimensions.get("screen");
+const scrollWidth = width - 80;
 
 function Forgot({ navigation, error, loading }) {
 
@@ -201,7 +202,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff",    
         borderRadius: 10,
-        justifyContent: "space-between",
         paddingVertical: 20
     },
     submit: {

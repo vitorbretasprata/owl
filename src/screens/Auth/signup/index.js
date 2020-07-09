@@ -3,6 +3,7 @@ import {
   View,
   StyleSheet,
   Keyboard,
+  Dimensions
 } from "react-native";
 import Animated, { Easing } from "react-native-reanimated";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
@@ -36,6 +37,8 @@ const {
 
 const clock = new Clock();
 const hasKeyBoardShown = new Value(-1);
+
+const { height } = Dimensions.get("screen");   
 
 const RunTiming = (clock, hasKeyBoardShown) => {
   const state = {
@@ -126,83 +129,87 @@ function SignUp({ Register, navigation, error, loading }) {
         <BackgroundImage>
             <Loading />
             <View style={styles.container}>
-                <Animated.Text 
-                style={[styles.Logo, {
-                    transform: [
-                        { scale: interpolate(valueKey, {
-                            inputRange: [0, 1],
-                            outputRange: [1, 0.6],
-                            extrapolate: Extrapolate.CLAMP
-                        })},
-                        { translateY: interpolate(valueKey, {
-                            inputRange: [0, 1],
-                            outputRange: [0, -10],
-                            extrapolate: Extrapolate.CLAMP
-                        })}
-                    ]
-                }]}
-                >
-                    Logo
-                </Animated.Text>
-                
-                <Animated.View style={
-                    [
-                        styles.align, { 
-                            transform: [ 
-                                { translateY: interpolate(valueKey, {
-                                    inputRange: [0, 1],
-                                    outputRange: [0, -60],
-                                    extrapolate: Extrapolate.CLAMP
-                                })}
-                            ]
-                        }
-                    ]
-                }>
-                    <AuthInput 
-                        placeholder="Nome completo"
-                        attrName="name"
-                        value={values["name"]}
-                        updateMasterState={_handleChange}
-                        icon="user"
-                        family="AntDesign"
-                    />
+                <View>
+                    <Animated.Text 
+                    style={[styles.Logo, {
+                        transform: [
+                            { scale: interpolate(valueKey, {
+                                inputRange: [0, 1],
+                                outputRange: [1, 0.6],
+                                extrapolate: Extrapolate.CLAMP
+                            })},
+                            { translateY: interpolate(valueKey, {
+                                inputRange: [0, 1],
+                                outputRange: [0, -10],
+                                extrapolate: Extrapolate.CLAMP
+                            })}
+                        ]
+                    }]}
+                    >
+                        Logo
+                    </Animated.Text>
+                    
+                    <Animated.View style={
+                        [
+                            styles.align, { 
+                                transform: [ 
+                                    { translateY: interpolate(valueKey, {
+                                        inputRange: [0, 1],
+                                        outputRange: [0, -60],
+                                        extrapolate: Extrapolate.CLAMP
+                                    })}
+                                ]
+                            }
+                        ]
+                    }>
+                        <AuthInput 
+                            placeholder="Nome completo"
+                            attrName="name"
+                            value={values["name"]}
+                            updateMasterState={_handleChange}
+                            icon="user"
+                            family="AntDesign"
+                        />
 
-                    <AuthInput 
-                        placeholder="Email"
-                        attrName="email"
-                        value={values["email"]}
-                        updateMasterState={_handleChange}
-                        icon="mail"
-                        family="AntDesign"
-                    />
+                        <AuthInput 
+                            placeholder="Email"
+                            attrName="email"
+                            value={values["email"]}
+                            updateMasterState={_handleChange}
+                            icon="mail"
+                            family="AntDesign"
+                        />
 
-                    <AuthInput 
-                        placeholder="Senha"
-                        attrName="password"
-                        value={values["password"]}
-                        updateMasterState={_handleChange}
-                        icon="lock"
-                        family="AntDesign"
-                        secureTextEntry={true}
-                    />
+                        <AuthInput 
+                            placeholder="Senha"
+                            attrName="password"
+                            value={values["password"]}
+                            updateMasterState={_handleChange}
+                            icon="lock"
+                            family="AntDesign"
+                            secureTextEntry={true}
+                        />
 
-                    <AuthInput 
-                        placeholder="Confirmar senha"
-                        attrName="repeat"
-                        value={values["repeat"]}
-                        updateMasterState={_handleChange}
-                        icon="lock"
-                        family="AntDesign"
-                        secureTextEntry={true}
-                    />            
-                </Animated.View>
+                        <AuthInput 
+                            placeholder="Confirmar senha"
+                            attrName="repeat"
+                            value={values["repeat"]}
+                            updateMasterState={_handleChange}
+                            icon="lock"
+                            family="AntDesign"
+                            secureTextEntry={true}
+                        /> 
+                        <Submit 
+                            title="Cadastrar" 
+                            onSubmit={_handleRegister} 
+                            isDisabled={!isEnabled}
+                        />           
+                    </Animated.View>
+                    
+                </View>                
 
                 <View style={styles.other}>
-                    <Submit 
-                        title="Cadastrar" 
-                        onSubmit={_handleRegister} 
-                        isDisabled={!isEnabled}
-                    />
+                    
                     <LinearGradient
                         colors={["#F58738", "#F8B586"]}
                         start={[0.5, 0.7]}
@@ -226,7 +233,9 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: "#fff",
         borderRadius: 10,
-        height: "100%"
+        height: height - 100,
+        justifyContent: "space-between",
+        paddingVertical: 10
     },
     align: {    
         paddingHorizontal: 30,

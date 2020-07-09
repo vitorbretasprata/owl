@@ -4,7 +4,8 @@ import {
   Text,
   StyleSheet,
   Keyboard,
-  Platform
+  Platform,
+  Dimensions
 } from "react-native";
 import Animated, { Easing } from "react-native-reanimated";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -38,6 +39,8 @@ const {
 
 const clock = new Clock();
 const hasKeyBoardShown = new Value(-1);
+
+const { height } = Dimensions.get("screen");
 
 const RunTiming = (clock, hasKeyBoardShown) => {
   const state = {
@@ -123,6 +126,7 @@ function SignIn({ navigation, Login, error, loading }) {
     <BackgroundImage>
       <Loading loading={loading}/>
       <View style={styles.container}>
+        <View>
         <Animated.Text 
               style={[styles.Logo, {
                 transform: [
@@ -135,57 +139,59 @@ function SignIn({ navigation, Login, error, loading }) {
               }]}
             >
                 Logo
-            </Animated.Text>
+        </Animated.Text>
           
-            <Animated.View style={[styles.align, 
-            { 
-              transform: [ 
-                { translateY: 
-                    interpolate(valueKey, {
-                      inputRange: [0, 1],
-                      outputRange: [0, -60],
-                      extrapolate: Extrapolate.CLAMP
-                    }) 
-                }]}
-            ]}>
-              <AuthInput 
-                  placeholder="Email"
-                  attrName="email"
-                  value={values["email"]}
-                  updateMasterState={_handleChange}
-                  icon="mail"
-                  family="AntDesign"
-              />
+        <Animated.View style={[styles.align, 
+        { 
+          transform: [ 
+            { translateY: 
+                interpolate(valueKey, {
+                  inputRange: [0, 1],
+                  outputRange: [0, -60],
+                  extrapolate: Extrapolate.CLAMP
+                }) 
+            }]}
+        ]}>
+          <AuthInput 
+              placeholder="Email"
+              attrName="email"
+              value={values["email"]}
+              updateMasterState={_handleChange}
+              icon="mail"
+              family="AntDesign"
+          />
 
-              <AuthInput 
-                  placeholder="Senha"
-                  attrName="password"
-                  value={values["password"]}
-                  updateMasterState={_handleChange}
-                  icon="lock"
-                  family="AntDesign"
-                  secureTextEntry={true}
-              />
+          <AuthInput 
+              placeholder="Senha"
+              attrName="password"
+              value={values["password"]}
+              updateMasterState={_handleChange}
+              icon="lock"
+              family="AntDesign"
+              secureTextEntry={true}
+          />
 
-              <TouchableOpacity style={styles.forgotPasswordArea} onPress={() => navigation.navigate("Forgot")}>
-                <Text style={styles.forgotPassword}>Esqueci minha senha</Text>
-              </TouchableOpacity>
+          <TouchableOpacity style={styles.forgotPasswordArea} onPress={() => navigation.navigate("Forgot")}>
+            <Text style={styles.forgotPassword}>Esqueci minha senha</Text>
+          </TouchableOpacity>
 
-              <Submit 
-                title="Entrar" 
-                onSubmit={_handleLogin} 
-                isDisabled={!isEnabled}
-              />
-                  
-            </Animated.View>
+          <Submit 
+            title="Entrar" 
+            onSubmit={_handleLogin} 
+            isDisabled={!isEnabled}
+          />
+              
+        </Animated.View>
+        </View>
+        
 
-            <View style={styles.other}>
+        <View style={styles.other}>
 
-              <Or />
+          <Or />
 
-              <Social />
-            </View>   
-            <Toast ErrorMessage={error}/>
+          <Social />
+        </View>   
+        <Toast ErrorMessage={error}/>
       </View>
     </BackgroundImage>    
   );
@@ -195,7 +201,10 @@ function SignIn({ navigation, Login, error, loading }) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
-    borderRadius: 10
+    height: height - 100,
+    borderRadius: 10,
+    justifyContent: "space-between",
+    paddingVertical: 10
   },
   align: {    
     paddingHorizontal: 15,
@@ -210,7 +219,8 @@ const styles = StyleSheet.create({
     textAlign: "right"
   },
   other: {
-    paddingHorizontal: 15
+    paddingHorizontal: 15,
+  
   },  
   Logo: {
     fontSize: 50,

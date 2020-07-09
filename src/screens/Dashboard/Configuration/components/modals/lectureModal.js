@@ -29,8 +29,6 @@ export default memo(({ showModal, closeModal, selectedItem, selectedItemArr, sav
     }    
 
     const handleAll = event => {
-        console.log(event) 
-
         const all = Array.apply(null, new Array(yearsChecked.length)).map(x => event);
         setYearsCheked(all);
     }
@@ -65,6 +63,8 @@ export default memo(({ showModal, closeModal, selectedItem, selectedItemArr, sav
             
             saveSelectedYears(indexArr, selectedItem);
 
+        } else {            
+            saveSelectedYears([], selectedItem);
         }
         setLoadingSave(false);
         cleanModal();

@@ -265,7 +265,9 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
 const styles = StyleSheet.create({
    container: {
        flex: 1,
-       alignItems: "center"
+       alignItems: "center",
+       justifyContent: "space-between",
+       paddingVertical: 35
    },
    scrollWidth: {
         width: WidthScreen

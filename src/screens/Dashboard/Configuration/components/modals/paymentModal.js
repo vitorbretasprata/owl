@@ -4,10 +4,10 @@ import {
     View, 
     StyleSheet, 
     Dimensions, 
+    TouchableWithoutFeedback
 } from "react-native";
 import { connect } from "react-redux";
 import { Text, Input, Icon } from "galio-framework";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { TextInputMask } from 'react-native-masked-text';
 
 import { setPaymentMethods } from "../../../../../services/Account/action";
@@ -44,6 +44,9 @@ export default memo(({ showModal, closeModal }) => {
     }
     
     const cleanModal = () => {
+        setCardNumber("");
+        setCardDate("");
+        setCardDigits("");
         closeModal();
     }
 
@@ -162,7 +165,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         width: "100%",
-        zIndex: 100
+        paddingHorizontal: 20,
+        paddingTop: 10
     }, 
     alignInputs: {
       flexDirection: "row",

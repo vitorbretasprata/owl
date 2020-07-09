@@ -30,9 +30,8 @@ function YearsModal({ showModal, closeModal, lecture, saveSelectedYears }) {
     }    
 
     const handleAll = event => {
-        console.log(event) 
-        //const all = Array.apply(null, new Array(yearsChecked.length)).map(x => event);
-        //setYearsCheked(all);
+        const all = Array.apply(null, new Array(yearsChecked.length)).map(x => event);
+        setYearsCheked(all);
     }
 
     const chooseSelectedYears = () => {
@@ -66,6 +65,8 @@ function YearsModal({ showModal, closeModal, lecture, saveSelectedYears }) {
             }, []);
             
             saveSelectedYears(indexArr, lecture.className);
+        } else {
+            saveSelectedYears([], lecture.className);
 
         }
         setLoadingSave(false);

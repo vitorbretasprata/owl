@@ -96,7 +96,10 @@ export const setDays = (type) => {
     }
 }
 
-export const setLectures = (arr, name) => dispatch => dispatch(updateLectures(arr, name));
+export const setLectures = (arr, name) => dispatch => {
+    console.log(arr, name)
+    dispatch(updateLectures(arr, name))
+};
 
 export const removeLecture = (date, lecture) => {
     return dispatch => {        

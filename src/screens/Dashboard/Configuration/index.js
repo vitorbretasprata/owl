@@ -21,11 +21,11 @@ function Configuration({ getInfoAccount, type, setPaymentMethods, extraInfo }) {
     const close = () => setShowModal(false);
 
     const handlePaymentModal = () => setShowPaymentModal(true);
-    const closePaymentModal = () => showPaymentModal(false);
+    const closePaymentModal = () => setShowPaymentModal(false);
 
     const handleItemMethod = (item, index) => (
         <RectButton
-            key={index}
+            key={index.toString()}
             onPress={handleLong}
         >
             <View style={styles.option}>
