@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, SafeAreaView, Dimensions, View } from "react-native";
 import { connect } from "react-redux";
 import * as Location from "expo-location";
-import { FlatList } from "react-native-gesture-handler";
+import { FlatList, TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Text } from "galio-framework";
 
 import { getProfessors } from "../../../services/Lecture/action";
@@ -13,7 +13,7 @@ const Dados = [1, 2, 3 , 4]
 
 const { width } = Dimensions.get("screen");
 
-function Home({ getProfessors, professors, loading, data }) {
+function Home({ getProfessors, professors, loading, data, navigation }) {
 
     const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -51,12 +51,13 @@ function Home({ getProfessors, professors, loading, data }) {
 
     const extractor = (item, index) => index.toString();
 
+
     const renderProfessor = ({ item, index }) => {
         return (
-            <>
+            <TouchableWithoutFeedback onPress={() => navigation.navigate("TeacherProfile", { teacherId: index })}>
                 <TeacherBlock />
                 {!(index === (Dados.length - 1)) && <View style={styles.dividor}/>}
-            </>
+            </TouchableWithoutFeedback>
         );
     }
 
@@ -84,12 +85,14 @@ function Home({ getProfessors, professors, loading, data }) {
 
 const styles = StyleSheet.create({
     container: {
-        alignItems: "center"
+        alignItems: "center",
+        borderWidth: 1,
+        paddingBottom: 75
     },
     list: {
+        flexGrow: 1,
         width,
         paddingHorizontal: 5,
-        zIndex: 0 
     },
     dividor: {
         height: 1,

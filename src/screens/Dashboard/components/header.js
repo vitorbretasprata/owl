@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { View, StyleSheet, Dimensions, StatusBar } from "react-native";
 import { connect } from "react-redux";
-import { BaseButton, FlatList } from "react-native-gesture-handler";
+import { BaseButton } from "react-native-gesture-handler";
 import { Icon } from "galio-framework";
 import AutoComplete from "react-native-autocomplete-input";
 
@@ -55,7 +55,7 @@ function SearchHeader() {
     const clearInput = () => setSearch("");
 
     return (
-        <View>
+        <>
             <View style={styles.container}>
                 {(!(search === "") || isFocused) && (
                     <BaseButton 
@@ -120,7 +120,7 @@ function SearchHeader() {
                     )}                
                 </View>
             </View>                       
-        </View>                        
+        </>                        
     );
 }
 
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: 'space-between',
         alignItems: 'center',
-        width: width,
+        width: "100%",
         height: 50,
         marginTop: StatusBar.currentHeight
     }, 

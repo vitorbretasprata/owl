@@ -14,6 +14,8 @@ import ConfigTeacher from "./screens/Account/Teacher/config";
 
 import Lecture from "./screens/Dashboard/Calendario/lecture";
 
+import TeacherProfile from "./screens/Dashboard/Home/teacher";
+
 import TabBottom from "./components/bottomTabNavigator";
 import Configuration from "./screens/Dashboard/Configuration/index";
 
@@ -56,6 +58,7 @@ function StackNavigator({ status }) {
                         <Stack.Screen name="ConfigParent" component={ConfigParent} options={{ headerShown: false }} />
                         <Stack.Screen name="ConfigTeacher" component={ConfigTeacher} options={{ headerShown: false }} />
                         <Stack.Screen name="Account" component={Account} options={{ headerShown: false }} />
+                        <Stack.Screen name="TeacherProfile" component={TeacherProfile} options={{ headerShown: false }} />
 
                         <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }}/>
                         <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }}/>
