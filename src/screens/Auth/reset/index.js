@@ -15,7 +15,6 @@ import { connect } from "react-redux";
 import Loading from "../../../components/loading";
 import BackgroundImage from "../components/backgroundImage";
 import AuthInput from "../components/input";
-import Toast from "../components/toast";
 
 import { Reset } from "../../../services/Auth/action";
 import { checkEmail } from "../../../services/Api/AuthApi";
@@ -191,7 +190,6 @@ function Forgot({ navigation, error, loading }) {
                     </LinearGradient>
                 </View> 
 
-                <Toast ErrorMessage={"Este é u error"}/>     
             </SafeAreaView>
         </BackgroundImage>        
     );
@@ -241,7 +239,6 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-        error: state.auth.error,
         loading: state.auth.loading
     }
 }

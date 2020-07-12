@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import Animated, { Easing } from "react-native-reanimated";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
-import { Icon, theme, Toast } from "galio-framework";
+import { Icon, theme } from "galio-framework";
 import { LinearGradient } from "expo-linear-gradient";
 import { connect } from "react-redux";
 import { withTimingTransition } from "react-native-redash";
@@ -79,7 +79,7 @@ const RunTiming = (clock, hasKeyBoardShown) => {
 
 const valueKey = RunTiming(clock, hasKeyBoardShown);
 
-function SignUp({ Register, navigation, error, loading }) {
+function SignUp({ Register, navigation, loading }) {
 
     const [values, setValues] = useState({
         name: "",
@@ -98,7 +98,7 @@ function SignUp({ Register, navigation, error, loading }) {
     const isEnabled = values["name"].length > 0 && 
                     values["email"].length > 0 && 
                     values["password"].length > 0 && 
-                    values["confirm"].length > 0;
+                    values["repeat"].length > 0;
     
     useEffect(() => {
         const valKeyboard = Platform.select({ ios: "Will", android: "Did" });
@@ -125,9 +125,17 @@ function SignUp({ Register, navigation, error, loading }) {
         Register(values);
     }
 
+    const disptachError = () => {
+        updateError(null);
+    }    
+
+    const back = () => {
+        navigation.goBack();
+    }
+
     return (
         <BackgroundImage>
-            <Loading />
+            <Loading loading={loading} />
             <View style={styles.container}>
                 <View>
                     <Animated.Text 
@@ -216,14 +224,13 @@ function SignUp({ Register, navigation, error, loading }) {
                         style={[styles.goBack, { elevation: 3 }]}
                     >
                         <TouchableWithoutFeedback
-                            onPress={() => navigation.goBack()} 
+                            onPress={back} 
                             style={styles.touchable}               
                         >
                             <Icon name="left" family="AntDesign" color={theme.COLORS.WHITE} size={35} />
                         </TouchableWithoutFeedback>
                     </LinearGradient>
                 </View> 
-                <Toast ErrorMessage={error}/>         
             </View>
         </BackgroundImage>        
     );
@@ -269,7 +276,6 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-        error: state.auth.error,
         loading: state.auth.loading
     }
 }

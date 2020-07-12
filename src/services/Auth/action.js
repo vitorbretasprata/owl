@@ -1,7 +1,7 @@
 import { preload, requestLogin, requestRegister, requestReset } from "../Api/AuthApi";
 import constants from "../constants";
 import * as RootStack from "../navigation/RootNavigate";
-
+import { showMessage } from "react-native-flash-message";
 
 /* -- Actions states -- */ 
 
@@ -15,16 +15,20 @@ const fetchSuccess = () => ({
     type: constants.SUCCESS    
 });
 
-const fetchFailure = error => ({
+const fetchFailure = () => ({
     type: constants.FAILURE,
-    payload: { 
-        error
-    }
 });
-
 
 /* -- Actions functions -- */ 
 
+const displayError = msg => {
+    showMessage({
+        message: "Error",
+        description: msg,
+        type: "danger",
+        duration: 2890
+    });
+}
 
 export const Login = values => {
     return (dispatch) => {
@@ -47,7 +51,8 @@ export const Login = values => {
                 }                
             })
             .catch(error => {
-                dispatch(fetchFailure(error));
+                dispatch(fetchFailure());
+                displayError(error);
             });
     }
 }
@@ -61,7 +66,8 @@ export const Reset = values => {
                 RootStack.navigate(0, [{ name: "SignIn" }]);                           
             })
             .catch(error => {
-                dispatch(fetchFailure(error));
+                dispatch(fetchFailure());
+                displayError(error);
             });
     }
 }
@@ -74,19 +80,13 @@ export const Register = values => {
                 dispatch(fetchSuccess());
             })
             .catch(error => {
-                dispatch(fetchFailure(error));
+                dispatch(fetchFailure());
+                displayError(error);
             });
     }
 }
 
-export const setError = error => ({
-    type: constants.SET_ERROR,
-    payload: { error }
-});
-
-export const removeError = () => ({
-    type: constants.REMOVE_ERROR
-});
+export const updateError = err => dispatch => dispatch(setError(err));
 
 export const Preloader = token => {
 
@@ -108,7 +108,7 @@ export const Preloader = token => {
                 }
                 dispatch(fetchSuccess());
             }).catch(error => {
-                dispatch(fetchFailure(""));
+                dispatch(fetchFailure());
                 RootStack.reset(0, [{ name: "SignIn" }]);
             });   
     }

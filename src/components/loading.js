@@ -7,7 +7,7 @@ export default memo(({ loading }) => {
     if(loading) {
         return (
             <View style={styles.container}>
-                <Text>Loading</Text>
+                <Text>Carregando</Text>
             </View>
         );
     }

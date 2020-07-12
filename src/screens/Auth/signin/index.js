@@ -17,7 +17,6 @@ import AuthInput from "../components/input";
 import Submit from "../components/submit";
 import Or from "../components/or";
 import Social from "../components/social";
-import Toast from "../components/toast";
 
 import { Login } from "../../../services/Auth/action";
 
@@ -81,7 +80,7 @@ const RunTiming = (clock, hasKeyBoardShown) => {
 
 const valueKey = RunTiming(clock, hasKeyBoardShown);
 
-function SignIn({ navigation, Login, error, loading }) {
+function SignIn({ navigation, Login, loading }) {
 
   const [values, setValues] = useState({
       email: "",
@@ -118,13 +117,11 @@ function SignIn({ navigation, Login, error, loading }) {
       hasKeyBoardShown.setValue(0);
   }
 
-  const _handleLogin = () => {
-      Login(values);
-  }
+  const _handleLogin = () => Login(values);
 
   return (
     <BackgroundImage>
-      <Loading loading={loading}/>
+      <Loading loading={loading} />
       <View style={styles.container}>
         <View>
         <Animated.Text 
@@ -191,7 +188,6 @@ function SignIn({ navigation, Login, error, loading }) {
 
           <Social />
         </View>   
-        <Toast ErrorMessage={error}/>
       </View>
     </BackgroundImage>    
   );

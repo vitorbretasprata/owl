@@ -1,45 +1,40 @@
 import React, { memo } from "react";
 import { StyleSheet, View, Text } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { Toast } from "galio-framework";
 
-function ToastHandler(props) {
+export default memo(({ ErrorMessage, removeError }) => {
 
-    const { ErrorMessage } = props;
+    const updateError = () => removeError();
 
     return (
         <Toast 
-            isShow={ErrorMessage ? true : false} 
+            isShow={true} 
             positionIndicator="bottom" 
             round
             style={styles.toast} 
             textStyle={styles.text}
-            
-        >
+            positionOffset={250} 
+        >    
             <View style={styles.align}>
                 <Text>
-                    {ErrorMessage ? ErrorMessage : ""}
+                    Ocorreu um error no servidor
                 </Text>
-                <TouchableOpacity>
-                    <Text>X</Text>
-                </TouchableOpacity>
-            </View>
-           
+                <TouchableWithoutFeedback>
+                    <Text style={styles.text}>X</Text>
+                </TouchableWithoutFeedback>
+            </View>           
         </Toast>
     );
-}
+});
 
 const styles = StyleSheet.create({
     toast: {
-        backgroundColor: "#db1616",
-
+        backgroundColor: "#000"
     },
     text: {
         
     },
     align: {
-
+        flexDirection: "row",
+        justifyContent: "space-between"
     }
-})
-
-export default memo(ToastHandler);
+});
