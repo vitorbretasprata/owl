@@ -17,7 +17,7 @@ function PreLoad({ Preloader }) {
 
     return (
         <View style={styles.container}>
-            <Text>Loading</Text>            
+            <Text>Carregando</Text>            
         </View>
     );
 }

@@ -2,6 +2,7 @@ import { preload, requestLogin, requestRegister, requestReset } from "../Api/Aut
 import constants from "../constants";
 import * as RootStack from "../navigation/RootNavigate";
 import { showMessage } from "react-native-flash-message";
+import { setAccountType } from "../Account/action";
 
 /* -- Actions states -- */ 
 
@@ -36,6 +37,10 @@ export const Login = values => {
         requestLogin(values)
             .then(data => {
                 dispatch(fetchSuccess());
+                if(data.accountType !== 0) {
+                    setAccountType(data.accountType);
+                }
+
                 switch(data.accountType) {
                     case 0:
                         RootStack.reset(0, [{ name: "Account" }]);

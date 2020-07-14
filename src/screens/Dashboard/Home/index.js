@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, SafeAreaView, Dimensions, View } from "react-native";
+import { StyleSheet, SafeAreaView, Dimensions, View, InteractionManager } from "react-native";
 import { connect } from "react-redux";
 import * as Location from "expo-location";
 import Constants from "expo-constants";
+import * as Permissions from "expo-permissions";
 import * as Notifications from "expo-notifications";
 import { FlatList, TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Text } from "galio-framework";
 
 import { getProfessors } from "../../../services/Lecture/action";
+import { getInfoAccount } from "../../../services/Account/action";
 import SearchHeader from "../components/header";
 import TeacherBlock from "../components/teacherBlock";
 
@@ -83,23 +85,50 @@ async function registerForPushNotificationsAsync() {
     return token;
 }
 
-function Home({ getProfessors, professors, loading, data, navigation }) {
+function Home({ getProfessors, professors, loading, data, getInfoAccount, navigation }) {
 
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const [tokenNotification, setTokenNotification] = useState("");
+    const [expoPushToken, setExpoPushToken] = useState("");
+    const [loadingData, setloadingData] = useState(true);
 
     useEffect(() => {
+        InteractionManager.runAfterInteractions(() => {
+            if(data.extraInfo === {}) {
+                getInfoAccount();
+            }
 
-        (async () => {
-            let { status } = await Location.requestPermissionsAsync();
-            if(status != 'granted')
-                alert("");
+            registerForPushNotificationsAsync().then(token => {
+                setListeners();
+                setExpoPushToken(token);
+            });
+    
+            (async () => {
+                let { status } = await Location.requestPermissionsAsync();
+                if(status != 'granted')
+                    alert("");
+    
+                let location = await Location.getCurrentPositionAsync({});
+                mountFilter(location);
+            })();
 
-            let location = await Location.getCurrentPositionAsync({});
-            mountFilter(location);
-        })();
-
+            setloadingData(false);
+        });   
     }, []);
+
+    const setListeners = () => {
+
+        Notifications.addNotificationReceivedListener(notification => {
+            setNotification(notification);
+        });
+
+        Notifications.addNotificationResponseReceivedListener(response => {
+            console.log(response);
+        });
+    }
+
+    useEffect(() => {
+        console.log(expoPushToken);        
+    }, [expoPushToken]);
 
     const mountFilter = location => {
 
@@ -138,18 +167,22 @@ function Home({ getProfessors, professors, loading, data, navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <SearchHeader />
-            <FlatList 
-                contentContainerStyle={styles.list}
-                data={Dados}
-                renderItem={renderProfessor}
-                keyExtractor={extractor}
-                ListEmptyComponent={renderEmptyList}
-                ListFooterComponent={renderFooter}
-                onEndReached={renderMore}
-                onRefresh={refresh}
-                refreshing={isRefreshing}                
-            />
+            {!loadingData && (
+                <>
+                    <SearchHeader />
+                    <FlatList 
+                        contentContainerStyle={styles.list}
+                        data={Dados}
+                        renderItem={renderProfessor}
+                        keyExtractor={extractor}
+                        ListEmptyComponent={renderEmptyList}
+                        ListFooterComponent={renderFooter}
+                        onEndReached={renderMore}
+                        onRefresh={refresh}
+                        refreshing={isRefreshing}                
+                    />
+                </>
+            )}            
         </SafeAreaView>
     );
 };
@@ -180,4 +213,4 @@ const MapStateToProps = state => {
     }
 }
 
-export default connect(MapStateToProps, { getProfessors })(Home);
+export default connect(MapStateToProps, { getProfessors, getInfoAccount })(Home);

@@ -18,7 +18,6 @@ import AuthInput from "../components/input";
 import Submit from "../components/submit";
 import { Register } from "../../../services/Auth/action";
 
-
 const { 
   Value,
   Clock,
@@ -139,20 +138,20 @@ function SignUp({ Register, navigation, loading }) {
             <View style={styles.container}>
                 <View>
                     <Animated.Text 
-                    style={[styles.Logo, {
-                        transform: [
-                            { scale: interpolate(valueKey, {
-                                inputRange: [0, 1],
-                                outputRange: [1, 0.6],
-                                extrapolate: Extrapolate.CLAMP
-                            })},
-                            { translateY: interpolate(valueKey, {
-                                inputRange: [0, 1],
-                                outputRange: [0, -10],
-                                extrapolate: Extrapolate.CLAMP
-                            })}
-                        ]
-                    }]}
+                        style={[styles.Logo, {
+                            transform: [
+                                { scale: interpolate(valueKey, {
+                                    inputRange: [0, 1],
+                                    outputRange: [1, 0.6],
+                                    extrapolate: Extrapolate.CLAMP
+                                })},
+                                { translateY: interpolate(valueKey, {
+                                    inputRange: [0, 1],
+                                    outputRange: [0, -10],
+                                    extrapolate: Extrapolate.CLAMP
+                                })}
+                            ]
+                        }]}
                     >
                         Logo
                     </Animated.Text>

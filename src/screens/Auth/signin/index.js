@@ -195,9 +195,9 @@ function SignIn({ navigation, Login, loading }) {
 
 // Coloring below is used just to easily see the different components
 const styles = StyleSheet.create({
-  container: {
+  container: {    
     backgroundColor: "#fff",
-    height: height - 100,
+    height: height - 40,
     borderRadius: 10,
     justifyContent: "space-between",
     paddingVertical: 10

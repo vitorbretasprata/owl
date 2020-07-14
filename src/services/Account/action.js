@@ -53,6 +53,13 @@ const updateSchedule = (type, date, lecture) => ({
     }
 })
 
+const setSchedule = (arr) => ({
+    type: constants.SET_SCHEDULE,
+    payload: {
+        schedules: arr
+    }
+})
+
 /* -- Actions functions -- */ 
 
 export const SetAccountInfo = (type, info) => {
@@ -74,11 +81,12 @@ export const SetAccountInfo = (type, info) => {
     }
 }
 
-export const getInfoAccount = (type) => {
+export const getInfoAccount = () => {
     return dispatch => {
         dispatch(Request());
         getInfoAccountAPI.then(data => {
-            dispatch(setAccountExtraInfoAll(data));
+            dispatch(setAccountExtraInfoAll(data.extraInfo));
+            dispatch(setSchedule(data.dates));
         }).catch(error => {
             dispatch(Failure(error.message));
         });
@@ -97,13 +105,18 @@ export const setDays = (type) => {
 }
 
 export const setLectures = (arr, name) => dispatch => {
-    console.log(arr, name)
     dispatch(updateLectures(arr, name))
 };
 
 export const removeLecture = (date, lecture) => {
     return dispatch => {        
         dispatch(updateSchedule(constants.REMOVE_SCHEDULE, date, lecture));
+    }
+}
+
+export const addLecture = (date, lecture) => {
+    return dispatch => {        
+        dispatch(updateSchedule(constants.ADD_SCHEDULE, date, lecture));
     }
 }
 
@@ -140,5 +153,13 @@ export const setDependents = (type) => {
 export const saveConfig = (type, data) => {
     return dispatch => {
         dispatch(setConfig(type, data));
+    }
+}
+
+export const setAccountType = (type) => {
+    return dispatch => {
+        dispatch(setConfig("SET_TYPE", {
+            type
+        }));
     }
 }

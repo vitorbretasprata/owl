@@ -1,10 +1,41 @@
+const myHeaders = new Headers();
+
 export const requestLogin = (values) => {
     return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve({                
-                accountType: 0                
-            })
-        }, 5000);
+        /*
+        try {
+            const init = {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json', 
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: values.email,
+                    password: values.password
+                }),
+                mode: 'cors',
+                cache: 'default'
+            }
+
+            console.log(init)
+    
+            fetch("http://192.168.1.182:3333/auth/login", init)
+                .then(data => console.log(data))
+                .catch(error => console.error(error));
+
+        } catch(error) {
+            console.error(error);
+            reject("Ocorreu um error no servidor, tente novamente mais tarde.");
+        }
+        */
+       const data = {
+           name: 'Vitor Bretas Prata',
+           accountType: 0           
+       }     
+
+        resolve(data);
+                
     });
 }
 
