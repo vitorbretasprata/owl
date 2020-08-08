@@ -7,21 +7,21 @@ import { setInfo, getInfoAccountAPI } from "../Api/AccountApi";
 //Action states - User
 
 const Request = () => ({
-    type: constants.REQUEST    
+    type: constants.REQUEST
 });
 
 const Success = () => ({
-    type: constants.SUCCESS    
+    type: constants.SUCCESS
 });
 
 const Failure = error => ({
     type: constants.FAILURE,
-    payload: { error }   
+    payload: { error }
 });
 
 const setConfig = (type, data) => ({
     type: type,
-    payload: data   
+    payload: data
 });
 
 const setAccountExtraInfoAll = data => ({
@@ -51,14 +51,21 @@ const updateSchedule = (type, date, lecture) => ({
         date,
         lecture
     }
-})
+});
 
 const setSchedule = (arr) => ({
     type: constants.SET_SCHEDULE,
     payload: {
         schedules: arr
     }
-})
+});
+
+const setBankAccountInfo = bankInfo => ({
+    type: constants.SET_BANK_ACCOUNT,
+    payload: {
+        bankInfo
+    }
+});
 
 /* -- Actions functions -- */ 
 
@@ -73,7 +80,7 @@ export const SetAccountInfo = (type, info) => {
                 type: data.type
             }));
             dispatch(setAccountExtraInfoAll(data.info));
-            
+
             RootStack.reset(0, [{ name: "TabBottom" }]);
         }).catch(error => {
             dispatch(Failure(error.message));
@@ -109,13 +116,13 @@ export const setLectures = (arr, name) => dispatch => {
 };
 
 export const removeLecture = (date, lecture) => {
-    return dispatch => {        
+    return dispatch => {
         dispatch(updateSchedule(constants.REMOVE_SCHEDULE, date, lecture));
     }
 }
 
 export const addLecture = (date, lecture) => {
-    return dispatch => {        
+    return dispatch => {
         dispatch(updateSchedule(constants.ADD_SCHEDULE, date, lecture));
     }
 }
@@ -135,7 +142,13 @@ export const setLectureInfo = (lectureTime, lectureValue, movementValue ) => {
     return dispatch => {
         dispatch(setAccountExtraInfo(lectureTime, "lectureTime"));
         dispatch(setAccountExtraInfo(lectureValue, "lectureValue"));
-        dispatch(setAccountExtraInfo(movementValue, "movementValue"));        
+        dispatch(setAccountExtraInfo(movementValue, "movementValue"));
+    }
+}
+
+export const setBankAccount = bankInfo => {
+    return dispatch => {
+        dispatch(setBankAccountInfo(bankInfo));
     }
 }
 

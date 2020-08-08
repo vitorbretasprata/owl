@@ -26,16 +26,6 @@ const Account = ({ navigation, SetAccountInfo, loading }) => (
                     round 
                     uppercase
                     style={styles.button}
-                    onPress={() => navigation.navigate("ConfigParent")}
-                >
-                    Responsável
-                </Button>
-
-                <Button 
-                    color="#F58738"
-                    round 
-                    uppercase
-                    style={styles.button}
                     onPress={() => SetAccountInfo({ type: 2 })}
                 >
                     Aluno

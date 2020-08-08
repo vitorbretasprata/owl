@@ -16,14 +16,13 @@ const AccountReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: true
-            }        
+            }
         case constants.SUCCESS: 
             return {
                 ...state,
                 loading: false,
                 error: ""
             } 
-
         case constants.FAILURE: 
             return {
                 ...state,
@@ -45,13 +44,11 @@ const AccountReducer = (state = initialState, action) => {
                 ...state,
                 location: action.payload.location
             }
-
         case constants.SET_EXTRA_INFO_ALL:
             return {
                 ...state,
                 extraInfo: action.payload
             }
-        
         case constants.SET_EXTRA_INFO:
             return {
                 ...state,
@@ -70,7 +67,7 @@ const AccountReducer = (state = initialState, action) => {
                         [action.payload.name]: action.payload.arr
                     }
                 }
-            }  
+            }
         case constants.REMOVE_SCHEDULE:
             return {
                 ...state,
@@ -80,7 +77,7 @@ const AccountReducer = (state = initialState, action) => {
                         ...(state.dates[action.payload.date].filter(item => (item !== action.payload.lecture))),
                     ]
                 }
-            }   
+            }
         case constants.ADD_SCHEDULE:
             return {
                 ...state,
@@ -88,11 +85,19 @@ const AccountReducer = (state = initialState, action) => {
                     ...state.dates,
                     [action.payload.date]: [...state.dates[action.payload.date], action.payload.lecture]
                 }
-            }             
+            }
         case constants.SET_SCHEDULE:
             return {
                 ...state,
                 dates: action.payload.schedules
+            }
+        case constants.SET_BANK_ACCOUNT:
+            return {
+                ...state,
+                extraInfo: {
+                    ...state.extraInfo,
+                    bankInfo: state.extraInfo.bankInfo
+                }
             }
         default: 
             return state;

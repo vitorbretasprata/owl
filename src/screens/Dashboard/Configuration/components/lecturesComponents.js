@@ -2,21 +2,20 @@ import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
 import { Text, Icon } from "galio-framework";
-import { TouchableWithoutFeedback, ScrollView } from "react-native-gesture-handler";
+import { TouchableWithoutFeedback, ScrollView, BaseButton } from "react-native-gesture-handler";
 import { TextInputMask } from 'react-native-masked-text';
 
 import LectureModal from "./modals/lectureModal";
-import { setDays, setLectures, setLectureInfo } from "../../../../services/Account/action";
+import BankModal from "./modals/bankModal";
+import { setLectures, setLectureInfo, setBankAccount } from "../../../../services/Account/action";
 import LectureList from "./lectureList";
-import { daysArr } from "../../constants/constants";
-
 
 function LecturesComponent(
     { 
         lectures, 
-        days, 
+        bankInfo,
+        setBankAccount,
         setLectures, 
-        setDays, 
         setLectureInfo, 
         lectureTime, 
         lectureValue, 
@@ -24,8 +23,9 @@ function LecturesComponent(
     }
 ) {
 
-    const [showModal, setShowModal] = useState(false);
-    const [selectedDays, setSelectedDays] = useState([1, 3]);
+    const [showLectureModal, setShowLectureModal] = useState(false);
+    const [showBankModal, setShowBankModal] = useState(false);
+
     const [selectedLecture, setSelectedLecture] = useState("");
     const [lectureArr, setLectureArr] = useState([]);
     const [showEdit, setShowEdit] = useState(false);
@@ -45,10 +45,10 @@ function LecturesComponent(
         if(valueLecture && timeLecture && valueMovement) {
             setShowEdit(false);
             setLectureInfo(valueLecture, timeLecture, valueMovement)
-        }        
+        }
     }
 
-    const showLectureModal = lecture => {
+    const _showLectureModal = lecture => {
         setSelectedLecture(lecture);
         setLectureArr(lectures[lecture]);
         setShowModal(true);
@@ -56,66 +56,78 @@ function LecturesComponent(
 
     const updateLectures = (arr, name) => {
         setLectures(arr, name);
-    }    
-
-    const close = () => {
-        setShowModal(false);
     }
 
-    const handleDays = (item) => {
-        if(selectedDays.includes(item)) {
-            let aux = selectedDays;
-            const index = aux.indexOf(item);
-            if (index > -1) {
-                aux.splice(index, 1);
-                setSelectedDays(aux);
-            }
-        } else {
-            setSelectedDays([...setSelectedDays, item]);
-        }
-    }
+    const closeLectureModal = () => setShowModal(false);
+    const _showBankModal = () => setShowBankModal(true);
+    const closeBankModal = () => setShowBankModal(false);
+    const updateBankInfo = info => setBankAccount(info);
 
     return (
         <ScrollView style={styles.container}>
                 <LectureModal 
-                    showModal={showModal}
-                    closeModal={close}
+                    showModal={showLectureModal}
+                    closeModal={closeLectureModal}
                     selectedItem={selectedLecture}
                     selectedItemArr={lectureArr}
                     saveSelectedYears={updateLectures}
                 />
+                <BankModal 
+                    showModal={showBankModal}
+                    closeModal={closeBankModal}
+                    handleBankInfo={updateBankInfo}
+                />
                 <View style={styles.section}>
                     <View style={styles.sectionTitle}>
                         <Text style={styles.title}>
-                            Dias
+                            Dados Bancários
                         </Text>
+
+                        <BaseButton onPress={_showBankModal} style={styles.actionButton}>
+                            <Icon 
+                                name="calendar"
+                                family="AntDesign"
+                                color="#fff"
+                                size={20}
+                            />
+                        </BaseButton>
                     </View>
 
-                    {daysArr.map((day, index)=> (
-                        <TouchableWithoutFeedback
-                            key={index}
-                            style={styles.day}
-                            onPress={() => handleDays(day)}
-                        >
-                            <Text style={[
-                                styles.dayText, 
-                                { 
-                                    color: selectedDays.includes(index) 
-                                    ? 
-                                        "#F58738"  
-                                    : 
-                                        "#707070" 
-                                }
-                            ]}>
-                                {day}
+                    <View style={styles.bankInfoAlign}>
+                        <View style={{...styles.bankInfo }}>
+                            <Text style={styles.bankInfoTitle}>
+                                CPF
                             </Text>
-                        </TouchableWithoutFeedback>
-                    ))}              
-                        
-                    
+                            <Text>
+                                {bankInfo.cpf}
+                            </Text>
 
-                    <View style={styles.separator} />            
-                    
+                            <Text style={styles.bankInfoTitle}>
+                                Nome Completo
+                            </Text>
+                            <Text>
+                                {bankInfo.completeName}
+                            </Text>
+                        </View>
+
+                        <View style={{...styles.bankInfo }}>
+                            <Text style={styles.bankInfoTitle}>
+                                Agência
+                            </Text>
+                            <Text>
+                                {bankInfo.agency}
+                            </Text>
+
+                            <Text style={styles.bankInfoTitle}>
+                                Conta
+                            </Text>
+                            <Text>
+                                {bankInfo.bankAccount}
+                            </Text>
+                        </View>
+                    </View>
+
+                    <View style={styles.separator} />
                 </View>
 
                 <View style={styles.section}>
@@ -123,22 +135,22 @@ function LecturesComponent(
                         <Text style={styles.title}>
                             Matérias Lecionadas
                         </Text>
-                    </View>  
+                    </View>
 
                     {
                         Object
                             .keys(lectures)
-                            .map((lecture, index) =>              
+                            .map((lecture, index) =>
                                 <LectureList 
                                     lecture={lecture} 
                                     index={index} 
-                                    showLectureModal={showLectureModal}
+                                    showLectureModal={_showLectureModal}
                                     length={lectures[lecture].length}
                                     keyCell={index}
                                 />)
-                    }   
+                    }
 
-                    <View style={styles.separator} />   
+                    <View style={styles.separator} />
                 </View>
 
                 <View style={styles.section}>
@@ -157,8 +169,7 @@ function LecturesComponent(
                                         color="#F58738"
                                         size={25}
                                     />
-                                </TouchableWithoutFeedback>                               
-                                
+                                </TouchableWithoutFeedback>
                             ) : (
                                 <View style={styles.saveIcons}>
                                     <TouchableWithoutFeedback
@@ -173,7 +184,7 @@ function LecturesComponent(
                                     </TouchableWithoutFeedback>
                                     <TouchableWithoutFeedback
                                         onPress={saveEdit}  
-                                        style={{ marginLeft: 10 }}                                      
+                                        style={{ marginLeft: 10 }}
                                     >
                                         <Icon 
                                             family="AntDesign"
@@ -181,11 +192,11 @@ function LecturesComponent(
                                             color="#F58738"
                                             size={25}
                                         />
-                                    </TouchableWithoutFeedback>                                     
+                                    </TouchableWithoutFeedback>
                                 </View>
                             )}
                         </View>
-                        
+
                     </View>  
                     <View style={styles.inputSection}>
                         <Text style={styles.label}>Tempo de aula</Text>
@@ -201,9 +212,9 @@ function LecturesComponent(
                                     mask: "999"
                                 }}
                                 value={timeLecture}
-                                onChangeText={handleTimeLecture}                            
+                                onChangeText={handleTimeLecture}
                             />
-                        )}                         
+                        )}
                     </View>
                     <View style={styles.inputSection}>
                         <Text style={styles.label}>Valor da aula</Text>
@@ -223,12 +234,12 @@ function LecturesComponent(
                                     suffixUnit: ''
                                 }}
                                 value={valueLecture}
-                                onChangeText={handleValueLecture}                            
+                                onChangeText={handleValueLecture}
                             />
-                        )}                         
-                    </View>                    
+                        )}
+                    </View>
                     <View style={styles.inputSection}>
-                        <Text style={styles.label}>Taxa de deslocament</Text> 
+                        <Text style={styles.label}>Taxa de deslocamento</Text> 
                         {!showEdit ? (
                             <Text style={styles.value}>{valueMovement}</Text>
                         ) : (
@@ -245,9 +256,9 @@ function LecturesComponent(
                                     suffixUnit: ''
                                 }}
                                 value={valueMovement}
-                                onChangeText={handleValueMovement}                            
+                                onChangeText={handleValueMovement}
                             />
-                        )}                         
+                        )}
                     </View>
                 </View>
         </ScrollView>
@@ -256,10 +267,10 @@ function LecturesComponent(
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1        
+        flex: 1
     },
     section: {
-        paddingTop: 30,
+        paddingTop: 10,
         paddingBottom: 25
     },
     options: {
@@ -271,6 +282,17 @@ const styles = StyleSheet.create({
         paddingHorizontal: 30,
         alignItems: "center"
     },
+    bankInfoAlign: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center"
+    },
+    actionButton: {
+        padding: 10,
+        backgroundColor: "#F58738",
+        borderRadius: 20,
+        marginVertical: 10
+    },
     input: {
         borderColor: "#fff",
         color: "#707070",
@@ -280,13 +302,12 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         paddingHorizontal: 15,
         marginTop: 10
-        
    },
     alignIcons: {
         marginRight: 20
     },
     saveIcons: {
-        flexDirection: "row"        
+        flexDirection: "row"
     },
     option: {
         paddingHorizontal: 40,
@@ -301,7 +322,10 @@ const styles = StyleSheet.create({
         marginLeft: 10
     },
     sectionTitle: {
-        paddingHorizontal: 30             
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingHorizontal: 30
     },
     title: {
         fontSize: 20,
@@ -310,17 +334,6 @@ const styles = StyleSheet.create({
     separator: {
         height: 1,
         backgroundColor: "#e3e3e3"
-    },
-    day: {
-        paddingHorizontal: 45,
-        alignItems: "flex-start",
-        borderRadius: 20,
-        height: 45,
-        marginVertical: 5
-    },
-    dayText: {
-        textAlign: "center",
-        marginVertical: 10
     },
     inputSection: {
         marginVertical: 10,
@@ -335,13 +348,21 @@ const styles = StyleSheet.create({
         fontSize: 15,
         paddingLeft: 10,
         marginTop: 10
+    },
+    bankInfo: {
+        paddingLeft: 50
+    },
+    bankInfoTitle: {
+        fontSize: 18,
+        color: "#707070",
+        paddingVertical: 5
     }
 });
 
 const MapStateToProps = state => {
-    return {        
+    return {
         type: state.account.type,
-        days: state.account.extraInfo.days,
+        bankInfo: state.account.extraInfo.bankInfo,
         lectures: state.account.extraInfo.lectures,
         lectureTime: state.account.extraInfo.lectureTime,
         lectureValue: state.account.extraInfo.lectureValue,
@@ -349,4 +370,4 @@ const MapStateToProps = state => {
     }
 }
 
-export default connect(MapStateToProps, { setDays, setLectures, setLectureInfo })(LecturesComponent);
+export default connect(MapStateToProps, { setBankAccount, setLectures, setLectureInfo })(LecturesComponent);

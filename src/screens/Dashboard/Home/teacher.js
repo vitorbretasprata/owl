@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Dimensions, View, InteractionManager } from "react-native";
-import { Text } from "galio-framework";
-import { ScrollView, BaseButton } from "react-native-gesture-handler";
+import { StyleSheet, Dimensions, View, InteractionManager, Linking } from "react-native";
+import { Text, Icon } from "galio-framework";
+import { ScrollView, BaseButton, TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 import { yearsName } from "../../constants/index";
 import HeaderSvg from "../components/headerSvg";
@@ -12,7 +12,7 @@ export default({ route: { params }, navigation }) => {
 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(false);
-    const [info, setInfo] = useState(null)
+    const [info, setInfo] = useState(null);
 
 
     useEffect(() => {
@@ -43,6 +43,17 @@ export default({ route: { params }, navigation }) => {
         navigation.navigate("TeacherCalendar");
     }
 
+    const handlePhone = () => {
+        Linking.canOpenURL("whatsapp://send?text=teste")
+            .then(supported => {
+                if(supported) {
+                    return Linking.openURL("whatsapp://send?phone=5561981242660&text=teste");
+                } else {
+                    return Linking.openURL("https://api.whatsapp.com/send?phone=5561981242660&text=teste");
+                }
+            });
+    }
+
     if(isLoading) {
         return (
             <View style={styles.container}>
@@ -61,7 +72,19 @@ export default({ route: { params }, navigation }) => {
 
     return (
         <ScrollView style={styles.container}> 
+            <HeaderSvg />
             <View style={styles.teacherAction}>
+                
+                <TouchableWithoutFeedback onPress={handlePhone}>
+                    <View style={styles.logoWhatsapp}>
+                        <Icon 
+                            name="whatsapp" 
+                            family="MaterialCommunityIcons" 
+                            color="#fff" 
+                            size={40} 
+                        />
+                    </View>
+                </TouchableWithoutFeedback>
                 <BaseButton onPress={handleCalendar} style={styles.actionButton}>
                     <Text style={styles.buttonText}>
                         Agendar Aula
@@ -125,12 +148,12 @@ export default({ route: { params }, navigation }) => {
                                             </Text>
                                         ))}
                                     </View>
-                                )                                
+                                )
                             })}
                         </View>
                     </>
                 )}
-                
+
             </View>
         </ScrollView>
     );
@@ -138,6 +161,14 @@ export default({ route: { params }, navigation }) => {
 
 const styles = StyleSheet.create({
     container: {
+    },
+    logoWhatsapp: {
+        height: 60,
+        width: 60,
+        borderRadius: 30,
+        backgroundColor: "#25D366",
+        justifyContent: "center",
+        alignItems: "center"
     },
     teacherAction: {
         justifyContent: "center",
@@ -158,7 +189,6 @@ const styles = StyleSheet.create({
     buttonText: {
         color: "#fff"
     },
-
     teacherInfo: {
         flexDirection: "row",
         justifyContent: "space-between",

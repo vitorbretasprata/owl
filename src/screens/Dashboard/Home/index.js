@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, SafeAreaView, Dimensions, View, InteractionManager } from "react-native";
 import { connect } from "react-redux";
-import * as Location from "expo-location";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
 import * as Notifications from "expo-notifications";
@@ -17,20 +16,12 @@ const Dados = [1, 2, 3 , 4]
 
 const { width } = Dimensions.get("screen");
 
-Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-        shouldSetBadge: true,
-        shouldPlaySound: true,
-        shouldShowAlert: true
-    })
-});
-
 async function sendPushNotification(expoPushToken) {
     const message = {
       to: expoPushToken,
       sound: 'default',
-      title: 'Original Title',
-      body: 'And here is the body!',
+      title: 'Aula marcada!',
+      body: 'O professor aceitou sua solicitacao para de agendamento de aula!',
       data: { data: 'goes here' },
     };
   
@@ -64,7 +55,6 @@ async function registerForPushNotificationsAsync() {
       }
 
       token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log(token);
 
     } else {
 
@@ -81,7 +71,6 @@ async function registerForPushNotificationsAsync() {
       });
 
     }
-  
     return token;
 }
 
@@ -89,7 +78,8 @@ function Home({ getProfessors, professors, loading, data, getInfoAccount, naviga
 
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [expoPushToken, setExpoPushToken] = useState("");
-    const [loadingData, setloadingData] = useState(true);
+    const [loadingData, setLoadingData] = useState(true);
+    const [notification, setNotification] = useState({});
 
     useEffect(() => {
         InteractionManager.runAfterInteractions(() => {
@@ -97,46 +87,21 @@ function Home({ getProfessors, professors, loading, data, getInfoAccount, naviga
                 getInfoAccount();
             }
 
-            registerForPushNotificationsAsync().then(token => {
-                setListeners();
-                setExpoPushToken(token);
-            });
-    
-            (async () => {
-                let { status } = await Location.requestPermissionsAsync();
-                if(status != 'granted')
-                    alert("");
-    
-                let location = await Location.getCurrentPositionAsync({});
-                mountFilter(location);
-            })();
+            if(!expoPushToken) {
+                registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+            }
 
-            setloadingData(false);
-        });   
+            setLoadingData(false);
+        });
     }, []);
 
-    const setListeners = () => {
-
-        Notifications.addNotificationReceivedListener(notification => {
-            setNotification(notification);
-        });
-
-        Notifications.addNotificationResponseReceivedListener(response => {
-            console.log(response);
-        });
+    const handleNot = notification => {
+        console.log(notification);
+        setNotification(notification);
     }
 
-    useEffect(() => {
-        console.log(expoPushToken);        
-    }, [expoPushToken]);
-
-    const mountFilter = location => {
-
-        const filter = {
-            location
-        }
-
-        getProfessors(filter);
+    const handleRes = response => {
+        console.log("Jesus", response);
     }
 
     const renderEmptyList = () => <Text>Lista está vazia!</Text>
@@ -151,6 +116,9 @@ function Home({ getProfessors, professors, loading, data, getInfoAccount, naviga
 
     const extractor = (item, index) => index.toString();
 
+    const sendNotification = async () => {
+        await sendPushNotification(expoPushToken);
+    }
 
     const renderProfessor = ({ item, index }) => {
         return (
@@ -179,10 +147,10 @@ function Home({ getProfessors, professors, loading, data, getInfoAccount, naviga
                         ListFooterComponent={renderFooter}
                         onEndReached={renderMore}
                         onRefresh={refresh}
-                        refreshing={isRefreshing}                
+                        refreshing={isRefreshing}
                     />
                 </>
-            )}            
+            )}
         </SafeAreaView>
     );
 };
@@ -190,7 +158,6 @@ function Home({ getProfessors, professors, loading, data, getInfoAccount, naviga
 const styles = StyleSheet.create({
     container: {
         alignItems: "center",
-        borderWidth: 1,
         paddingBottom: 75
     },
     list: {
@@ -202,7 +169,7 @@ const styles = StyleSheet.create({
         height: 1,
         backgroundColor: "#e3e3e3",
         marginVertical: 15
-    } 
+    }
 });
 
 const MapStateToProps = state => {
@@ -212,5 +179,7 @@ const MapStateToProps = state => {
         data: state.account
     }
 }
+
+//() => navigation.navigate("TeacherProfile", { teacherId: index })
 
 export default connect(MapStateToProps, { getProfessors, getInfoAccount })(Home);

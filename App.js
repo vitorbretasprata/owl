@@ -11,9 +11,22 @@ import { persistor, store } from "./src/services/store";
 
 enableScreens();
 
+Notifications.setNotificationHandler({
+  handleNotification: async (res) => {
+      console.log(res)
+      return {
+          shouldSetBadge: true,
+          shouldPlaySound: true,
+          shouldShowAlert: true
+      }      
+  }
+});
+
 export default function App() {
   useEffect(() => {
     
+    Notifications.addNotificationReceivedListener(notification => console.log("dfsjhdsakljfasdgfklsdfds", notification));
+    Notifications.addNotificationResponseReceivedListener(res => console.log("dfsjhdsakljfasdgfklsdfds", res));
     return () => {
       Notifications.removeAllNotificationListeners();
     }

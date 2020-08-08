@@ -16,7 +16,6 @@ import Lecture from "./screens/Dashboard/Calendario/lecture";
 
 import TeacherProfile from "./screens/Dashboard/Home/teacher";
 import TeacherCalendar from "./screens/Dashboard/Home/calendar";
-import TeacherCalendarDay from "./screens/Dashboard/Home/day";
 
 import TabBottom from "./components/bottomTabNavigator";
 import Configuration from "./screens/Dashboard/Configuration/index";
@@ -43,6 +42,14 @@ const headerLectureStyle = {
     headerTintColor: '#fff'
 }
 
+const headerCalendarStyle = {
+    headerTitle: 'Agendar Aula',
+    headerStyle: {
+        backgroundColor: '#F58738',
+    },
+    headerTintColor: '#fff'
+}
+
 const Stack = createStackNavigator();
 function StackNavigator({ status }) {
 
@@ -61,8 +68,7 @@ function StackNavigator({ status }) {
                         <Stack.Screen name="ConfigTeacher" component={ConfigTeacher} options={{ headerShown: false }} />
                         <Stack.Screen name="Account" component={Account} options={{ headerShown: false }} />
                         <Stack.Screen name="TeacherProfile" component={TeacherProfile} options={{ headerShown: false }} />
-                        <Stack.Screen name="TeacherCalendar" component={TeacherCalendar} options={{ headerShown: false }} />
-                        <Stack.Screen name="TeacherCalendarDay" component={TeacherCalendarDay} options={{ headerShown: false }} />
+                        <Stack.Screen name="TeacherCalendar" component={TeacherCalendar} options={{ ...headerCalendarStyle }} />
 
                         <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }}/>
                         <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }}/>
