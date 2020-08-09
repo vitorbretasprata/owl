@@ -6,12 +6,13 @@ import { BaseButton } from "react-native-gesture-handler";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { showMessage } from "react-native-flash-message";
 
+import { scheduleClass } from "../../../services/Account/action";
 
 import PaymentModal from "./components/paymentModal";
 
 const { width } = Dimensions.get("screen");
 
-function TeacherCalendar() {
+function TeacherCalendar({ scheduleClass, route: { params } }) {
 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(false);
@@ -84,19 +85,37 @@ function TeacherCalendar() {
         setSelectedHour(convertedTime);
     }
 
+    const converDateSchedule = (date) => {
+        return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+    }
+
     const saveBankInfo = ({ bank, cardNumber, cardDate, cardDigits }) => {
         setCardDate(cardDate);
         setCardDigits(cardDigits);
         setCardNumber(cardNumber);
     }
 
-    const scheduleClass = () => {
+    const handleSchedule = () => {
         const isEmpty = !(selectedHour && selectedDate && cardNumber && cardDate && cardDigits);
         setIsProcessing(true);
 
         if(isEmpty) {
             displayMessage("danger", "Error", "A data ou a hora estão vazias, favor preencha-as corretamente.");
         } else {
+
+            const convertedDate = converDateSchedule(ISODate);
+            const { teacherInfo } = params;
+
+            const endHour = ISODate.setMinutes(ISODate.getMinutes() + teacherInfo.classTime);
+            const scheduteInfo = {
+                nome: teacherInfo.name,
+                horarioInicio: `${ISODate.getHours()}:${ISODate.getMinutes()}`,
+                horarioFim: `${endHour.getHours()}:${endHour.getMinutes()}`,
+                valor: 25.50,
+                local: "Online"
+            }
+
+            scheduleClass(convertedDate, scheduteInfo);
             displayMessage("success", "Agendamento", "Sua solicitação de agendamento foi enviada, aguarde a aceitação do professor.");
         }
         setIsProcessing(true);
@@ -209,7 +228,7 @@ function TeacherCalendar() {
 
             <BaseButton 
                 style={{...styles.actionButton, marginTop: 25, paddingHorizontal: 15  }} 
-                onPress={scheduleClass}
+                onPress={handleSchedule}
                 enabled={!isProcessing}
             >
                 <Text style={styles.buttonText}>
@@ -273,4 +292,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps, null)(TeacherCalendar);
+export default connect(mapStateToProps, { scheduleClass })(TeacherCalendar);

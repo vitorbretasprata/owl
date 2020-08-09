@@ -33,7 +33,9 @@ export default({ route: { params }, navigation }) => {
                 "Gramática": [3, 6, 4],
                 "Física": [3, 6, 4]
             },
-            phone: 5561981242660
+            phone: 5561981242660,
+            classTime: 50,
+            value: 35.5
         }
 
         setInfo(teacher);
@@ -41,7 +43,7 @@ export default({ route: { params }, navigation }) => {
     }  
 
     const handleCalendar = () => {
-        navigation.navigate("TeacherCalendar");
+        navigation.navigate("TeacherCalendar", { teacherInfo: info });
     }
 
     const handlePhone = () => {

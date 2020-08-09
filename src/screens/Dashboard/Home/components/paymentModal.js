@@ -126,11 +126,11 @@ export default memo(({ showModal, closeModal, setBankInfo }) => {
 
                         <TextInputMask 
                             style={{...styles.input, flex: 1, marginLeft: 10}}
-                            type={'only-numbers'}
+                            type={'custom'}
                             placeholder="Digitos"
                             keyboardType="numeric"
                             options={{
-                                mask: "999",
+                                mask: "999"
                             }}
                             value={cardDigits}
                             onChangeText={handleCardDigits}
