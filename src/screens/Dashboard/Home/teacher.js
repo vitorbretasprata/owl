@@ -6,7 +6,7 @@ import { ScrollView, BaseButton, TouchableWithoutFeedback } from "react-native-g
 import { yearsName } from "../../constants/index";
 import HeaderSvg from "../components/headerSvg";
 
-const { width } = Dimensions.get("screen");
+const { width, height } = Dimensions.get("screen");
 
 export default({ route: { params }, navigation }) => {
 
@@ -32,7 +32,8 @@ export default({ route: { params }, navigation }) => {
                 "Matemática": [3, 6, 4],
                 "Gramática": [3, 6, 4],
                 "Física": [3, 6, 4]
-            }
+            },
+            phone: 5561981242660
         }
 
         setInfo(teacher);
@@ -44,12 +45,12 @@ export default({ route: { params }, navigation }) => {
     }
 
     const handlePhone = () => {
-        Linking.canOpenURL("whatsapp://send?text=teste")
+        Linking.canOpenURL("whatsapp://send?text=Olá")
             .then(supported => {
                 if(supported) {
-                    return Linking.openURL("whatsapp://send?phone=5561981242660&text=teste");
+                    return Linking.openURL(`whatsapp://send?phone=${info.phone}&text=Olá`);
                 } else {
-                    return Linking.openURL("https://api.whatsapp.com/send?phone=5561981242660&text=teste");
+                    return Linking.openURL(`https://api.whatsapp.com/send?phone=${info.phone}&text=Olá`);
                 }
             });
     }
@@ -72,11 +73,11 @@ export default({ route: { params }, navigation }) => {
 
     return (
         <ScrollView style={styles.container}> 
-            <HeaderSvg />
-            <View style={styles.teacherAction}>
-                
+            <HeaderSvg navigation={navigation} />
+            <View style={{ ...styles.spaceBetween, ...styles.teacherAction }}>
+
                 <TouchableWithoutFeedback onPress={handlePhone}>
-                    <View style={styles.logoWhatsapp}>
+                    <View style={{ ...styles.actionButton, ...styles.buttonWhatsapp }}>
                         <Icon 
                             name="whatsapp" 
                             family="MaterialCommunityIcons" 
@@ -85,16 +86,21 @@ export default({ route: { params }, navigation }) => {
                         />
                     </View>
                 </TouchableWithoutFeedback>
-                <BaseButton onPress={handleCalendar} style={styles.actionButton}>
-                    <Text style={styles.buttonText}>
-                        Agendar Aula
-                    </Text>
-                </BaseButton>
-            </View>          
+                <TouchableWithoutFeedback onPress={handleCalendar}>
+                    <View style={{ ...styles.actionButton, ...styles.buttonSchedule }}>
+                        <Icon 
+                            name="schedule" 
+                            family="MaterialIcons" 
+                            color="#fff" 
+                            size={40} 
+                        />
+                    </View>
+                </TouchableWithoutFeedback>
+            </View>
             <View style={styles.teacherContainer}>
                 {info && (
                     <>
-                        <View style={styles.teacherInfo}> 
+                        <View style={{...styles.spaceBetween, ...styles.teacherInfo}}> 
                             <View style={styles.teacherNumber}>
                                 <Text style={styles.number}>
                                     {info.totalClasses}
@@ -122,9 +128,9 @@ export default({ route: { params }, navigation }) => {
                                 </Text>
                             </View>
                         </View>
-                        
-                        <View style={styles.divisor}/>                
-                        
+
+                        <View style={styles.divisor}/>
+
                         <Text style={styles.teacherName}>
                             {info.name}
                         </Text>
@@ -162,16 +168,30 @@ export default({ route: { params }, navigation }) => {
 const styles = StyleSheet.create({
     container: {
     },
-    logoWhatsapp: {
+    actionButton: {
         height: 60,
         width: 60,
         borderRadius: 30,
-        backgroundColor: "#25D366",
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        borderWidth: 1,
+        borderColor: "#e3e3e3",
+        marginBottom: 26
+    },
+    buttonSchedule: {
+        backgroundColor: "#F58738"
+    },
+    buttonWhatsapp: {
+        backgroundColor: "#25D366"
+    },
+    spaceBetween: {
+        justifyContent: "space-between",
+        flexDirection: "row"
     },
     teacherAction: {
-        justifyContent: "center",
+        marginTop: height * 0.15,
+        paddingHorizontal: width * 0.15,
+        flexDirection: "row",
         alignItems: "center"
     },
     teacherContainer: {
@@ -180,18 +200,10 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center"
     },
-    actionButton: {
-        padding: 10,
-        backgroundColor: "#F58738",
-        borderRadius: 3,
-        marginVertical: 10
-    },
     buttonText: {
         color: "#fff"
     },
     teacherInfo: {
-        flexDirection: "row",
-        justifyContent: "space-between",
         width: width - 140
     },
     teacherNumber: {
@@ -212,7 +224,7 @@ const styles = StyleSheet.create({
         marginBottom: 40
     },
     divisor: {
-        height: 2,
+        height: 1,
         width: width - 120,
         marginVertical: 10,
         backgroundColor: "#707070"

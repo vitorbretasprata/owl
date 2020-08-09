@@ -70,7 +70,6 @@ function SearchHeader() {
                         />
                     </BaseButton>
                 )}
-                
                 {(!(search === "") || isFocused) && (
                     <View style={styles.containerInput}>
                         <View style={styles.autoCompleteInput}>
@@ -87,8 +86,8 @@ function SearchHeader() {
                                 listContainerStyle={styles.autoCompleteListContainer}
                                 listStyle={styles.autoCompleteList}
                                 containerStyle={styles.containerAutoComplete}
-                            />  
-                        </View>                         
+                            />
+                        </View>
                         {!(search === "") && (
                             <BaseButton 
                                 style={styles.roundButton}
@@ -101,11 +100,11 @@ function SearchHeader() {
                                     size={18}
                                 />
                             </BaseButton>
-                        )}                        
-                    </View>                
+                        )}
+                    </View>
                 )}
                 <View style={styles.row}>
-                    {!isFocused && (                            
+                    {!isFocused && (
                         <BaseButton 
                             style={styles.btn}
                             onPress={search === "" ? openHeader : handleFilter}
@@ -117,10 +116,10 @@ function SearchHeader() {
                                 size={22} 
                             />
                         </BaseButton>
-                    )}                
+                    )}
                 </View>
-            </View>                       
-        </>                        
+            </View>
+        </>
     );
 }
 
@@ -193,8 +192,8 @@ const styles = StyleSheet.create({
        width: "100%",
     },
     sugestions: {
-        
-    }    
+
+    }
 })
 
 export default connect(null, null)(SearchHeader);
