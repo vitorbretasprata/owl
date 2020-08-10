@@ -50,10 +50,10 @@ export const Login = values => {
                         break;
                     case 2 || 3:
                         RootStack.reset(0, [{ name: "Search" }]);
-                        break;                    
+                        break;
                     default: 
                         break;
-                }                
+                }
             })
             .catch(error => {
                 dispatch(fetchFailure());

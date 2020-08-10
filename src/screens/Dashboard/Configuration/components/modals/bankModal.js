@@ -51,7 +51,7 @@ export default memo(({ showModal, closeModal, handleBankInfo }) => {
     const saveModal = () => {
         setLoading(true);
         const isValid = (TestaCPF() && name !== "" && agency !== "" && bankAccount !== "");
-        console.log(isValid)
+
         if(isValid) {
             setError("");
             setLoading(false);

@@ -13,7 +13,6 @@ enableScreens();
 
 Notifications.setNotificationHandler({
   handleNotification: async (res) => {
-      console.log(res)
       return {
           shouldSetBadge: true,
           shouldPlaySound: true,

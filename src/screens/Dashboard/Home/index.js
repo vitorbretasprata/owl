@@ -96,12 +96,10 @@ function Home({ getProfessors, professors, loading, data, getInfoAccount, naviga
     }, []);
 
     const handleNot = notification => {
-        console.log(notification);
         setNotification(notification);
     }
 
     const handleRes = response => {
-        console.log("Jesus", response);
     }
 
     const renderEmptyList = () => <Text>Lista está vazia!</Text>

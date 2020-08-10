@@ -26,7 +26,6 @@ function SearchHeader() {
     const data = Lectures.filter(lecture => lecture.includes(search));
 
     const handleInput = (text) => {
-        console.log(text);
         setSearch(text);
     }
 

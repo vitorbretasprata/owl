@@ -49,8 +49,6 @@ function Calendario({ navigation, dates }) {
 
     const isDayAvailable = (date) => {
         let dt = new Date(date.year, date.month, date.day);
-        console.log(dt.getDay())
-
     }
 
     const handleEmptyData = () => (
