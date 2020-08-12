@@ -50,13 +50,14 @@ function LecturesComponent(
     }
 
     const _showLectureModal = lecture => {
-        setSelectedLecture(lecture);
-        setLectureArr(lectures[lecture]);
+        const index = lecturesConstant.indexOf(lecture) + 1;
+        setSelectedLecture(index);
+        setLectureArr(lectures[index]);
         setShowLectureModal(true);
     }
 
-    const updateLectures = (arr, name) => {
-        setLectures(arr, name);
+    const updateLectures = (arr, index) => {
+        setLectures(arr, index);
     }
 
     const closeLectureModal = () => setShowLectureModal(false);
@@ -140,17 +141,15 @@ function LecturesComponent(
 
                     {
                         lecturesConstant.
-                            map((lecture, index) => {
-
-                                return <LectureList 
-                                lecture={lecture} 
-                                index={index} 
-                                showLectureModal={_showLectureModal}
-                                length={lectures[index + 1].length}
-                                keyCell={index}
-                            />
-                            }
-                                )
+                            map((lecture, index) => (
+                                <LectureList 
+                                    arrayLength={lectures[index + 1].length} 
+                                    handleClickModal={_showLectureModal} 
+                                    itemName={lecture}
+                                    keyCell={index}
+                                />
+                            )
+                        )
                     }
 
                 </View>

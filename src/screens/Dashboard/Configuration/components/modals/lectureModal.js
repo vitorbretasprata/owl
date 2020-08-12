@@ -14,7 +14,8 @@ import { Icon } from "galio-framework";
 
 const { width } = Dimensions.get("screen");
 
-export default memo(({ showModal, closeModal, selectedItem, selectedItemArr, saveSelectedYears }) => {
+function YearsModal({ showModal, closeModal, selectedItem, selectedItemArr, saveSelectedYears }) {
+
     const [yearsChecked, setYearsCheked] = useState([]);
     const [loadingModal, setLoadingModal] = useState(true);
     const [loadingSave, setLoadingSave] = useState(false);
@@ -24,9 +25,9 @@ export default memo(({ showModal, closeModal, selectedItem, selectedItemArr, sav
             if(selectedItem) {
                 chooseSelectedYears();
                 setLoadingModal(false);
-            }            
+            }
         });
-    }    
+    }
 
     const handleAll = event => {
         const all = Array.apply(null, new Array(yearsChecked.length)).map(x => event);
@@ -35,14 +36,16 @@ export default memo(({ showModal, closeModal, selectedItem, selectedItemArr, sav
 
     const chooseSelectedYears = () => {
         let newArr = Array.apply(null, new Array(yearsName.length)).map(x => false);
-        if(selectedItemArr && selectedItemArr.length !== 0) {
+        if(selectedItem && selectedItemArr.length === 0) {
+            setYearsCheked(newArr);
+        } else {
             for (let index = 0; index < selectedItemArr.length; index++) {
                 let i = selectedItemArr[index];
-                newArr[i] = true;                
+                newArr[i] = true;
             }
-        } 
-        
-        setYearsCheked(newArr);
+
+            setYearsCheked(newArr);
+        }
         setLoadingModal(false);
     }
 
@@ -60,11 +63,11 @@ export default memo(({ showModal, closeModal, selectedItem, selectedItemArr, sav
                 if(e) arr.push(i);
                 return arr;
             }, []);
-            
-            saveSelectedYears(indexArr, selectedItem);
 
-        } else {            
+            saveSelectedYears(indexArr, selectedItem);
+        } else {
             saveSelectedYears([], selectedItem);
+
         }
         setLoadingSave(false);
         cleanModal();
@@ -99,7 +102,7 @@ export default memo(({ showModal, closeModal, selectedItem, selectedItemArr, sav
                             </View>
                             
                             <View style={styles.buttons}>
-                                <TouchableWithoutFeedback onPress={cleanModal} style={styles.btn}>
+                                <TouchableWithoutFeedback onPress={cleanModal}>
                                     <Icon 
                                         name="close" 
                                         family="AntDesign" 
@@ -112,7 +115,7 @@ export default memo(({ showModal, closeModal, selectedItem, selectedItemArr, sav
                                     <Text>{loadingSave && "L"}</Text>
                                 </View>
 
-                                <TouchableWithoutFeedback onPress={saveModal} style={styles.btn}>
+                                <TouchableWithoutFeedback onPress={saveModal}>
                                     <Icon 
                                         name="check" 
                                         family="AntDesign" 
@@ -126,8 +129,8 @@ export default memo(({ showModal, closeModal, selectedItem, selectedItemArr, sav
                 </View>
             </View>
         </Modal>
-    );
-});  
+    )
+}
 
 const styles = StyleSheet.create({
     modal: {
@@ -151,16 +154,15 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         width: "100%",
         zIndex: 100,
-        paddingHorizontal: 20
+        paddingHorizontal: 30
     },
     titleModal: {
         textAlign: "center",
         fontSize: 16
-    },
-    btn: {
-        paddingHorizontal: 10
-    },
+    },    
     checkBtns: {
         marginVertical: 15
     }
 });
+
+export default memo(YearsModal);
