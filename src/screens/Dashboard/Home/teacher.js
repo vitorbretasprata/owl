@@ -60,7 +60,7 @@ export default({ route: { params }, navigation }) => {
     if(isLoading) {
         return (
             <View style={styles.container}>
-                
+
             </View>
         );
     }
@@ -68,14 +68,14 @@ export default({ route: { params }, navigation }) => {
     if(error) {
         return (
             <View style={styles.container}>
-                
+
             </View>
         );
     }
 
     return (
         <ScrollView style={styles.container}> 
-            <HeaderSvg navigation={navigation} />
+            <HeaderSvg navigation={navigation} needNavigation={true} />
             <View style={{ ...styles.spaceBetween, ...styles.teacherAction }}>
 
                 <TouchableWithoutFeedback onPress={handlePhone}>
@@ -168,8 +168,6 @@ export default({ route: { params }, navigation }) => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-    },
     actionButton: {
         height: 60,
         width: 60,

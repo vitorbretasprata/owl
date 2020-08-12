@@ -101,7 +101,7 @@ function YearsModal({ showModal, closeModal, lecture, saveSelectedYears }) {
                                 <Check label="Selecionar todos" updateAll={handleAll} initValue={yearsChecked.includes(false) ? false : true} />
                                 {yearsChecked.map((y, i) => <Check label={yearsName[i]} initValue={y} updateCheck={update} key={i} position={i} />)}
                             </View>
-                            
+
                             <View style={styles.buttons}>
                                 <TouchableWithoutFeedback onPress={cleanModal}>
                                     <Icon 
@@ -126,7 +126,7 @@ function YearsModal({ showModal, closeModal, lecture, saveSelectedYears }) {
                                 </TouchableWithoutFeedback>
                             </View>
                         </>
-                    )}                    
+                    )}
                 </View>
             </View>
         </Modal>

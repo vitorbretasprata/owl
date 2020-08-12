@@ -5,7 +5,8 @@ import {
     StyleSheet, 
     Dimensions, 
     TouchableWithoutFeedback,
-    TextInput
+    TextInput,
+    ActivityIndicator
 } from "react-native";
 import { Text, Icon } from "galio-framework";
 import { TextInputMask } from 'react-native-masked-text';
@@ -44,34 +45,44 @@ export default memo(({ showModal, closeModal, handleBankInfo }) => {
         Resto = (Soma * 10) % 11;
     
         if ((Resto == 10) || (Resto == 11))  Resto = 0;
-        if (Resto != parseInt(strCPF.substring(10, 11) ) ) return false;
+        if (Resto != parseInt(strCPF.substring(10, 11))) return false;
         return true;
     }
 
     const saveModal = () => {
         setLoading(true);
-        const isValid = (TestaCPF() && name !== "" && agency !== "" && bankAccount !== "");
 
-        if(isValid) {
-            setError("");
+        const isCPFValid = TestaCPF(cpf);
+
+        if(!isCPFValid) {
+            setError("CPF inválido.");
             setLoading(false);
+            return;
+        }
 
-            const bankInfo = {
-                agency,
-                cpf,
-                bankAccount,
-                completeName: name
-            }
+        const isValid = (name && agency && bankAccount);
 
-            handleBankInfo(bankInfo);
-            cleanModal();
-        } else {
+        if(!isValid) {
             setError("O valor do campo está vazio ou inválido.");
             setLoading(false);
+            return;
         }
+
+        setError("");
+
+        const bankInfo = {
+            agency,
+            cpf,
+            bankAccount,
+            completeName: name
+        }
+
+        handleBankInfo(bankInfo);
+        cleanModal();
     }
 
     const cleanModal = () => {
+        setLoading(false);
         setCPF("");
         setName("");
         setAgency("");
@@ -117,7 +128,7 @@ export default memo(({ showModal, closeModal, handleBankInfo }) => {
 
                     <View style={styles.alignInputs}>
                         <TextInputMask
-                            style={styles.smallerInput}
+                            style={{...styles.input, ...styles.smallerInput }}
                             type={'custom'}
                             placeholder="Agência"
                             keyboardType="numeric"
@@ -129,7 +140,7 @@ export default memo(({ showModal, closeModal, handleBankInfo }) => {
                             onChangeText={handleAgency}
                         />
                         <TextInputMask 
-                            style={styles.smallerInput}
+                            style={{...styles.input, ...styles.smallerInput }}
                             type={'custom'}
                             placeholder="Conta"
                             value={bankAccount}
@@ -145,7 +156,6 @@ export default memo(({ showModal, closeModal, handleBankInfo }) => {
                     <View style={styles.buttons}>
                         <TouchableWithoutFeedback 
                           onPress={cleanModal} 
-                          style={styles.btn}
                         >
                             <Icon 
                                 name="close" 
@@ -155,13 +165,10 @@ export default memo(({ showModal, closeModal, handleBankInfo }) => {
                             />
                         </TouchableWithoutFeedback>
 
-                        <View>
-                            <Text>{loading && "L"}</Text>
-                        </View>
+                        {loading &&  <ActivityIndicator size="small" color="#F58738" />}
 
                         <TouchableWithoutFeedback 
                           onPress={saveModal} 
-                          style={styles.btn}
                         >
                             <Icon 
                                 name="check" 
@@ -170,7 +177,7 @@ export default memo(({ showModal, closeModal, handleBankInfo }) => {
                                 size={25} 
                             />
                         </TouchableWithoutFeedback>
-                    </View>                    
+                    </View>
                 </View>
             </View>
         </Modal>
@@ -190,31 +197,27 @@ const styles = StyleSheet.create({
         width: width - 50,
         borderRadius: 10,
         paddingVertical: 10,
-        paddingHorizontal: 15,
+        paddingHorizontal: 25,
         backgroundColor: "#fff",
     },
     title: {
       textAlign: "center",
-      fontSize: 16,
-      marginVertical: 10
+      fontSize: 20,
+      fontFamily:"Roboto",
+      marginVertical: 10,
+      color: "#F58738"
     },
     buttons: {
         flexDirection: "row",
         justifyContent: "space-between",
         width: "100%",
         paddingHorizontal: 20,
-        paddingTop: 10
+        marginVertical: 10
     },
     alignInputs: {
       flexDirection: "row",
       justifyContent: "space-between",
       marginBottom: 10
-    },
-    btn: {
-        padding: 20
-    },
-    text: {
-        fontSize: 20
     },
     error: {
         paddingVertical: 5,

@@ -147,6 +147,7 @@ export const setLectureInfo = (lectureTime, lectureValue, movementValue ) => {
 }
 
 export const setBankAccount = bankInfo => {
+    console.log("###########################################################################################",bankInfo)
     return dispatch => {
         dispatch(setBankAccountInfo(bankInfo));
     }

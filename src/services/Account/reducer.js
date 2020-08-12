@@ -96,7 +96,7 @@ const AccountReducer = (state = initialState, action) => {
                 ...state,
                 extraInfo: {
                     ...state.extraInfo,
-                    bankInfo: state.extraInfo.bankInfo
+                    bankInfo: action.payload.bankInfo
                 }
             }
         default: 
