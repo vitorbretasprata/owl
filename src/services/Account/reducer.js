@@ -99,6 +99,8 @@ const AccountReducer = (state = initialState, action) => {
                     bankInfo: action.payload.bankInfo
                 }
             }
+        case constants.CLEAR_USER_ACCOUNT:
+            return initialState;
         default: 
             return state;
     }

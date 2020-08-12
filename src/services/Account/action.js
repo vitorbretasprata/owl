@@ -60,6 +60,10 @@ const setSchedule = (arr) => ({
     }
 });
 
+const clearUserAccount = () => ({
+    type: constants.CLEAR_USER_ACCOUNT
+})
+
 const setBankAccountInfo = bankInfo => ({
     type: constants.SET_BANK_ACCOUNT,
     payload: {
@@ -147,7 +151,6 @@ export const setLectureInfo = (lectureTime, lectureValue, movementValue ) => {
 }
 
 export const setBankAccount = bankInfo => {
-    console.log("###########################################################################################",bankInfo)
     return dispatch => {
         dispatch(setBankAccountInfo(bankInfo));
     }
@@ -161,6 +164,12 @@ export const setDependents = (type) => {
         }).catch(error => {
             dispatch(Failure(error.message));
         });
+    }
+}
+
+export const clearAccount = () => {
+    return dispatch => {
+        dispatch(clearUserAccount());
     }
 }
 

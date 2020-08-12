@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { StyleSheet, SafeAreaView, Dimensions, View } from "react-native";
 import { connect } from "react-redux";
 import { Text, Icon } from "galio-framework";
 import { RectButton } from "react-native-gesture-handler";
-
 import HeaderSvg from "../components/headerSvg";
+import { logOut } from "../../../services/Auth/action";
 
 const { width, height } = Dimensions.get("screen");
 
-function Profile({ navigation, name, type }) {
+function Profile({ navigation, name, type, logOut }) {
 
     const navigateToConfig = () => {
         navigation.navigate("Configuration");
     }
 
-    const logOut = () => {
-        
+    const handleLogOut = async () => {
+        logOut();
     }
 
     return (
@@ -49,7 +49,7 @@ function Profile({ navigation, name, type }) {
                     )}
                     <RectButton
                         style={styles.btn}
-                        onPress={logOut}
+                        onPress={handleLogOut}
                     >
                         <Icon 
                             family="AntDesign"
@@ -124,4 +124,4 @@ const MapStateToProps = state => {
     }
 }
 
-export default connect(MapStateToProps, null)(Profile);
+export default connect(MapStateToProps, { logOut })(Profile);

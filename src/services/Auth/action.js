@@ -2,7 +2,8 @@ import { preload, requestLogin, requestRegister, requestReset } from "../Api/Aut
 import constants from "../constants";
 import * as RootStack from "../navigation/RootNavigate";
 import { showMessage } from "react-native-flash-message";
-import { setAccountType } from "../Account/action";
+import { setAccountType, clearAccount } from "../Account/action";
+import AsyncStorage from '@react-native-community/async-storage';
 
 /* -- Actions states -- */ 
 
@@ -19,6 +20,10 @@ const fetchSuccess = () => ({
 const fetchFailure = () => ({
     type: constants.FAILURE,
 });
+
+const logOutUser = () => ({
+    type: constants.LOG_OUT
+})
 
 /* -- Actions functions -- */ 
 
@@ -62,13 +67,23 @@ export const Login = values => {
     }
 }
 
+export const LogOut = async () => {
+    return dispatch => {
+        dispatch(fetchRequest());
+        await AsyncStorage.clear();
+        clearAccount();
+        dispatch(logOutUser());
+        RootStack.reset(0, [{ name: "SignIn" }]);
+    }
+}
+
 export const Reset = values => {
     return (dispatch) => {
         dispatch(fetchRequest());
         requestReset(values)
             .then(data => {
-                dispatch(fetchSuccess());   
-                RootStack.navigate(0, [{ name: "SignIn" }]);                           
+                dispatch(fetchSuccess());
+                RootStack.navigate(0, [{ name: "SignIn" }]);
             })
             .catch(error => {
                 dispatch(fetchFailure());
