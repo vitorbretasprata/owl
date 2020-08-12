@@ -18,7 +18,7 @@ export default memo(({ arrayLength, itemName, handleClickModal }) => {
             onPress={handleModal}
         >
             <Text style={{ color: arrayLength !== 0 ? "#F58738" : "#fff" }}>
-                {itemName}
+                {itemName} - ({arrayLength})
             </Text>
         </TouchableWithoutFeedback>
     );

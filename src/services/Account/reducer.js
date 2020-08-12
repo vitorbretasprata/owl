@@ -64,7 +64,7 @@ const AccountReducer = (state = initialState, action) => {
                     ...state.extraInfo,
                     lectures: {
                         ...state.extraInfo.lectures,
-                        [action.payload.name]: action.payload.arr
+                        [action.payload.key]: action.payload.arr
                     }
                 }
             }

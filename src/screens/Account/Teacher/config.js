@@ -300,15 +300,13 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
                                 ListFooterComponent={<View />}
                                 ListFooterComponentStyle={{ marginTop: 120 }}
                                 showsVerticalScrollIndicator={false}
-                                renderItem={({ item, index }) => {
-                                            console.log(selectedClasses[index + 1].length, selectedClasses[index + 1])
-                                            return <LectureItem 
-                                            arrayLength={selectedClasses[index + 1].length} 
-                                            handleClickModal={handleModal} 
-                                            itemName={item}
-                                        />
-                                    }
-                                }
+                                renderItem={({ item, index }) => (
+                                    <LectureItem 
+                                        arrayLength={selectedClasses[index + 1].length} 
+                                        handleClickModal={handleModal} 
+                                        itemName={item}
+                                    />
+                                )}
                                 keyExtractor={(item, index) => index.toString()}
                             />
                         </View>
@@ -472,7 +470,7 @@ const styles = StyleSheet.create({
        flex: 1,
        alignItems: "center",
        justifyContent: "space-between",
-       paddingVertical: 35
+       paddingVertical: 15
    },
    scrollWidth: {
         width: WidthScreen

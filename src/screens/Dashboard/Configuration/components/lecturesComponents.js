@@ -57,6 +57,7 @@ function LecturesComponent(
     }
 
     const updateLectures = (arr, index) => {
+        console.log("----------------------------------------------------------------", arr, index)
         setLectures(arr, index);
     }
 

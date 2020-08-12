@@ -37,10 +37,10 @@ const setAccountExtraInfo = (data, name) => ({
     }
 });
 
-const updateLectures = (arr, name) => ({
+const updateLectures = (arr, key) => ({
     type: constants.UPDATE_LECTURES,
     payload: {
-        name,
+        key,
         arr
     }
 });
@@ -111,8 +111,8 @@ export const setDays = (type) => {
     }
 }
 
-export const setLectures = (arr, name) => dispatch => {
-    dispatch(updateLectures(arr, name))
+export const setLectures = (arr, key) => dispatch => {
+    dispatch(updateLectures(arr, key))
 };
 
 export const removeLecture = (date, lecture) => {
