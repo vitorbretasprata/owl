@@ -12,3 +12,17 @@ export const yearsName = [
     "2º ano do Ensino Médio",
     "3º ano do Ensino Médio",
 ];
+
+export const lecturesConstant = [
+    "Matemática",
+    "Português",
+    "Química",
+    "Biologia",
+    "Física",
+    "Ciências",
+    "Inglês",
+    "Espanhol",
+    "Geografia",
+    "História",
+    "Francês"
+];

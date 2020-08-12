@@ -9,14 +9,16 @@ export default memo(({ lecture, index, showLectureModal, length, keyCell}) => {
     showLectureModal(lecture, index);
   }
 
+  console.log(lecture, index, length)
+
   return (
       <TouchableWithoutFeedback
           style={styles.lecture}
           onPress={showModal}
           key={keyCell}
       >
-          <Text style={[styles.lectureText, { color: length > 0 ? "#F58738"  : "#707070" }]}>
-              {lecture}
+          <Text style={[styles.lectureText]}>
+              {lecture} - ({length})
           </Text>
       </TouchableWithoutFeedback>
   );
@@ -24,7 +26,6 @@ export default memo(({ lecture, index, showLectureModal, length, keyCell}) => {
 
 const styles = StyleSheet.create({
     lecture: {
-        paddingHorizontal: 45,
         alignItems: "flex-start",
         borderRadius: 20,
         height: 45,
@@ -32,6 +33,7 @@ const styles = StyleSheet.create({
     },
     lectureText: {
         textAlign: "center",
-        marginVertical: 10
+        marginVertical: 10,
+        color: "#707070"
     }
 });

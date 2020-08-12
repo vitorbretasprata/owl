@@ -23,6 +23,7 @@ function YearsModal({ showModal, closeModal, lecture, saveSelectedYears }) {
     const handleShow = () => {
         InteractionManager.runAfterInteractions(() => {
             if(lecture) {
+                console.log(lecture)
                 chooseSelectedYears();
                 setLoadingModal(false);
             }            
@@ -42,10 +43,10 @@ function YearsModal({ showModal, closeModal, lecture, saveSelectedYears }) {
             for (let index = 0; index < lecture.selectedClasses.length; index++) {
                 let i = lecture.selectedClasses[index];
                 newArr[i] = true;                
-            }    
-            
+            }
+
             setYearsCheked(newArr);
-        }        
+        }
         setLoadingModal(false);
     }
 
@@ -63,10 +64,10 @@ function YearsModal({ showModal, closeModal, lecture, saveSelectedYears }) {
                 if(e) arr.push(i);
                 return arr;
             }, []);
-            
-            saveSelectedYears(indexArr, lecture.className);
+
+            saveSelectedYears(indexArr, lecture.index);
         } else {
-            saveSelectedYears([], lecture.className);
+            saveSelectedYears([], lecture.index);
 
         }
         setLoadingSave(false);

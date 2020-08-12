@@ -19,6 +19,7 @@ import ProgressBar from "../components/progressBar";
 import YearsModal from "../components/modal";
 import Loading from "../../../components/loading";
 import { SetAccountInfo } from "../../../services/Account/action";
+import { lecturesConstant } from "../../constants/index";
 import LectureItem from "./components/lectureItem";
 
 const { Value, interpolate } = Animated;
@@ -34,17 +35,17 @@ const positionTrans = interpolate(transPosition, {
 });
 
 const emptyClasses = {    
-    "Matemática": [],
-    "Português": [],
-    "Química": [],
-    "Biologia": [],
-    "Física": [],
-    "Ciências": [],
-    "Inglês": [],
-    "Espanhol": [],
-    "Geografia": [],
-    "História": [],
-    "Francês": []
+    1: [],
+    2: [],
+    3: [],
+    4: [],
+    5: [],
+    6: [],
+    7: [],
+    8: [],
+    9: [],
+    10: [],
+    11: []
 }
 
 function ConfigTeacher({ SetAccountInfo, loading }) {
@@ -68,7 +69,7 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
     const [selectedClasses, dispatch] = useReducer((state, action) => {
         return {
             ...state,
-            [action.className]: action.selectedClasses
+            [action.key]: action.selectedClasses
         }
     }, emptyClasses);
 
@@ -250,9 +251,11 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
     }
 
     const handleModal = item => {
+        const index = lecturesConstant.indexOf(item) + 1;
         const lecture = {
+            index,
             className: item,
-            selectedClasses: selectedClasses[item]
+            selectedClasses: selectedClasses[index]
         }
         setLectureSelected(lecture);
         setShowModal(true);
@@ -260,9 +263,9 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
 
     const close = () => setShowModal(false);
 
-    const handleSaveYears = (years, lecture) => {
+    const handleSaveYears = (years, key) => {
         dispatch({
-            className: lecture,
+            key: key,
             selectedClasses: years
         });
     }
@@ -293,16 +296,18 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
                         </Text>
                         <View style={styles.scrollWidth}>
                             <FlatList 
-                                data={Object.keys(selectedClasses)}
+                                data={lecturesConstant}
                                 ListFooterComponent={<View />}
                                 ListFooterComponentStyle={{ marginTop: 120 }}
                                 showsVerticalScrollIndicator={false}
-                                renderItem={({ item }) => 
-                                    <LectureItem 
-                                        arrayLength={selectedClasses[item].length} 
-                                        handleClickModal={handleModal} 
-                                        itemName={item}
-                                    />
+                                renderItem={({ item, index }) => {
+                                            console.log(selectedClasses[index + 1].length, selectedClasses[index + 1])
+                                            return <LectureItem 
+                                            arrayLength={selectedClasses[index + 1].length} 
+                                            handleClickModal={handleModal} 
+                                            itemName={item}
+                                        />
+                                    }
                                 }
                                 keyExtractor={(item, index) => index.toString()}
                             />

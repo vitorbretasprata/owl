@@ -7,6 +7,7 @@ import { TextInputMask } from 'react-native-masked-text';
 
 import LectureModal from "./modals/lectureModal";
 import BankModal from "./modals/bankModal";
+import { lecturesConstant } from "../../../constants/index";
 import { setLectures, setLectureInfo, setBankAccount } from "../../../../services/Account/action";
 import LectureList from "./lectureList";
 
@@ -51,14 +52,14 @@ function LecturesComponent(
     const _showLectureModal = lecture => {
         setSelectedLecture(lecture);
         setLectureArr(lectures[lecture]);
-        setShowModal(true);
+        setShowLectureModal(true);
     }
 
     const updateLectures = (arr, name) => {
         setLectures(arr, name);
     }
 
-    const closeLectureModal = () => setShowModal(false);
+    const closeLectureModal = () => setShowLectureModal(false);
     const _showBankModal = () => setShowBankModal(true);
     const closeBankModal = () => setShowBankModal(false);
     const updateBankInfo = info => setBankAccount(info);
@@ -83,12 +84,12 @@ function LecturesComponent(
                             Dados Bancários
                         </Text>
 
-                        <BaseButton onPress={_showBankModal} style={styles.actionButton}>
+                        <BaseButton onPress={_showBankModal}>
                             <Icon 
-                                name="calendar"
+                                name="edit"
                                 family="AntDesign"
-                                color="#fff"
-                                size={20}
+                                color="#F58738"
+                                size={25}
                             />
                         </BaseButton>
                     </View>
@@ -98,14 +99,14 @@ function LecturesComponent(
                             <Text style={styles.bankInfoTitle}>
                                 CPF
                             </Text>
-                            <Text>
+                            <Text style={styles.value}>
                                 {bankInfo.cpf}
                             </Text>
 
                             <Text style={styles.bankInfoTitle}>
                                 Nome Completo
                             </Text>
-                            <Text>
+                            <Text style={styles.value}>
                                 {bankInfo.completeName}
                             </Text>
                         </View>
@@ -114,21 +115,21 @@ function LecturesComponent(
                             <Text style={styles.bankInfoTitle}>
                                 Agência
                             </Text>
-                            <Text>
+                            <Text style={styles.value}>
                                 {bankInfo.agency}
                             </Text>
 
                             <Text style={styles.bankInfoTitle}>
                                 Conta
                             </Text>
-                            <Text>
+                            <Text style={styles.value}>
                                 {bankInfo.bankAccount}
                             </Text>
                         </View>
                     </View>
-
-                    <View style={styles.separator} />
                 </View>
+
+                <View style={styles.separator} />
 
                 <View style={styles.section}>
                     <View style={styles.sectionTitle}>
@@ -138,20 +139,23 @@ function LecturesComponent(
                     </View>
 
                     {
-                        Object
-                            .keys(lectures)
-                            .map((lecture, index) =>
-                                <LectureList 
-                                    lecture={lecture} 
-                                    index={index} 
-                                    showLectureModal={_showLectureModal}
-                                    length={lectures[lecture].length}
-                                    keyCell={index}
-                                />)
+                        lecturesConstant.
+                            map((lecture, index) => {
+
+                                return <LectureList 
+                                lecture={lecture} 
+                                index={index} 
+                                showLectureModal={_showLectureModal}
+                                length={lectures[index + 1].length}
+                                keyCell={index}
+                            />
+                            }
+                                )
                     }
 
-                    <View style={styles.separator} />
                 </View>
+
+                <View style={styles.separator} />
 
                 <View style={styles.section}>
                     <View style={[styles.sectionTitle, styles.editButtons]}>
@@ -271,27 +275,23 @@ const styles = StyleSheet.create({
     },
     section: {
         paddingTop: 10,
-        paddingBottom: 25
+        paddingBottom: 25,
+        paddingHorizontal: 30
     },
-    options: {
-        paddingTop: 10
+    sectionTitle: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
     },
     editButtons: {
         flexDirection: "row",
         justifyContent: "space-between",
-        paddingHorizontal: 30,
         alignItems: "center"
     },
     bankInfoAlign: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center"
-    },
-    actionButton: {
-        padding: 10,
-        backgroundColor: "#F58738",
-        borderRadius: 20,
-        marginVertical: 10
     },
     input: {
         borderColor: "#fff",
@@ -302,15 +302,11 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         paddingHorizontal: 15,
         marginTop: 10
-   },
-    alignIcons: {
-        marginRight: 20
     },
     saveIcons: {
         flexDirection: "row"
     },
     option: {
-        paddingHorizontal: 40,
         paddingVertical: 15,
         flexDirection: "row",
         justifyContent: "flex-start",
@@ -321,12 +317,6 @@ const styles = StyleSheet.create({
         fontSize: 18,
         marginLeft: 10
     },
-    sectionTitle: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        paddingHorizontal: 30
-    },
     title: {
         fontSize: 20,
         color: "#707070"
@@ -336,24 +326,22 @@ const styles = StyleSheet.create({
         backgroundColor: "#e3e3e3"
     },
     inputSection: {
-        marginVertical: 10,
-        paddingHorizontal: 45,
+        marginVertical: 18
     },
     label: {
         color: "#707070",
         fontSize: 15
     },
     value: {
-        color: "#707070",
+        color: "#909090",
         fontSize: 15,
-        paddingLeft: 10,
         marginTop: 10
     },
     bankInfo: {
-        paddingLeft: 50
+        marginTop: 18
     },
     bankInfoTitle: {
-        fontSize: 18,
+        fontSize: 16,
         color: "#707070",
         paddingVertical: 5
     }

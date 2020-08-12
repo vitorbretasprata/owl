@@ -2,7 +2,10 @@ const myHeaders = new Headers();
 
 export const requestLogin = (values) => {
     return new Promise((resolve, reject) => {
-
+        resolve({
+            accountType: 0
+        })
+        /*
         try {
             const init = {
                 method: 'POST',
@@ -32,6 +35,8 @@ export const requestLogin = (values) => {
             console.log(error);
             reject("Ocorreu um error no servidor, tente novamente mais tarde.");
         }
+        */
+        
 
     });
 }
