@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { StyleSheet, ImageBackground, Dimensions } from "react-native";
+import { StyleSheet, ImageBackground, Dimensions, StatusBar } from "react-native";
 
 const { height, width } = Dimensions.get("screen");
 
@@ -15,7 +15,8 @@ export default memo(({ children }) => (
 const styles = StyleSheet.create({
     bg: {
         resizeMode: "cover",
-        paddingVertical: 25,
+        paddingTop: StatusBar.currentHeight + 10,
+        paddingBottom: StatusBar.currentHeight + 35,
         paddingHorizontal: 15,
         width,
         height

@@ -127,7 +127,7 @@ export const removeLecture = (date, lecture) => {
 
 export const scheduleClass = (date, lecture) => {
     return dispatch => {
-        dispatch(updateSchedule(constants.ADD_SCHEDULE, date, lecture));
+        
     }
 }
 

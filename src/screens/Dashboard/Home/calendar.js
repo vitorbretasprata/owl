@@ -107,15 +107,15 @@ function TeacherCalendar({ scheduleClass, route: { params } }) {
             const { teacherInfo } = params;
 
             const endHour = ISODate.setMinutes(ISODate.getMinutes() + teacherInfo.classTime);
-            const scheduteInfo = {
+            const scheduleInfo = {
                 nome: teacherInfo.name,
                 horarioInicio: `${ISODate.getHours()}:${ISODate.getMinutes()}`,
-                horarioFim: `${endHour.getHours()}:${endHour.getMinutes()}`,
+                horarioFim: `${new Date(endHour).getHours()}:${new Date(endHour).getMinutes()}`,
                 valor: 25.50,
                 local: "Online"
             }
 
-            scheduleClass(convertedDate, scheduteInfo);
+            scheduleClass(convertedDate, scheduleInfo);
             displayMessage("success", "Agendamento", "Sua solicitação de agendamento foi enviada, aguarde a aceitação do professor.");
         }
         setIsProcessing(true);

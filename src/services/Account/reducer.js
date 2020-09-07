@@ -79,11 +79,25 @@ const AccountReducer = (state = initialState, action) => {
                 }
             }
         case constants.ADD_SCHEDULE:
+            console.log(action.payload, state.dates[action.payload.date])
+
+            if(!state.dates[action.payload.date]) {
+                return {
+                    ...state,
+                    dates: {
+                        ...state.dates,
+                        [action.payload.date]: new Array(action.payload.lecture)
+                    }
+                }
+            }
+
             return {
                 ...state,
                 dates: {
                     ...state.dates,
-                    [action.payload.date]: [...state.dates[action.payload.date], action.payload.lecture]
+                    [action.payload.date]: [
+                        ...(state.dates[action.payload.date].push(action.payload.lecture)),
+                    ]
                 }
             }
         case constants.SET_SCHEDULE:

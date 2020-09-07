@@ -8,16 +8,16 @@ function PreLoad({ Preloader }) {
 
     useEffect(() => {
         _checkLogin();
-    }, []);       
+    }, []);
 
     const _checkLogin = async () => {
         const token = await AsyncStorage.getItem("user:token");
-        Preloader(token);        
-    }    
+        Preloader(token);
+    }
 
     return (
         <View style={styles.container}>
-            <Text>Carregando</Text>            
+            <Text>Carregando</Text>
         </View>
     );
 }

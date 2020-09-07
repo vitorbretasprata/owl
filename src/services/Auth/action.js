@@ -67,8 +67,8 @@ export const Login = values => {
     }
 }
 
-export const LogOut = async () => {
-    return dispatch => {
+export const LogOut = () => {
+    return async dispatch => {
         dispatch(fetchRequest());
         await AsyncStorage.clear();
         clearAccount();

@@ -85,3 +85,13 @@ export const getInfoAccountAPI = () => {
         resolve(data);
     });
 }
+
+export const registerToken = (token, authToken) => {
+    return new Promise((resolve, reject) => {
+
+        
+
+
+        resolve(data);
+    });
+}

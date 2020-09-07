@@ -177,10 +177,10 @@ function SignIn({ navigation, Login, loading }) {
             onSubmit={_handleLogin} 
             isDisabled={!isEnabled}
           />
-              
+
         </Animated.View>
         </View>
-        
+
 
         <View style={styles.other}>
 
@@ -197,7 +197,7 @@ function SignIn({ navigation, Login, loading }) {
 const styles = StyleSheet.create({
   container: {    
     backgroundColor: "#fff",
-    height: height - 40,
+    height: "100%",
     borderRadius: 10,
     justifyContent: "space-between",
     paddingVertical: 10
