@@ -1,52 +1,48 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { StyleSheet, SafeAreaView, Dimensions, View, InteractionManager } from "react-native";
 import { connect } from "react-redux";
 import Constants from "expo-constants";
 import { FlatList, TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Text } from "galio-framework";
 
-import { getProfessors } from "../../../services/Lecture/action";
+import { fetchProfessors } from "../../../services/Lecture/action";
 import { getInfoAccount } from "../../../services/Account/action";
 import SearchHeader from "../components/header";
 import TeacherBlock from "../components/teacherBlock";
+import AuthContext from "../../../context/authContext";
+
 
 const Dados = [1, 2, 3 , 4]
 
 const { width } = Dimensions.get("screen");
 
-function Home({ getProfessors, professors, loading, data, getInfoAccount, navigation }) {
+function Home({ fetchProfessors, fetchMoreProfessors, professors, loading, data, navigation }) {
+    const authContext = useContext(AuthContext);
 
-    const [isRefreshing, setIsRefreshing] = useState(false);
-    const [loadingData, setLoadingData] = useState(true);
+    const [filter, setFilter] = useState("");
+    const [pagination, setPagination] = useState({})
+    const [token, setToken] = useState("");
 
     useEffect(() => {
-        InteractionManager.runAfterInteractions(() => {
-            if(data.extraInfo === {}) {
-                getInfoAccount();
-            }
-
-            setLoadingData(false);
-        });
+        setToken(authContext.token);
+        fetchProfessors({}, token);
+        console.log(professors.length)
     }, []);
 
 
-    const renderEmptyList = () => <Text>Lista está vazia!</Text>
+    const renderEmptyList = () => <View style={styles.emptyList}><Text>Lista está vazia!</Text></View>;
 
     const renderFooter = () => {
-        if(professors.length !== 0) {
-            return <Text>Não há mais professores</Text>;
-        }
-
         return null;
     }
 
-    const extractor = (item, index) => index.toString();
+    const extractor = (item) => item.id.toString();
 
     const renderProfessor = ({ item, index }) => {
         return (
-            <TouchableWithoutFeedback onPress={() => navigation.navigate("TeacherProfile", { teacherId: index })}>
-                <TeacherBlock />
-                {!(index === (Dados.length - 1)) && <View style={styles.dividor}/>}
+            <TouchableWithoutFeedback onPress={() => navigation.navigate("TeacherProfile", { teacherId: item.id })}>
+                <TeacherBlock professor={item} />
+                {!(index === (professors.length - 1)) && <View style={styles.divisor}/>}
             </TouchableWithoutFeedback>
         );
     }
@@ -57,19 +53,19 @@ function Home({ getProfessors, professors, loading, data, getInfoAccount, naviga
 
     return (
         <SafeAreaView style={styles.container}>
-            {!loadingData && (
+            {!loading && (
                 <>
                     <SearchHeader />
                     <FlatList 
                         contentContainerStyle={styles.list}
-                        data={Dados}
+                        data={professors}
                         renderItem={renderProfessor}
                         keyExtractor={extractor}
                         ListEmptyComponent={renderEmptyList}
                         ListFooterComponent={renderFooter}
                         onEndReached={renderMore}
                         onRefresh={refresh}
-                        refreshing={isRefreshing}
+                        refreshing={true}
                     />
                 </>
             )}
@@ -87,7 +83,12 @@ const styles = StyleSheet.create({
         width,
         paddingHorizontal: 5,
     },
-    dividor: {
+    emptyList: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    divisor: {
         height: 1,
         backgroundColor: "#e3e3e3",
         marginVertical: 15
@@ -104,4 +105,4 @@ const MapStateToProps = state => {
 
 //() => navigation.navigate("TeacherProfile", { teacherId: index })
 
-export default connect(MapStateToProps, { getProfessors, getInfoAccount })(Home);
+export default connect(MapStateToProps, { fetchProfessors, getInfoAccount })(Home);

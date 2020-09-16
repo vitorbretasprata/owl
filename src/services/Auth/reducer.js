@@ -2,7 +2,7 @@ import constants from "../constants";
 
 const initialState = {
     status: -1,
-    loading: false,
+    loading: false
 }
 
 const AuthReducer = (state = initialState, action) => {
@@ -27,6 +27,7 @@ const AuthReducer = (state = initialState, action) => {
                 loading: false,
                 status: 0
             }
+
         default:
             return state;
     }

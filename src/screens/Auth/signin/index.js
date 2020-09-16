@@ -1,24 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
   StyleSheet,
   Keyboard,
-  Platform,
-  Dimensions
+  Platform
 } from "react-native";
 import Animated, { Easing } from "react-native-reanimated";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { connect } from "react-redux";
+import AsyncStorage from '@react-native-community/async-storage';
+import { displayFlashMessage } from "../../../components/displayFlashMessage";
 
+import { setAccountType } from "../../../services/Account/action";
+import { changeScreen } from "../../../services/Auth/action";
+import { requestLogin } from "../../../services/Api/AuthApi";
 import Loading from "../../../components/loading";
 import BackgroundImage from "../components/backgroundImage";
 import AuthInput from "../components/input";
 import Submit from "../components/submit";
 import Or from "../components/or";
 import Social from "../components/social";
+import AuthContext from "../../../context/authContext";
 
-import { Login } from "../../../services/Auth/action";
 
 const { 
   Value,
@@ -38,8 +42,6 @@ const {
 
 const clock = new Clock();
 const hasKeyBoardShown = new Value(-1);
-
-const { height } = Dimensions.get("screen");
 
 const RunTiming = (clock, hasKeyBoardShown) => {
   const state = {
@@ -80,7 +82,10 @@ const RunTiming = (clock, hasKeyBoardShown) => {
 
 const valueKey = RunTiming(clock, hasKeyBoardShown);
 
-function SignIn({ navigation, Login, loading }) {
+function SignIn({ navigation, setAccountType }) {
+  const authContext = useContext(AuthContext);
+
+  const [loading, setLoading] = useState(false);
 
   const [values, setValues] = useState({
       email: "",
@@ -117,7 +122,28 @@ function SignIn({ navigation, Login, loading }) {
       hasKeyBoardShown.setValue(0);
   }
 
-  const _handleLogin = () => Login(values);
+  const _handleLogin = () => {
+    setLoading(true);
+    requestLogin(values)
+        .then(async data => {
+            await AsyncStorage.setItem("@user:token", data.token);
+
+            setTimeout(function () {
+              authContext.setToken(data.token);
+            }, 3000);
+
+            if(data.type !== 0) {
+                setAccountType(data.type);
+            }
+
+            changeScreen(data.type);
+        })
+        .catch(error => {
+            console.log(error)
+            displayFlashMessage("danger", "Error", error);
+        });
+
+  }
 
   return (
     <BackgroundImage>
@@ -196,8 +222,8 @@ function SignIn({ navigation, Login, loading }) {
 // Coloring below is used just to easily see the different components
 const styles = StyleSheet.create({
   container: {    
+    flex: 1,
     backgroundColor: "#fff",
-    height: "100%",
     borderRadius: 10,
     justifyContent: "space-between",
     paddingVertical: 10
@@ -215,8 +241,7 @@ const styles = StyleSheet.create({
     textAlign: "right"
   },
   other: {
-    paddingHorizontal: 15,
-  
+    paddingHorizontal: 15
   },  
   Logo: {
     fontSize: 50,
@@ -227,11 +252,4 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = state => {
-    return {
-        error: state.auth.error,
-        loading: state.auth.loading
-    }
-}
-
-export default connect(mapStateToProps, { Login })(SignIn);
+export default connect(null, { setAccountType })(SignIn);

@@ -1,22 +1,22 @@
 import React, { memo, useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import Account from "./screens/Account/Account";
-import ConfigParent from "./screens/Account/Parent/config";
-import ConfigTeacher from "./screens/Account/Teacher/config";
+import Account from "../screens/Account/Account";
+import ConfigParent from "../screens/Account/Parent/config";
+import ConfigTeacher from "../screens/Account/Teacher/config";
 
 import * as Notifications from "expo-notifications";
-import Permissions from "expo-permissions";
+import * as Permissions from "expo-permissions";
 
-import Lecture from "./screens/Dashboard/Calendario/lecture";
+import Lecture from "../screens/Dashboard/Calendario/lecture";
 
-import TeacherProfile from "./screens/Dashboard/Home/teacher";
-import TeacherCalendar from "./screens/Dashboard/Home/calendar";
+import TeacherProfile from "../screens/Dashboard/Home/teacher";
+import TeacherCalendar from "../screens/Dashboard/Home/calendar";
 
-import TabBottom from "./components/bottomTabNavigator";
-import Configuration from "./screens/Dashboard/Configuration/index";
+import TabBottom from "./bottomTabNavigator";
+import Configuration from "../screens/Dashboard/Configuration/index";
 
-import AccountApi from "../services/Api/AccountApi";
+import { registerToken } from "../services/Api/AccountApi";
 import AsyncStorage from "@react-native-community/async-storage";
 
 
@@ -54,8 +54,7 @@ export default memo(() => {
     useEffect(() => {
         registerForPushNotifications();
 
-        Notifications.addListener(notification => {
-            console.log(notification);
+        Notifications.addPushTokenListener(notification => {
         });
     }, []);
 
@@ -67,9 +66,9 @@ export default memo(() => {
 
             const token = await Notifications.getExpoPushTokenAsync();
             console.log(token);
-            const authToken = await AsyncStorage.getItem("user:token");
+            const authToken = await AsyncStorage.getItem("@user:token");
 
-            AccountApi.registerToken(token, authToken);
+            registerToken(token, authToken);
         } catch (error) {
             console.log(error)
         }

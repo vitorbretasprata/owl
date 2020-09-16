@@ -18,6 +18,7 @@ import AuthInput from "../components/input";
 
 import { Reset } from "../../../services/Auth/action";
 import { checkEmail } from "../../../services/Api/AuthApi";
+import { displayFlashMessage } from "../../../components/displayFlashMessage";
 
 const { height, width } = Dimensions.get("screen");
 const scrollWidth = width - 80;
@@ -34,7 +35,6 @@ function Forgot({ navigation, error, loading }) {
         repeat: ""
     });
 
-    const [savedCode, setSavedCode] = useState("");
 
     const [isLoading, dispatch] = useReducer((state, action) => {
         return !state;
@@ -60,21 +60,35 @@ function Forgot({ navigation, error, loading }) {
     }
 
     const _checkEmail = index => {
-        checkEmail()
+        checkEmail(values["email"])
             .then(data => {
-                setSavedCode(data)
+                setValues({
+                    ...values,
+                    code: data.code
+                });
                 handleScroll(index);
             }).catch(error => {
-
+                displayFlashMessage("danger", "Error", error);
+                dispatch();
             })
     }
 
     const _checkCode = index => {
         if(savedCode.toString() === values["code"]) {
-            handleScroll(index);
-        } else {
-
+            displayFlashMessage("danger", "Error", "Código errado.");
+            return;
         }
+
+        handleScroll(index);
+    }
+
+    const _checkPasswords = () => {
+        if(values["password"] !== values["repeat"]) {
+            displayFlashMessage("danger", "Error", "Senhas não são iguais.");
+            return;
+        }
+
+        Reset(values["password"]);
     }
 
     const _handleStage = () => {
@@ -88,7 +102,7 @@ function Forgot({ navigation, error, loading }) {
                 _checkCode(index);
                 break;   
             case 3:
-                Reset(values); 
+                _checkPasswords();
                 break;
             default: 
                 break; 
@@ -98,8 +112,7 @@ function Forgot({ navigation, error, loading }) {
     return (
         <BackgroundImage>
             <Loading loading={loading}/>
-            <SafeAreaView style={styles.container}>                
-                
+            <SafeAreaView style={styles.container}>
                 <View style={styles.align}>
                     <ScrollView
                         horizontal
@@ -119,6 +132,7 @@ function Forgot({ navigation, error, loading }) {
                                 attrName="email"
                                 value={values["email"]}
                                 updateMasterState={_handleChange}
+                                autoCapitalize="none"
                                 icon="mail"
                                 family="AntDesign"
                             />

@@ -6,7 +6,7 @@ import ProfilePicture from "./profilePicture";
 
 const lectures= ["Matemática", "Português", "Biologia", "Física", "Química", "Educação Física"]
 
-export default memo(() => (
+export default memo(({ professor }) => (
     <>
         <Block 
             fluid 
@@ -22,9 +22,9 @@ export default memo(() => (
                     <Block row>
                         <View style={styles.wrap}>
                             <Text h5 style={styles.title}>
-                                Vitor Bretas Prata
+                                {professor.complete_name}
                             </Text>
-                        </View>                    
+                        </View>
                         <Block row flex center height={25}>
                             <Icon 
                                 family="Entypo"
@@ -47,12 +47,12 @@ export default memo(() => (
                                 size={20}
                             />
                             <Text style={styles.space}>
-                                50 mins
+                                {professor.lecture_time} mins
                             </Text>
                         </Block>
-                        
+
                     </Block>
-                    <Block row>                
+                    <Block row>
                         <Block row flex center>
                             <Icon 
                                 family="MaterialIcons"
@@ -61,7 +61,7 @@ export default memo(() => (
                                 size={20}
                             />
                             <Text style={styles.space}>
-                                R$ 40,00
+                                R$ {professor.lecture_value}
                             </Text>
                         </Block>
                         <Block row flex center height={25}>
@@ -72,13 +72,13 @@ export default memo(() => (
                                 size={20}
                             />
                             <Text style={styles.space}>
-                                R$ 4,00
+                                R$ {professor.movement_value}
                             </Text>
                         </Block>
                     </Block>
 
-                </View>        
-            </Block>               
+                </View>
+            </Block>
         </Block>
         <View style={[styles.wrap, styles.lectures]}>
             {lectures.map((x, i) => <Text key={i} style={styles.lecture}>{x}</Text>)}          

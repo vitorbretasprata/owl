@@ -74,7 +74,7 @@ export default memo(() => {
                                 size={IconProp.name === "user" ? 32 : 22} 
                             />;
                 },
-                
+
             })}
         >
             <BottomTabs.Screen name="Buscar" component={Home} />

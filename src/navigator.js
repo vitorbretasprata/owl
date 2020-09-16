@@ -1,43 +1,38 @@
-import React from "react";
-import { connect } from "react-redux";
+import React, { useState } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from '@react-navigation/native';
 
-import PreLoad from "./screens/preload";
 import SignIn from "./screens/Auth/signin/index";
 import SignUp from "./screens/Auth/signup/index";
 import Forgot from "./screens/Auth/reset/index";
 
 import { navigationRef } from "./services/navigation/RootNavigate";
 import AppNavigator from "./components/appNavigator";
+import AuthContext from './context/authContext';
 
 const Stack = createStackNavigator();
-function StackNavigator({ status }) {
+
+function AuthNavigator() {
 
     return (
         <Stack.Navigator>
-            <Stack.Screen name="Preload" component={PreLoad} options={{ headerShown: false }} />
-                <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }}/>
-                <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }}/>
-                <Stack.Screen name="Forgot" component={Forgot} options={{ headerShown: false }}/>
-                {status &&  <AppNavigator />}
-        </Stack.Navigator>        
+            <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }}/>
+            <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }}/>
+            <Stack.Screen name="Forgot" component={Forgot} options={{ headerShown: false }}/>
+        </Stack.Navigator>
     );
 }
 
 function Navigators() {
+    const [token, setToken] = useState("");
 
-    return (        
-        <NavigationContainer ref={navigationRef}>
-            <StackNavigator />
-        </NavigationContainer>
+    return (
+        <AuthContext.Provider value={{ token, setToken }}>
+            <NavigationContainer ref={navigationRef}>
+                {!token ? <AuthNavigator /> : <AppNavigator />}
+            </NavigationContainer>
+        </AuthContext.Provider>
     );
 }
 
-const mapStateToProps = (state) => {
-    return {
-        status: state.auth.status
-    }
-}
-
-export default connect(mapStateToProps, null)(Navigators);
+export default Navigators;

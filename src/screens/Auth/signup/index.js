@@ -10,13 +10,14 @@ import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Icon, theme } from "galio-framework";
 import { LinearGradient } from "expo-linear-gradient";
 import { connect } from "react-redux";
-import { withTimingTransition } from "react-native-redash";
 
 import Loading from "../../../components/loading";
 import BackgroundImage from "../components/backgroundImage";
 import AuthInput from "../components/input";
 import Submit from "../components/submit";
 import { Register } from "../../../services/Auth/action";
+import { displayFlashMessage } from "../../../components/displayFlashMessage";
+
 
 const { 
   Value,
@@ -124,10 +125,6 @@ function SignUp({ Register, navigation, loading }) {
         Register(values);
     }
 
-    const disptachError = () => {
-        updateError(null);
-    }    
-
     const back = () => {
         navigation.goBack();
     }
@@ -155,7 +152,7 @@ function SignUp({ Register, navigation, loading }) {
                     >
                         Logo
                     </Animated.Text>
-                    
+
                     <Animated.View style={
                         [
                             styles.align, { 
@@ -210,13 +207,13 @@ function SignUp({ Register, navigation, loading }) {
                             title="Cadastrar" 
                             onSubmit={_handleRegister} 
                             isDisabled={!isEnabled}
-                        />           
+                        />
                     </Animated.View>
-                    
-                </View>                
+
+                </View>
 
                 <View style={styles.other}>
-                    
+
                     <LinearGradient
                         colors={["#F58738", "#F8B586"]}
                         start={[0.5, 0.7]}
@@ -224,22 +221,22 @@ function SignUp({ Register, navigation, loading }) {
                     >
                         <TouchableWithoutFeedback
                             onPress={back} 
-                            style={styles.touchable}               
+                            style={styles.touchable}
                         >
                             <Icon name="left" family="AntDesign" color={theme.COLORS.WHITE} size={35} />
                         </TouchableWithoutFeedback>
                     </LinearGradient>
                 </View> 
             </View>
-        </BackgroundImage>        
+        </BackgroundImage>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         backgroundColor: "#fff",
         borderRadius: 10,
-        height: height - 100,
         justifyContent: "space-between",
         paddingVertical: 10
     },

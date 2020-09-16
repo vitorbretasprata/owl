@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { View, Text, StyleSheet, AsyncStorage } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
 import { connect } from "react-redux";
 
 import { Preloader } from "../services/Auth/action";

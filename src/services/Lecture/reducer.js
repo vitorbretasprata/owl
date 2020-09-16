@@ -12,15 +12,22 @@ const LectureReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: true
-            }        
+            }
         case constants.SUCCESS_GET_PROFESSORS: 
+            return {
+                ...state,
+                loading: false,
+                professors: [...action.payload.professors],
+                error: ""
+            } 
+
+        case constants.SUCCESS_GET_MORE_PROFESSORS: 
             return {
                 ...state,
                 loading: false,
                 professors: [...state.professors, ...action.payload.professors],
                 error: ""
             } 
-
         case constants.FAILURE_GET_PROFESSORS: 
             return {
                 ...state,

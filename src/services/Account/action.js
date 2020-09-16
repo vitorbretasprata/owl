@@ -1,6 +1,6 @@
 import * as RootStack from "../navigation/RootNavigate";
 import constants from "../constants";
-import { setInfo, getInfoAccountAPI } from "../Api/AccountApi";
+import { setInfo, getInfoAccountAPI, fetchActivityDayAPI } from "../Api/AccountApi";
 
 /* -- Actions states -- */ 
 
@@ -89,6 +89,37 @@ export const SetAccountInfo = (type, info) => {
         }).catch(error => {
             dispatch(Failure(error.message));
         });
+    }
+}
+
+export const fetchActivityDay = (date, token) => {
+    return dispatch => {
+        dispatch(Request());
+        fetchActivityDayAPI(date, token)
+            .then(data => {
+
+                const date = data[0].date.split("T")[0];
+
+                const schedulesLectures = data.map(lecture => {
+                    const currentDate = new Date(lecture.date);
+                    const initHour = `${currentDate.getHours()}:${currentDate.getMinutes()}`;
+
+                    return {
+                        nome: "Vitor",
+                        horarioInicio: initHour,
+                        horarioFim: "",
+                        materia: "",
+                        valor: lecture.total_value,
+                        local: lecture.location
+                    }
+                });
+
+                dispatch(updateSchedule(constants.ADD_SCHEDULE, date, schedulesLectures));
+
+                dispatch(Success());
+            }).catch(error => {
+                dispatch(Failure(error.message));
+            });
     }
 }
 

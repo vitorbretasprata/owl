@@ -12,77 +12,117 @@ export const setInfo = (type, info) => {
 
 export const getInfoAccountAPI = () => {
     return new Promise((resolve, reject) => {
-        const data = {
-            extraInfo: {},
-            dates: {
-                "2020-06-27": [
-                    {
-                        nome: "Vitor Prata",
-                        horarioInicio: "9:30",
-                        horarioTermino: "10:30",
-                        materia: "Matemática",
-                        valor: "R$ 84,00",
-                        local: "Gilberto Salomão"
+        try {
+            let timeOut;
+            clearTimeout(timeOut);
+            const abortTime = new AbortController();
+
+            const init = {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json', 
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({
+                    filter : {
+                        lecture_id: 1
                     },
-                    {
-                        nome: "Vitor Prata",
-                        horarioInicio: "11:30",
-                        horarioTermino: "12:30",
-                        materia: "Português",
-                        valor: "R$ 84,00",
-                        local: "Minha residência"
-                    }
-                ],
-                '2020-06-28': [
-                    {
-                        nome: "José Abreu",
-                        horarioInicio: "15:30",
-                        horarioTermino: "16:30",
-                        materia: "História",
-                        valor: "R$ 84,00",
-                        local: "Colégio Mackenzie"
-                    },
-                    {
-                        nome: "Fábio Prata",
-                        horarioInicio: "7:30",
-                        horarioTermino: "8:30",
-                        materia: "Biologia",
-                        valor: "R$ 84,00",
-                        local: "Parque da cidade"
-                    }
-                ],
-                '2020-06-29': [
-                    {
-                        nome: "Jessica Prata",
-                        horarioInicio: "9:30",
-                        horarioTermino: "10:30",
-                        materia: "Fisica",
-                        valor: "R$ 84,00",
-                        local: "Hospital Brasília"
-                    },
-                    {
-                        nome: "Ana",
-                        horarioInicio: "17:30",
-                        horarioTermino: "18:30",
-                        materia: "Português",
-                        valor: "R$ 84,00",
-                        local: "Minha residência"
-                    }
-                ],
-                '2020-06-30': [
-                    {
-                        nome: "Rodrigo Alvez",
-                        horarioInicio: "14:30",
-                        horarioTermino: "15:30",
-                        materia: "Matemática",
-                        valor: "R$ 84,00",
-                        local: "Minha residência"
-                    }
-                ]
+                    limit : 15,
+                    page : 1
+                }),
+                signal: abortTime.signal
             }
+
+            fetch("http://192.168.1.182:3333/teachers/listTeachers", init)
+                .then(async response => {
+
+                    if(response.status === 500) {
+                        reject("Ocorreu um problema ao carregas professores, tente novamente mais tarde.");
+                    }
+
+                    const dataJSON = await response.json();
+                    resolve(dataJSON);
+                })
+                .catch(response => {
+                    reject("Ocorreu um problema ao carregas professores, tente novamente mais tarde.");
+                });
+
+            timeOut = setTimeout(() => {
+                abortTime.abort();
+                reject("Não foi possível carregar novos proferroes.");
+            }, 60000);
+
+        } catch(error) {
+            console.log(error);
         }
 
-        resolve(data);
+    });
+}
+
+
+export const fetchActivityDayAPI = (date, token) => {
+    return new Promise((resolve, reject) => {
+        try {
+            let timeOut;
+            clearTimeout(timeOut);
+            const abortTime = new AbortController();
+
+            const init = {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json', 
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({ date }),
+                signal: abortTime.signal
+            }
+
+            fetch("http://192.168.1.182:3333/teachers/getDate", init)
+                .then(async response => {
+
+                    if(response.status === 500) {
+                        reject("Ocorreu um problema ao carregas as atividades, tente novamente mais tarde.");
+                    }
+
+                    const dataJSON = [
+                        {
+                            "id": 4,
+                            "student_id": 1,
+                            "teacher_id": 9,
+                            "date": "2020-10-21T13:40:00.000Z",
+                            "status": 1,
+                            "location": "online",
+                            "need_movement": 0,
+                            "total_value": 70
+                          },
+                          {
+                            "id": 5,
+                            "student_id": 1,
+                            "teacher_id": 9,
+                            "date": "2020-10-22T01:40:00.000Z",
+                            "status": 1,
+                            "location": "online",
+                            "need_movement": 0,
+                            "total_value": 70
+                          }
+                    ]
+                    resolve(dataJSON);
+                })
+                .catch(response => {
+                    reject("Ocorreu um problema ao carregas as atividades, tente novamente mais tarde.");
+                });
+
+            timeOut = setTimeout(() => {
+                abortTime.abort();
+                reject("Não foi possível carregar as atividades.");
+            }, 60000);
+
+        } catch(error) {
+            console.log(error);
+        }
+
     });
 }
 
@@ -92,6 +132,6 @@ export const registerToken = (token, authToken) => {
         
 
 
-        resolve(data);
+        resolve();
     });
 }

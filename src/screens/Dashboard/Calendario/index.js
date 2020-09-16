@@ -3,8 +3,10 @@ import { View, Text, StyleSheet, SafeAreaView, InteractionManager } from "react-
 import { connect } from "react-redux";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Agenda, LocaleConfig } from "react-native-calendars";
-
+import AsyncStorage from "@react-native-community/async-storage";
 import { Icon } from "galio-framework";
+
+import { fetchActivityDay } from "../../../services/Account/action";
 
 LocaleConfig.locales['pt'] = {
     monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
@@ -12,22 +14,23 @@ LocaleConfig.locales['pt'] = {
     dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
     dayNamesShort: ['Dom.','Seg.','Ter.','Qua.','Qui.','Sex.','Sab.'],
     today: 'Hoje\'Hoj'
-  };
+};
 
 LocaleConfig.defaultLocale = 'pt';
 
-function Calendario({ navigation, dates }) {
+function Calendario({ navigation, dates, fetchActivityDay, loading }) {
 
-    const [loading, setLoading] = useState(true);
+    const [loadingScreen, setLoadingScreen] = useState(true);
     const [daySelected, setDaySelected] = useState("");
 
     useEffect(() => {
         InteractionManager.runAfterInteractions(() => {
-            setLoading(false);
-        });        
+            //getTodaysLectures();
+            setLoadingScreen(false);
+        });
     }, []);
 
-    if(loading) {
+    if(loadingScreen) {
         return (
             <SafeAreaView style={styles.container}>
                 <Text>Carregando...</Text>
@@ -35,20 +38,26 @@ function Calendario({ navigation, dates }) {
         );
     }
 
-    const selectDay = day => {
-        
-        setDaySelected(day.dateString);
+    const getTodaysLectures = async () => {
+        const date = new Date();
+        const today = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+        const token = await AsyncStorage.getItem("@user:token");
+
+        fetchActivityDay(today, token);
     }
 
-    const viewLecture = (item) => {        
+    const selectDay = async day => {
+        console.log(day.dateString);
+        setDaySelected(day.dateString);
+        const token = await AsyncStorage.getItem("@user:token");
+        fetchActivityDay(day.dateString, token);
+    }
+
+    const viewLecture = (item) => {
         navigation.navigate("Lecture", {
             item,
             day: daySelected
         });
-    }
-
-    const isDayAvailable = (date) => {
-        let dt = new Date(date.year, date.month, date.day);
     }
 
     const handleEmptyData = () => (
@@ -61,7 +70,7 @@ function Calendario({ navigation, dates }) {
             />
             <Text style={styles.emptyText}>Nenhuma atividade para este dia!</Text>
         </View>
-    )
+    );
 
     const renderItems = (item) => (
         <TouchableWithoutFeedback onPress={() => viewLecture(item)}>
@@ -75,17 +84,9 @@ function Calendario({ navigation, dates }) {
         </TouchableWithoutFeedback>
     );
 
-    const renderDay = (day, item) => {
-
-        if(day) {
-            isDayAvailable(day);
-        }
-
-        return null;               
-    }
 
     return (
-        <SafeAreaView style={styles.container}>            
+        <SafeAreaView style={styles.container}>
             <Agenda
                 style={styles.agenda}
                 items={dates}
@@ -158,9 +159,9 @@ const styles = StyleSheet.create({
 
 const MapStateToProps = state => {
     return {
-        loading: state.lecture.loading,
+        loading: state.account.loading,
         dates: state.account.dates
     }
 }
 
-export default connect(MapStateToProps, null)(Calendario);
+export default connect(MapStateToProps, { fetchActivityDay })(Calendario);

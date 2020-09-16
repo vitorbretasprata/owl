@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     bg: {
         resizeMode: "cover",
         paddingTop: StatusBar.currentHeight + 10,
-        paddingBottom: StatusBar.currentHeight + 35,
+        paddingBottom: 10,
         paddingHorizontal: 15,
         width,
         height

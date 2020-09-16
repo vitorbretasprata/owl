@@ -58,8 +58,7 @@ const styles = StyleSheet.create({
       paddingHorizontal: 40    
     },
     margin: {
-        marginBottom: 15,
-        marginTop: 30
+        marginTop: 20
     },
     register: {
         textTransform: "uppercase",
@@ -84,7 +83,3 @@ const styles = StyleSheet.create({
 });
 
 export default memo(Social);
-
-
-
-// Neste momento nos pedimos para que vocês aguardem, estamos trabalhando para estabilizar o a plataforma.

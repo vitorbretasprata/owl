@@ -21,15 +21,14 @@ const persistConfig = {
 };
 
 const reducers = combineReducers({
-    auth: AuthReducer,
     account: AccountReducer,
     lecture: LectureReducer
 });
 
 const logger = createLogger();
 
-const persistedReducer = persistReducer(persistConfig, reducers);
-const store = createStore(persistedReducer, applyMiddleware(ReduxThunk, logger));
+//const persistedReducer = persistReducer(persistConfig, reducers);
+const store = createStore(reducers, applyMiddleware(ReduxThunk, logger));
 
 let persistor = persistStore(store);
 

@@ -1,9 +1,7 @@
-import { preload, requestLogin, requestRegister, requestReset } from "../Api/AuthApi";
+import { preload, requestRegister, requestReset } from "../Api/AuthApi";
 import constants from "../constants";
 import * as RootStack from "../navigation/RootNavigate";
-import { showMessage } from "react-native-flash-message";
-import { setAccountType, clearAccount } from "../Account/action";
-import AsyncStorage from '@react-native-community/async-storage';
+import { clearAccount } from "../Account/action";
 
 /* -- Actions states -- */ 
 
@@ -27,46 +25,6 @@ const logOutUser = () => ({
 
 /* -- Actions functions -- */ 
 
-const displayError = msg => {
-    showMessage({
-        message: "Error",
-        description: msg,
-        type: "danger",
-        duration: 2890
-    });
-}
-
-export const Login = values => {
-    return (dispatch) => {
-        dispatch(fetchRequest());
-        requestLogin(values)
-            .then(data => {
-                dispatch(fetchSuccess());
-                if(data.accountType !== 0) {
-                    setAccountType(data.accountType);
-                }
-
-                switch(data.accountType) {
-                    case 0:
-                        RootStack.reset(0, [{ name: "Account" }]);
-                        break;
-                    case 1:
-                        RootStack.reset(0, [{ name: "Dashboard" }]);
-                        break;
-                    case 2 || 3:
-                        RootStack.reset(0, [{ name: "Search" }]);
-                        break;
-                    default: 
-                        break;
-                }
-            })
-            .catch(error => {
-                dispatch(fetchFailure());
-                displayError(error);
-            });
-    }
-}
-
 export const LogOut = () => {
     return async dispatch => {
         dispatch(fetchRequest());
@@ -83,11 +41,12 @@ export const Reset = values => {
         requestReset(values)
             .then(data => {
                 dispatch(fetchSuccess());
+                displayFlashMessage("success", "Redefinir senha", "Senha redefinida com sucesso.");
                 RootStack.navigate(0, [{ name: "SignIn" }]);
             })
             .catch(error => {
                 dispatch(fetchFailure());
-                displayError(error);
+                displayFlashMessage("danger", "Error", error);
             });
     }
 }
@@ -98,10 +57,12 @@ export const Register = values => {
         requestRegister(values)
             .then(data => {
                 dispatch(fetchSuccess());
+                displayFlashMessage("success", "Cadastro", "Cadastro realizado com sucesso.");
+                RootStack.navigate("SignIn");
             })
             .catch(error => {
                 dispatch(fetchFailure());
-                displayError(error);
+                displayFlashMessage("danger", "Error", error);
             });
     }
 }
@@ -112,24 +73,29 @@ export const Preloader = token => {
 
     return (dispatch) => {
         preload(token)
-            .then(res => {
-                switch(res.data.accountType) {
-                    case 0:
-                        RootStack.reset(0, [{ name: "Account" }]);
-                        break;
-                    case 1:
-                        RootStack.reset(0, [{ name: "Dashboard" }]);
-                        break;
-                    case 2 || 3:
-                        RootStack.reset(0, [{ name: "Search" }]);
-                        break;                    
-                    default: 
-                        break;
-                }
+            .then(data => {
+                changeScreen(data.type);
+
                 dispatch(fetchSuccess());
             }).catch(error => {
                 dispatch(fetchFailure());
                 RootStack.reset(0, [{ name: "SignIn" }]);
-            });   
+            });
+    }
+}
+
+export const changeScreen = (type) => {
+    switch(type) {
+        case 0:
+            RootStack.reset(0, [{ name: "Account" }]);
+            break;
+        case 1:
+            RootStack.reset(0, [{ name: "Buscar" }]);
+            break;
+        case 2 || 3:
+            RootStack.reset(0, [{ name: "Buscar" }]);
+            break;
+        default: 
+            break;
     }
 }
