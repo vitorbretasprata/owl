@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
 import { Text, Icon } from "galio-framework";
 import { TouchableWithoutFeedback, ScrollView, BaseButton } from "react-native-gesture-handler";
 import { TextInputMask } from 'react-native-masked-text';
+import AsyncStorage from "@react-native-community/async-storage";
 
 import LectureModal from "./modals/lectureModal";
 import BankModal from "./modals/bankModal";
@@ -20,10 +21,12 @@ function LecturesComponent(
         setLectureInfo, 
         lectureTime, 
         lectureValue, 
-        movementValue 
+        movementValue,
+        phone
     }
 ) {
 
+    const [token, setToken] = useState("");
     const [showLectureModal, setShowLectureModal] = useState(false);
     const [showBankModal, setShowBankModal] = useState(false);
 
@@ -34,18 +37,32 @@ function LecturesComponent(
     const [valueLecture, setValueLecture] = useState(lectureValue);
     const [timeLecture, setTimeLecture] = useState(lectureTime);
     const [valueMovement, setValueMovement] = useState(movementValue);
+    const [phone, setPhone] = useState(phone);
+
 
     const handleTimeLecture = text => setTimeLecture(text);
     const handleValueLecture = text => setValueLecture(text);
     const handleValueMovement = text => setValueMovement(text);
+    const handlePhone = text => setPhone(text);
 
+    useEffect(() => {
+        setAuthToken();
+        return () => {
+            cleanup
+        }
+    }, [input])
+
+    const setAuthToken = async () => {
+        const token = await AsyncStorage.getItem("@user:token");
+        setToken(token);
+    }
     const editMode = () => setShowEdit(true);
     const cancelEdit = () => setShowEdit(false);
 
     const saveEdit = () => {
         if(valueLecture && timeLecture && valueMovement) {
             setShowEdit(false);
-            setLectureInfo(valueLecture, timeLecture, valueMovement)
+            setLectureInfo(token, phone, valueLecture, timeLecture, valueMovement)
         }
     }
 
@@ -57,13 +74,13 @@ function LecturesComponent(
     }
 
     const updateLectures = (arr, index) => {
-        setLectures(arr, index);
+        setLectures(token, arr, index);
     }
 
     const closeLectureModal = () => setShowLectureModal(false);
     const _showBankModal = () => setShowBankModal(true);
     const closeBankModal = () => setShowBankModal(false);
-    const updateBankInfo = info => setBankAccount(info);
+    const updateBankInfo = info => setBankAccount(token, info, bankInfo.bankAccountId);
 
     return (
         <ScrollView style={styles.container}>
@@ -260,6 +277,25 @@ function LecturesComponent(
                                 }}
                                 value={valueMovement}
                                 onChangeText={handleValueMovement}
+                            />
+                        )}
+                    </View>
+                    <View style={styles.inputSection}>
+                        <Text style={styles.label}>Telefone</Text> 
+                        {!showEdit ? (
+                            <Text style={styles.value}>{phone}</Text>
+                        ) : (
+                            <TextInputMask 
+                                style={styles.input}
+                                type={'cel-phone'}
+                                keyboardType="decimal-pad"
+                                options={{
+                                    maskType: 'BRL',
+                                    withDDD: true,
+                                    dddMask: '(99) '
+                                }}
+                                value={phone}
+                                onChangeText={handlePhone}
                             />
                         )}
                     </View>

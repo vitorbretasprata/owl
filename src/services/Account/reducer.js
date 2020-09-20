@@ -1,6 +1,7 @@
 import constants from "../constants";
 
 const initialState = {
+    id: 0,
     loading: false,
     error: null,
     name: "",
@@ -57,6 +58,11 @@ const AccountReducer = (state = initialState, action) => {
                     [action.payload.name]: action.payload.data
                 }
             } 
+        case constants.UPDATE_ID:
+            return {
+                ...state,
+                id: action.payload
+            }
         case constants.UPDATE_LECTURES:
             return {
                 ...state,

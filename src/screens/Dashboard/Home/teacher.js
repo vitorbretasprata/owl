@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Dimensions, View, InteractionManager, Linking } from "react-native";
 import { Text, Icon } from "galio-framework";
-import { ScrollView, BaseButton, TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { ScrollView, TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 import { yearsName } from "../../constants/index";
 import HeaderSvg from "../components/headerSvg";
+import { fetchProfessorAPI } from "../../../services/Api/lecturesApi";
+import { displayFlashMessage } from "../../../components/displayFlashMessage";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -22,24 +24,28 @@ export default({ route: { params }, navigation }) => {
     }, []);
 
     const getTeacher = (id) => {
-        const teacher = {
-            name: "Felipe Santos",
-            totalClasses: 340,
-            avaliacoes: 122,
-            contacts: 12,
-            local: "Brasília - DF, Brasil",
-            lectures: {
-                "Matemática": [3, 6, 4],
-                "Gramática": [3, 6, 4],
-                "Física": [3, 6, 4]
-            },
-            phone: 5561981242660,
-            classTime: 50,
-            value: 35.5
-        }
+        fetchProfessorAPI(id).then(teacher => {
+            let teacherLectures = {};
+            teacher.lectures.forEach(lecture => {
+                teacherLectures[lecture.name] = (!teacherLectures[lecture.name]) ? [lecture.yearCode] : [...teacherLectures[lecture.name], lecture.yearCode]
+            });
 
-        setInfo(teacher);
-        setIsLoading(false);
+            let teacherInfo = {
+                id: teacher.id,
+                lecture_time: teacher.lecture_time,
+                lecture_value: teacher.lecture_value,
+                movement_value: teacher.movement_value,
+                complete_name: teacher.complete_name,
+                phone: teacher.phone,
+                lectures: teacherLectures
+            }
+
+            setInfo(teacherInfo);
+            setIsLoading(false);
+        }).catch(error => {
+            displayFlashMessage("danger", "Error", "Não foi possível pegar as informações do professor, retornando a lista...");
+            navigation.back();
+        });
     }  
 
     const handleCalendar = () => {
@@ -134,7 +140,7 @@ export default({ route: { params }, navigation }) => {
                         <View style={styles.divisor}/>
 
                         <Text style={styles.teacherName}>
-                            {info.name}
+                            {info.complete_name}
                         </Text>
 
                         <Text style={styles.teacherLocation}>

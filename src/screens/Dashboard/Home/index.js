@@ -20,6 +20,7 @@ function Home({ fetchProfessors, fetchMoreProfessors, professors, loading, data,
     const authContext = useContext(AuthContext);
 
     const [filter, setFilter] = useState("");
+    const [refresh, setRefresh] = useState(false);
     const [pagination, setPagination] = useState({})
     const [token, setToken] = useState("");
 
@@ -42,14 +43,18 @@ function Home({ fetchProfessors, fetchMoreProfessors, professors, loading, data,
         return (
             <TouchableWithoutFeedback onPress={() => navigation.navigate("TeacherProfile", { teacherId: item.id })}>
                 <TeacherBlock professor={item} />
-                {!(index === (professors.length - 1)) && <View style={styles.divisor}/>}
             </TouchableWithoutFeedback>
         );
     }
 
     const renderMore = () => {}
 
-    const refresh = () => {}
+    const refreshList = () => {
+        setRefresh(true);
+        fetchProfessors({}, token);
+        setRefresh(false);
+    }
+
 
     return (
         <SafeAreaView style={styles.container}>
@@ -64,8 +69,9 @@ function Home({ fetchProfessors, fetchMoreProfessors, professors, loading, data,
                         ListEmptyComponent={renderEmptyList}
                         ListFooterComponent={renderFooter}
                         onEndReached={renderMore}
-                        onRefresh={refresh}
-                        refreshing={true}
+                        onRefresh={refreshList}
+                        ItemSeparatorComponent={<View style={styles.divisor}/>}
+                        refreshing={refresh}
                     />
                 </>
             )}

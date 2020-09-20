@@ -1,5 +1,5 @@
-import React from "react";
-import { StyleSheet, SafeAreaView, Dimensions, View } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, SafeAreaView, Dimensions, View, InteractionManager } from "react-native";
 import { connect } from "react-redux";
 import { Text, Icon } from "galio-framework";
 import { RectButton } from "react-native-gesture-handler";
@@ -9,6 +9,14 @@ import { logOut } from "../../../services/Auth/action";
 const { width, height } = Dimensions.get("screen");
 
 function Profile({ navigation, name, type, logOut }) {
+    const [loadingScreen, setLoadingScreen] = useState(true);
+
+    useEffect(() => {
+        InteractionManager.runAfterInteractions(() => {
+            setLoadingScreen(false);
+        })
+    }, [])
+
 
     const navigateToConfig = () => {
         navigation.navigate("Configuration");
@@ -21,48 +29,50 @@ function Profile({ navigation, name, type, logOut }) {
     return (
         <SafeAreaView style={styles.container}>
             <HeaderSvg />
-            <View style={styles.userContainer}>
-                <View style={styles.useInfo}>
-                    <Text style={{...styles.spacing, ...styles.userName }}>
-                        {name || "Visitante"}
-                    </Text>
-                    <Text style={{...styles.spacing, ...styles.userRole }}>
-                        {type === 3 ? "Professor" : "Estudante"}
-                    </Text>
-                </View>
-                <View>
-                    {type === 3 && (
+            {loadingScreen && (
+                <View style={styles.userContainer}>
+                    <View style={styles.useInfo}>
+                        <Text style={{...styles.spacing, ...styles.userName }}>
+                            {name || "Visitante"}
+                        </Text>
+                        <Text style={{...styles.spacing, ...styles.userRole }}>
+                            {type === 3 ? "Professor" : "Estudante"}
+                        </Text>
+                    </View>
+                    <View>
+                        {type === 3 && (
+                            <RectButton
+                                style={styles.btn}
+                                onPress={navigateToConfig}
+                            >
+                                <Icon 
+                                    family="Entypo"
+                                    name="cog"
+                                    size={22}
+                                    color="#707070"
+                                />
+                                <Text style={styles.btnText}>
+                                    Configuração
+                                </Text>
+                            </RectButton>
+                        )}
                         <RectButton
                             style={styles.btn}
-                            onPress={navigateToConfig}
+                            onPress={handleLogOut}
                         >
                             <Icon 
-                                family="Entypo"
-                                name="cog"
-                                size={22}
+                                family="AntDesign"
+                                name="logout"
+                                size={20}
                                 color="#707070"
                             />
                             <Text style={styles.btnText}>
-                                Configuração
+                                Sair
                             </Text>
                         </RectButton>
-                    )}
-                    <RectButton
-                        style={styles.btn}
-                        onPress={handleLogOut}
-                    >
-                        <Icon 
-                            family="AntDesign"
-                            name="logout"
-                            size={20}
-                            color="#707070"
-                        />
-                        <Text style={styles.btnText}>
-                            Sair
-                        </Text>
-                    </RectButton>
+                    </View>
                 </View>
-            </View>
+            )}
         </SafeAreaView>
     );
 };

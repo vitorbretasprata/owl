@@ -2,21 +2,29 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
 import { ScrollView } from "react-native-gesture-handler";
+import AsyncStorage from "@react-native-community/async-storage";
 
-import DependentsComponent from "./components/dependentsComponent";
 import LectureComponents from "./components/lecturesComponents";
-import { setPaymentMethods } from "../../../services/Account/action";
+import { getInfoAccount } from "../../../services/Account/action";
 
+function Configuration({ type, extraInfo, getInfoAccount }) {
 
-function Configuration({ getInfoAccount, type, extraInfo }) {
+    useEffect(() => {
+        if(extraInfo === {}) {
+            getInfo();
+        }
+    }, []);
+
+    const getInfo = async () => {
+        const token = await AsyncStorage.getItem("@user:token");
+        getInfoAccount(token, type);
+
+    }
 
     return (
         <ScrollView style={styles.container}>
             <View style={styles.section}>
-                {type === 3 && <LectureComponents lectures={extraInfo.lectures} />}
-
-                {type === 1 && <DependentsComponent dependents={extraInfo.dependents} />}
-
+                {type === 3 && <LectureComponents />}
             </View>
         </ScrollView>
     );
@@ -68,4 +76,4 @@ const MapStateToProps = state => {
     }
 }
 
-export default connect(MapStateToProps, { setPaymentMethods })(Configuration);
+export default connect(MapStateToProps, { getInfoAccount })(Configuration);

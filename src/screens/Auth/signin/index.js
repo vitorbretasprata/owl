@@ -12,7 +12,7 @@ import { connect } from "react-redux";
 import AsyncStorage from '@react-native-community/async-storage';
 import { displayFlashMessage } from "../../../components/displayFlashMessage";
 
-import { setAccountType } from "../../../services/Account/action";
+import { SetAccountInfo } from "../../../services/Account/action";
 import { changeScreen } from "../../../services/Auth/action";
 import { requestLogin } from "../../../services/Api/AuthApi";
 import Loading from "../../../components/loading";
@@ -82,7 +82,7 @@ const RunTiming = (clock, hasKeyBoardShown) => {
 
 const valueKey = RunTiming(clock, hasKeyBoardShown);
 
-function SignIn({ navigation, setAccountType }) {
+function SignIn({ navigation, SetAccountInfo }) {
   const authContext = useContext(AuthContext);
 
   const [loading, setLoading] = useState(false);
@@ -133,7 +133,7 @@ function SignIn({ navigation, setAccountType }) {
             }, 3000);
 
             if(data.type !== 0) {
-                setAccountType(data.type);
+                SetAccountInfo(data);
             }
 
             changeScreen(data.type);
@@ -252,4 +252,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(null, { setAccountType })(SignIn);
+export default connect(null, { SetAccountInfo })(SignIn);

@@ -1,6 +1,7 @@
 import * as RootStack from "../navigation/RootNavigate";
 import constants from "../constants";
-import { setInfo, getInfoAccountAPI, fetchActivityDayAPI } from "../Api/AccountApi";
+import { setInfo, getInfoAccountAPI, fetchActivityDayAPI, updateTeacherLecturesAPI, updateTeacherLectureInfoAPI } from "../Api/AccountApi";
+import { displayFlashMessage } from "../../components/displayFlashMessage";
 
 /* -- Actions states -- */ 
 
@@ -83,9 +84,11 @@ export const SetAccountInfo = (type, info) => {
             dispatch(setConfig("SET_TYPE", {
                 type: data.type
             }));
-            dispatch(setAccountExtraInfoAll(data.info));
 
-            RootStack.reset(0, [{ name: "TabBottom" }]);
+            dispatch(setConfig("UPDATE_ID", {
+                type: data.id
+            }));
+
         }).catch(error => {
             dispatch(Failure(error.message));
         });
@@ -123,15 +126,15 @@ export const fetchActivityDay = (date, token) => {
     }
 }
 
-export const getInfoAccount = () => {
+export const getInfoAccount = (token, type) => {
     return dispatch => {
         dispatch(Request());
-        getInfoAccountAPI.then(data => {
-            dispatch(setAccountExtraInfoAll(data.extraInfo));
-            dispatch(setSchedule(data.dates));
-        }).catch(error => {
-            dispatch(Failure(error.message));
-        });
+        getInfoAccountAPI(token, type)
+            .then(data => {
+                dispatch(setAccountExtraInfoAll(data.extraInfo));
+            }).catch(error => {
+                displayFlashMessage("danger", "Error", error);
+            });
     }
 }
 
@@ -146,8 +149,15 @@ export const setDays = (type) => {
     }
 }
 
-export const setLectures = (arr, key) => dispatch => {
-    dispatch(updateLectures(arr, key))
+export const setLectures = (token, arr, key) => dispatch => {
+    return dispatch => {
+        updateTeacherLecturesAPI.then(data => {
+            dispatch(updateLectures(arr, key));
+            dispatch(displayFlashMessage("success", "Informações salvas", "Matérias salvas com sucesso."));
+        }).catch(error => {
+            dispatch(Failure(error.message));
+        });
+    }
 };
 
 export const removeLecture = (date, lecture) => {
@@ -173,28 +183,35 @@ export const setPaymentMethods = (type) => {
     }
 }
 
-export const setLectureInfo = (lectureTime, lectureValue, movementValue ) => {
-    return dispatch => {
-        dispatch(setAccountExtraInfo(lectureTime, "lectureTime"));
-        dispatch(setAccountExtraInfo(lectureValue, "lectureValue"));
-        dispatch(setAccountExtraInfo(movementValue, "movementValue"));
-    }
-}
-
-export const setBankAccount = bankInfo => {
-    return dispatch => {
-        dispatch(setBankAccountInfo(bankInfo));
-    }
-}
-
-export const setDependents = (type) => {
+export const setLectureInfo = (token, phone, lectureTime, lectureValue, movementValue) => {
     return dispatch => {
         dispatch(Request());
-        getInfoAccountAPI.then(data => {
-            dispatch(setAccountExtraInfo(data, "dependents"));
-        }).catch(error => {
-            dispatch(Failure(error.message));
-        });
+        updateTeacherLectureInfoAPI(token, phone, lectureTime, lectureValue, movementValue)
+            .then(data => {
+                dispatch(displayFlashMessage("success", "Informações salvas", "Informações sobre as aulas salvas com sucesso."));
+
+                dispatch(setAccountExtraInfo(lectureTime, "lectureTime"));
+                dispatch(setAccountExtraInfo(lectureValue, "lectureValue"));
+                dispatch(setAccountExtraInfo(movementValue, "movementValue"));
+                dispatch(setAccountExtraInfo(phone, "phone"));
+
+            }).catch(error => {
+                dispatch(Failure(error.message));
+            });
+        
+    }
+}
+
+export const setBankAccount = (token, bankInfo, id) => {
+    return dispatch => {
+        setBankAccountAPI(token, bankInfo, id)
+            .then(data => {
+                dispatch(displayFlashMessage("success", "Informações salvas", "Informações bancárias salvas com sucesso."));
+                dispatch(setBankAccountInfo(bankInfo));
+            }).catch(error => {
+                dispatch(displayFlashMessage("danger", "Error", error));
+            });
+
     }
 }
 

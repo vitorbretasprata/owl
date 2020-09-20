@@ -12,7 +12,7 @@ import PaymentModal from "./components/paymentModal";
 
 const { width } = Dimensions.get("screen");
 
-function TeacherCalendar({ scheduleClass, route: { params } }) {
+function TeacherCalendar({ scheduleClass, route: { params }, id }) {
 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(false);
@@ -106,11 +106,11 @@ function TeacherCalendar({ scheduleClass, route: { params } }) {
             const convertedDate = converDateSchedule(ISODate);
             const { teacherInfo } = params;
 
-            const endHour = ISODate.setMinutes(ISODate.getMinutes() + teacherInfo.classTime);
             const scheduleInfo = {
+                teacher_id: teacherInfo.id,
+                student_id: id,
                 nome: teacherInfo.name,
-                horarioInicio: `${ISODate.getHours()}:${ISODate.getMinutes()}`,
-                horarioFim: `${new Date(endHour).getHours()}:${new Date(endHour).getMinutes()}`,
+                date: `${ISODate.getFullYear()}-${ISODate.getMonth()}-${ISODate.getDate()} ${ISODate.getHours()}:${ISODate.getMinutes()}`,
                 valor: 25.50,
                 local: "Online"
             }
@@ -288,7 +288,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-        days: state.account.extraInfo.days
+        days: state.account.extraInfo.days,
+        id: state.account.id
     }
 }
 
