@@ -1,6 +1,6 @@
 import * as RootStack from "../navigation/RootNavigate";
 import constants from "../constants";
-import { setInfo, getInfoAccountAPI, fetchActivityDayAPI, updateTeacherLecturesAPI, updateTeacherLectureInfoAPI } from "../Api/AccountApi";
+import { setAccountInfoAPI, getInfoAccountAPI, fetchActivityDayAPI, updateTeacherLecturesAPI, updateTeacherLectureInfoAPI } from "../Api/AccountApi";
 import { displayFlashMessage } from "../../components/displayFlashMessage";
 
 /* -- Actions states -- */ 
@@ -78,20 +78,28 @@ export const SetAccountInfo = (type, info) => {
 
     return dispatch => {
         dispatch(Request());
-        setInfo(type, info).then(data => {
-            dispatch(Success());
+        setAccountInfoAPI(type, info)
+            .then(data => {
 
-            dispatch(setConfig("SET_TYPE", {
-                type: data.type
-            }));
+                dispatch(setConfig("SET_TYPE", {
+                    type: type
+                }));
 
-            dispatch(setConfig("UPDATE_ID", {
-                type: data.id
-            }));
+                dispatch(setConfig("UPDATE_ID", {
+                    type: data.id
+                }));
 
-        }).catch(error => {
-            dispatch(Failure(error.message));
-        });
+                dispatch(setConfig("SET_NAME", {
+                    type: data.complete_name
+                }));
+
+                dispatch(setAccountExtraInfoAll(info));
+
+                dispatch(Success());
+
+            }).catch(error => {
+                dispatch(Failure(error.message));
+            });
     }
 }
 

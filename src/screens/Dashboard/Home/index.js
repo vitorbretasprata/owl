@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
-import { StyleSheet, SafeAreaView, Dimensions, View, InteractionManager } from "react-native";
+import { StyleSheet, SafeAreaView, Dimensions, View } from "react-native";
 import { connect } from "react-redux";
-import Constants from "expo-constants";
 import { FlatList, TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Text } from "galio-framework";
 
@@ -9,10 +8,9 @@ import { fetchProfessors } from "../../../services/Lecture/action";
 import { getInfoAccount } from "../../../services/Account/action";
 import SearchHeader from "../components/header";
 import TeacherBlock from "../components/teacherBlock";
+import NotificationBlock from "../../Dashboard/Notifications/components/notification";
+
 import AuthContext from "../../../context/authContext";
-
-
-const Dados = [1, 2, 3 , 4]
 
 const { width } = Dimensions.get("screen");
 
@@ -42,7 +40,7 @@ function Home({ fetchProfessors, fetchMoreProfessors, professors, loading, data,
     const renderProfessor = ({ item, index }) => {
         return (
             <TouchableWithoutFeedback onPress={() => navigation.navigate("TeacherProfile", { teacherId: item.id })}>
-                <TeacherBlock professor={item} />
+                <NotificationBlock />
             </TouchableWithoutFeedback>
         );
     }

@@ -37,7 +37,7 @@ function LecturesComponent(
     const [valueLecture, setValueLecture] = useState(lectureValue);
     const [timeLecture, setTimeLecture] = useState(lectureTime);
     const [valueMovement, setValueMovement] = useState(movementValue);
-    const [phone, setPhone] = useState(phone);
+    const [numberPhone, setPhone] = useState(phone);
 
 
     const handleTimeLecture = text => setTimeLecture(text);
@@ -47,10 +47,7 @@ function LecturesComponent(
 
     useEffect(() => {
         setAuthToken();
-        return () => {
-            cleanup
-        }
-    }, [input])
+    }, []);
 
     const setAuthToken = async () => {
         const token = await AsyncStorage.getItem("@user:token");
@@ -62,7 +59,7 @@ function LecturesComponent(
     const saveEdit = () => {
         if(valueLecture && timeLecture && valueMovement) {
             setShowEdit(false);
-            setLectureInfo(token, phone, valueLecture, timeLecture, valueMovement)
+            setLectureInfo(token, numberPhone, valueLecture, timeLecture, valueMovement)
         }
     }
 
@@ -283,7 +280,7 @@ function LecturesComponent(
                     <View style={styles.inputSection}>
                         <Text style={styles.label}>Telefone</Text> 
                         {!showEdit ? (
-                            <Text style={styles.value}>{phone}</Text>
+                            <Text style={styles.value}>{numberPhone}</Text>
                         ) : (
                             <TextInputMask 
                                 style={styles.input}
@@ -294,7 +291,7 @@ function LecturesComponent(
                                     withDDD: true,
                                     dddMask: '(99) '
                                 }}
-                                value={phone}
+                                value={numberPhone}
                                 onChangeText={handlePhone}
                             />
                         )}

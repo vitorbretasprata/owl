@@ -54,16 +54,7 @@ export const Reset = values => {
 export const Register = values => {
     return (dispatch) => {
         dispatch(fetchRequest());
-        requestRegister(values)
-            .then(data => {
-                dispatch(fetchSuccess());
-                displayFlashMessage("success", "Cadastro", "Cadastro realizado com sucesso.");
-                RootStack.navigate("SignIn");
-            })
-            .catch(error => {
-                dispatch(fetchFailure());
-                displayFlashMessage("danger", "Error", error);
-            });
+        
     }
 }
 

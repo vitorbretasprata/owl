@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import {
   View,
   StyleSheet,
-  Keyboard,
-  Dimensions
+  Keyboard
 } from "react-native";
 import Animated, { Easing } from "react-native-reanimated";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
@@ -15,9 +14,7 @@ import Loading from "../../../components/loading";
 import BackgroundImage from "../components/backgroundImage";
 import AuthInput from "../components/input";
 import Submit from "../components/submit";
-import { Register } from "../../../services/Auth/action";
-import { displayFlashMessage } from "../../../components/displayFlashMessage";
-
+import { requestRegister } from "../../../services/Api/AuthApi";
 
 const { 
   Value,
@@ -37,8 +34,6 @@ const {
 
 const clock = new Clock();
 const hasKeyBoardShown = new Value(-1);
-
-const { height } = Dimensions.get("screen");   
 
 const RunTiming = (clock, hasKeyBoardShown) => {
   const state = {
@@ -79,7 +74,8 @@ const RunTiming = (clock, hasKeyBoardShown) => {
 
 const valueKey = RunTiming(clock, hasKeyBoardShown);
 
-function SignUp({ Register, navigation, loading }) {
+export default memo(({ navigation }) => {
+    const [loadingScreen, setLoadingScreen] = useState(false);
 
     const [values, setValues] = useState({
         name: "",
@@ -122,7 +118,16 @@ function SignUp({ Register, navigation, loading }) {
     }
 
     const _handleRegister = async () => {
-        Register(values);
+        setLoadingScreen(true);
+        requestRegister(values)
+            .then(data => {
+                displayFlashMessage("success", "Cadastro", "Cadastro realizado com sucesso.");
+                navigation.navigate("SignIn");
+            })
+            .catch(error => {
+                setLoadingScreen(false);
+                displayFlashMessage("danger", "Error", error);
+            });
     }
 
     const back = () => {
@@ -131,7 +136,7 @@ function SignUp({ Register, navigation, loading }) {
 
     return (
         <BackgroundImage>
-            <Loading loading={loading} />
+            <Loading loading={loadingScreen} />
             <View style={styles.container}>
                 <View>
                     <Animated.Text 
@@ -230,7 +235,7 @@ function SignUp({ Register, navigation, loading }) {
             </View>
         </BackgroundImage>
     );
-};
+});
 
 const styles = StyleSheet.create({
     container: {
@@ -269,11 +274,3 @@ const styles = StyleSheet.create({
         marginBottom: 50    
     }
 });
-
-const mapStateToProps = state => {
-    return {
-        loading: state.auth.loading
-    }
-}
-
-export default connect(mapStateToProps, { Register })(SignUp);

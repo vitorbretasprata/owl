@@ -33,13 +33,11 @@ export const requestLogin = (values) => {
                     resolve(dataJSON);
                 })
                 .catch(error => {
+                    console.log(error)
                     reject("Ocorreu um error no servidor, tente novamente mais tarde.");
                 });
 
-            timeOut = setTimeout(() => {
-                abortTime.abort();
-                reject("Servidor não está respondendo, tente denovo mais tarde.");
-            }, 30000);
+            
 
         } catch(error) {
             if(error.errors && Array.isArray(dataJSON.errors)) {

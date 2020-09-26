@@ -7,6 +7,7 @@ import ConfigTeacher from "../screens/Account/Teacher/config";
 
 import * as Notifications from "expo-notifications";
 import * as Permissions from "expo-permissions";
+import AsyncStorage from "@react-native-community/async-storage";
 
 import Lecture from "../screens/Dashboard/Calendario/lecture";
 
@@ -17,7 +18,8 @@ import TabBottom from "./bottomTabNavigator";
 import Configuration from "../screens/Dashboard/Configuration/index";
 
 import { registerToken } from "../services/Api/AccountApi";
-import AsyncStorage from "@react-native-community/async-storage";
+import { displayFlashMessage } from "./displayFlashMessage";
+
 
 
 const tabOptions = {
@@ -54,7 +56,12 @@ export default memo(() => {
     useEffect(() => {
         registerForPushNotifications();
 
-        Notifications.addPushTokenListener(notification => {
+        Notifications.addNotificationReceivedListener(notification => {
+            console.log(notification)
+        });
+
+        Notifications.addNotificationResponseReceivedListener(notification => {
+            console.log(notification)
         });
     }, []);
 
@@ -65,10 +72,13 @@ export default memo(() => {
             if(!permission.granted) return;
 
             const token = await Notifications.getExpoPushTokenAsync();
-            console.log(token);
             const authToken = await AsyncStorage.getItem("@user:token");
 
-            registerToken(token, authToken);
+            registerToken(token.data, authToken).then(res => {
+
+            }).catch(error => {
+                displayFlashMessage("danger", "Error", error);
+            });
         } catch (error) {
             console.log(error)
         }

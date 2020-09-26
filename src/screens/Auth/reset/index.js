@@ -20,13 +20,15 @@ import { Reset } from "../../../services/Auth/action";
 import { checkEmail } from "../../../services/Api/AuthApi";
 import { displayFlashMessage } from "../../../components/displayFlashMessage";
 
-const { height, width } = Dimensions.get("screen");
+const { width } = Dimensions.get("screen");
 const scrollWidth = width - 80;
 
-function Forgot({ navigation, error, loading }) {
+function Forgot({ navigation }) {
 
     const scrollRef = useRef(null);
     let index = 0;
+
+    const [loadingScreen, setLoadingScreen] = useState(false)
 
     const [values, setValues] = useState({
         email: "",
@@ -111,7 +113,7 @@ function Forgot({ navigation, error, loading }) {
 
     return (
         <BackgroundImage>
-            <Loading loading={loading}/>
+            <Loading loading={loadingScreen}/>
             <SafeAreaView style={styles.container}>
                 <View style={styles.align}>
                     <ScrollView
@@ -250,11 +252,4 @@ const styles = StyleSheet.create({
     }
 });
 
-
-const mapStateToProps = state => {
-    return {
-        loading: state.auth.loading
-    }
-}
-
-export default connect(mapStateToProps, { Reset })(Forgot);
+export default connect(null, { Reset })(Forgot);

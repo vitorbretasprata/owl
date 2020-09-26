@@ -19,10 +19,9 @@ import Loading from "../../../components/loading";
 import BackgroundImage from "../components/backgroundImage";
 import AuthInput from "../components/input";
 import Submit from "../components/submit";
+import AuthContext from "../../../context/authContext";
 import Or from "../components/or";
 import Social from "../components/social";
-import AuthContext from "../../../context/authContext";
-
 
 const { 
   Value,
@@ -88,8 +87,8 @@ function SignIn({ navigation, SetAccountInfo }) {
   const [loading, setLoading] = useState(false);
 
   const [values, setValues] = useState({
-      email: "",
-      password: ""
+      email: "vitorbretasprata@gmail.com",
+      password: "Vitorbp123"
   });
   
   const isEnabled = values["password"].length > 0 && values["email"].length > 0;
@@ -108,6 +107,8 @@ function SignIn({ navigation, SetAccountInfo }) {
 
       Keyboard.addListener(showEventName, handleKbdShow);
       Keyboard.addListener(hideEventName, handleKbdHide);
+
+      _handleLogin();
       return () => {
           Keyboard.removeListener(showEventName, handleKbdShow);
           Keyboard.removeListener(hideEventName, handleKbdHide);
@@ -139,7 +140,7 @@ function SignIn({ navigation, SetAccountInfo }) {
             changeScreen(data.type);
         })
         .catch(error => {
-            console.log(error)
+            setLoading(false);
             displayFlashMessage("danger", "Error", error);
         });
 
@@ -219,7 +220,6 @@ function SignIn({ navigation, SetAccountInfo }) {
   );
 };
 
-// Coloring below is used just to easily see the different components
 const styles = StyleSheet.create({
   container: {    
     flex: 1,
