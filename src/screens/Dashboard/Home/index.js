@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { StyleSheet, SafeAreaView, Dimensions, View } from "react-native";
+import { StyleSheet, SafeAreaView, Dimensions, View, InteractionManager } from "react-native";
 import { connect } from "react-redux";
 import { FlatList, TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Text } from "galio-framework";
@@ -25,7 +25,6 @@ function Home({ fetchProfessors, fetchMoreProfessors, professors, loading, data,
     useEffect(() => {
         setToken(authContext.token);
         fetchProfessors({}, token);
-        console.log(professors.length)
     }, []);
 
 
@@ -39,8 +38,11 @@ function Home({ fetchProfessors, fetchMoreProfessors, professors, loading, data,
 
     const renderProfessor = ({ item, index }) => {
         return (
-            <TouchableWithoutFeedback onPress={() => navigation.navigate("TeacherProfile", { teacherId: item.id })}>
-                <NotificationBlock />
+            <TouchableWithoutFeedback>
+                <NotificationBlock 
+                    cls="Aula"
+                    message="Sua aula com o professor Vitor Prata foi agendada para o dia 20/10/2020 as 20:30." 
+                />
             </TouchableWithoutFeedback>
         );
     }

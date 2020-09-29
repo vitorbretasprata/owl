@@ -6,14 +6,6 @@ const { width } = Dimensions.get("screen");
 
 export default memo(({ message, cls, date }) => (
     <View style={styles.block}>
-        <View style={styles.icon}>
-            <Icon 
-                name="book" 
-                family="AntDesign" 
-                color="#000" 
-                size={10}
-            />
-        </View>
         <View style={styles.message}>
             <View style={styles.title}>
                 <Text style={styles.titleText}>{cls}</Text>
@@ -28,13 +20,14 @@ export default memo(({ message, cls, date }) => (
 const styles = StyleSheet.create({
     block: {
         flexDirection: "row",
-        width: "100%"
-    },   
-    wrap: {
-        flexWrap: "wrap"
+        width: "100%",
+        paddingHorizontal: 20
     },
     titleText: {
-
+        fontSize: 20
+    },
+    message: {
+        flex: 1
     },
     messageText: {
 
