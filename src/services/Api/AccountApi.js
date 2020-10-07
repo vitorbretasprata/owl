@@ -23,7 +23,7 @@ export const setAccountInfoAPI = (type, info) => {
                 signal: abortTime.signal
             }
 
-            fetch("http://192.168.1.182:3333/account/setAccountInfo", init)
+            fetch("https://ef562682cb50.ngrok.io/account/setAccountInfo", init)
                 .then(async response => {
 
                     if(response.status === 500) {
@@ -69,7 +69,7 @@ export const getInfoAccountAPI = (token, type) => {
                 signal: abortTime.signal
             }
 
-            fetch("http://192.168.1.182:3333/account/getAccountInfo", init)
+            fetch("https://ef562682cb50.ngrok.io/account/getAccountInfo", init)
                 .then(async response => {
 
                     if(response.status === 500) {
@@ -137,7 +137,7 @@ export const setBankAccountAPI = (token, bankInfo, id) => {
                 signal: abortTime.signal
             }
 
-            fetch("http://192.168.1.182:3333/account/updateTeacherBankInfo", init)
+            fetch("https://ef562682cb50.ngrok.io/account/updateTeacherBankInfo", init)
                 .then(async response => {
 
                     if(response.status === 500) {
@@ -180,7 +180,7 @@ export const fetchActivityDayAPI = (date, token) => {
                 signal: abortTime.signal
             }
 
-            fetch("http://192.168.1.182:3333/teachers/getDate", init)
+            fetch("https://ef562682cb50.ngrok.io/teachers/getDate", init)
                 .then(async response => {
 
                     if(response.status === 500) {
@@ -250,7 +250,7 @@ export const updateTeacherLecturesAPI = (token, arr, key) => {
                 signal: abortTime.signal
             }
 
-            fetch("http://192.168.1.182:3333/account/updateTeacherLectures", init)
+            fetch("https://ef562682cb50.ngrok.io/account/updateTeacherLectures", init)
                 .then(async response => {
 
                     if(response.status === 500) {
@@ -300,7 +300,7 @@ export const updateTeacherLectureInfoAPI = (token, phone, lectureTime, lectureVa
                 signal: abortTime.signal
             }
 
-            fetch("http://192.168.1.182:3333/account/updateTeacherInfo", init)
+            fetch("https://ef562682cb50.ngrok.io/account/updateTeacherInfo", init)
                 .then(async response => {
 
                     if(response.status === 500) {
@@ -346,7 +346,7 @@ export const registerToken = (token, authToken) => {
                 signal: abortTime.signal
             }
 
-            fetch("http://192.168.1.182:3333/account/updatePushToken", init)
+            fetch("https://ef562682cb50.ngrok.io/account/updatePushToken", init)
                 .then(async response => {
 
                     if(response.status === 500) {

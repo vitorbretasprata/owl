@@ -2,6 +2,7 @@ import { preload, requestRegister, requestReset } from "../Api/AuthApi";
 import constants from "../constants";
 import * as RootStack from "../navigation/RootNavigate";
 import { clearAccount } from "../Account/action";
+import { displayFlashMessage } from "../../components/displayFlashMessage";
 
 /* -- Actions states -- */ 
 

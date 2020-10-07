@@ -22,7 +22,7 @@ export const fetchProfessorsAPI = (filter, token) => {
                 signal: abortTime.signal
             }
 
-            fetch("http://192.168.1.182:3333/teachers/listTeachers", init)
+            fetch("https://ef562682cb50.ngrok.io/teachers/listTeachers", init)
                 .then(async response => {
 
                     if(response.status === 500) {
@@ -64,7 +64,7 @@ export const fetchProfessorAPI = (id, token) => {
                 signal: abortTime.signal
             }
 
-            fetch("http://192.168.1.182:3333/teachers/getSelectedTeacher/" + id, init)
+            fetch("https://ef562682cb50.ngrok.io/teachers/getSelectedTeacher/" + id, init)
                 .then(async response => {
 
                     if(response.status === 500) {

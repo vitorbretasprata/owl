@@ -15,6 +15,7 @@ import BackgroundImage from "../components/backgroundImage";
 import AuthInput from "../components/input";
 import Submit from "../components/submit";
 import { requestRegister } from "../../../services/Api/AuthApi";
+import { displayFlashMessage } from "../../../components/displayFlashMessage";
 
 const { 
   Value,
@@ -121,6 +122,7 @@ export default memo(({ navigation }) => {
         setLoadingScreen(true);
         requestRegister(values)
             .then(data => {
+                console.log(data)
                 displayFlashMessage("success", "Cadastro", "Cadastro realizado com sucesso.");
                 navigation.navigate("SignIn");
             })

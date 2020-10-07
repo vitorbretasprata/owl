@@ -108,7 +108,6 @@ function SignIn({ navigation, SetAccountInfo }) {
       Keyboard.addListener(showEventName, handleKbdShow);
       Keyboard.addListener(hideEventName, handleKbdHide);
 
-      _handleLogin();
       return () => {
           Keyboard.removeListener(showEventName, handleKbdShow);
           Keyboard.removeListener(hideEventName, handleKbdHide);

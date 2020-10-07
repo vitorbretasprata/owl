@@ -18,14 +18,13 @@ export const requestLogin = (values) => {
                 signal: abortTime.signal
             }
 
-            fetch("http://192.168.1.182:3333/auth/login", init)
+            fetch("https://ef562682cb50.ngrok.io/auth/login", init)
                 .then(async data => {
-
                     if(data.status === 404 || data.status === 500) {
-                        console.log(data);
 
                         const error = await data.json();
                         reject(error.message);
+                        return;
                     }
 
                     const dataJSON = await data.json();
@@ -36,8 +35,6 @@ export const requestLogin = (values) => {
                     console.log(error)
                     reject("Ocorreu um error no servidor, tente novamente mais tarde.");
                 });
-
-            
 
         } catch(error) {
             if(error.errors && Array.isArray(dataJSON.errors)) {
@@ -72,21 +69,21 @@ export const requestRegister = (values) => {
                 signal: abortTime.signal
             }
 
-            fetch("http://192.168.1.182:3333/auth/register", init)
+            fetch("https://ef562682cb50.ngrok.io/auth/register", init)
                 .then(async data => {
 
                     const dataJSON = await data.json();
 
-                    if(typeof dataJSON === "object" && Array.isArray(dataJSON.errors)) {
-                        const message = dataJSON.errors[0].message;
-                        reject(message);
+                    if(data.status === 400) {
+                        reject(dataJSON.message);
+                        return;
                     }
 
-                    resolve(dataJSON.message);
+                    resolve(dataJSON);
 
                 })
-                .catch(response => {
-                    reject("Email já cadastrado, utilize outro email.");
+                .catch(error => {
+                    reject("Ocorreu um error no servidor, tente novamente mais tarde.");
                 });
 
             timeOut = setTimeout(() => {
@@ -95,6 +92,7 @@ export const requestRegister = (values) => {
             }, 30000);
 
         } catch(error) {
+            console.log(error)
             if(error.errors && Array.isArray(dataJSON.errors)) {
                 const message = error.errors[0].message;
                 reject(message);
