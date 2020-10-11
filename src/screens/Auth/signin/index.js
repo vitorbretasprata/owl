@@ -13,7 +13,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { displayFlashMessage } from "../../../components/displayFlashMessage";
 
 import { SetAccountInfo } from "../../../services/Account/action";
-import { changeScreen } from "../../../services/Auth/action";
 import { requestLogin } from "../../../services/Api/AuthApi";
 import Loading from "../../../components/loading";
 import BackgroundImage from "../components/backgroundImage";
@@ -87,8 +86,8 @@ function SignIn({ navigation, SetAccountInfo }) {
   const [loading, setLoading] = useState(false);
 
   const [values, setValues] = useState({
-      email: "vitorbretasprata@gmail.com",
-      password: "Vitorbp123"
+      email: "herc@gmail.com",
+      password: "123456"
   });
   
   const isEnabled = values["password"].length > 0 && values["email"].length > 0;
@@ -129,14 +128,11 @@ function SignIn({ navigation, SetAccountInfo }) {
             await AsyncStorage.setItem("@user:token", data.token);
 
             setTimeout(function () {
+              authContext.setType(data.type);
               authContext.setToken(data.token);
             }, 3000);
 
-            if(data.type !== 0) {
-                SetAccountInfo(data);
-            }
-
-            changeScreen(data.type);
+            SetAccountInfo(data);
         })
         .catch(error => {
             setLoading(false);
@@ -181,6 +177,7 @@ function SignIn({ navigation, SetAccountInfo }) {
               value={values["email"]}
               updateMasterState={_handleChange}
               icon="mail"
+              autoCapitalize="none"
               family="AntDesign"
           />
 

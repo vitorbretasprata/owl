@@ -18,7 +18,7 @@ export const requestLogin = (values) => {
                 signal: abortTime.signal
             }
 
-            fetch("https://ef562682cb50.ngrok.io/auth/login", init)
+            fetch("https://4d5fa85eb216.ngrok.io/auth/login", init)
                 .then(async data => {
                     if(data.status === 404 || data.status === 500) {
 
@@ -69,17 +69,16 @@ export const requestRegister = (values) => {
                 signal: abortTime.signal
             }
 
-            fetch("https://ef562682cb50.ngrok.io/auth/register", init)
+            fetch("https://4d5fa85eb216.ngrok.io/auth/register", init)
                 .then(async data => {
 
-                    const dataJSON = await data.json();
-
-                    if(data.status === 400) {
+                    if(data.status !== 200) {
+                        const dataJSON = await data.json();
                         reject(dataJSON.message);
                         return;
                     }
 
-                    resolve(dataJSON);
+                    resolve("Dados cadastrados com sucesso.");
 
                 })
                 .catch(error => {
@@ -120,23 +119,21 @@ export const checkEmail = email => {
                 signal: abortTime.signal
             }
 
-            fetch("http://192.168.1.182:3333/auth/confirmEmail", init)
+            fetch("https://4d5fa85eb216.ngrok.io/auth/confirmEmail", init)
                 .then(async response => {
                     const dataJSON = await response.json();
 
-                    console.log(dataJSON);
+                    if(response.status === 404) {
+                        console.log(dataJSON)
+                        reject(dataJSON.message);
+                        return;
+                    }
 
                     resolve(dataJSON);
                 })
-                .catch(response => {
-                    console.log(response);
-                    if(response.status == 500) {
-
-                        if(response.detail)
-                            reject(response.detail);
-                        else
-                            reject(response.message);
-                    }
+                .catch(error => {
+                    console.log(error)
+                    reject("Ocorreu um error no servidor, tente novamente mais tarde.")
                 });
 
                 timeOut = setTimeout(() => {

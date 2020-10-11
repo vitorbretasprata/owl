@@ -1,49 +1,75 @@
-import React from "react";
+import React, { memo, useContext, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Button } from "galio-framework";
-import { connect } from "react-redux";
+import AsyncStorage from '@react-native-community/async-storage';
 
 import Background from "./components/background";
-import { SetAccountInfo } from "../../services/Account/action";
 import Loading from "../../components/loading";
 
-const Account = ({ navigation, SetAccountInfo, loading }) => (
-    <Background>
-        <Loading loading={loading} />
-        <View style={styles.container}>
-            <Text style={[styles.textColor, styles.textTitle]}>Bem Vindo</Text>
-            <Text style={[styles.textColor, styles.textDesc]}>
-                Antes de começarmos, precisamos 
-                que você configure sua conta.
-            </Text>
-            <Text style={[styles.textColor, styles.textDesc]}>
-                Selecione o tipo de conta que deseja criar:
-            </Text>
+import AuthContext from '../../context/authContext';
 
-            <View style={styles.margin}>
-                <Button 
-                    color="#F58738"
-                    round 
-                    uppercase
-                    style={styles.button}
-                    onPress={() => SetAccountInfo({ type: 2 })}
-                >
-                    Aluno
-                </Button>
+import { setAccountInfoAPI } from '../../services/Api/AccountApi';
+import { displayFlashMessage } from "../../components/displayFlashMessage";
 
-                <Button 
-                    color="#F58738"
-                    round 
-                    uppercase
-                    style={styles.button}
-                    onPress={() => navigation.navigate("ConfigTeacher")}
-                >
-                    Professor
-                </Button>
+export default memo(() => {
+    const authContext = useContext(AuthContext);
+
+    const [loading, setLoading] = useState(false);
+
+    const handleSetAccount = async (type) => {
+
+        setLoading(true);
+        const token = await AsyncStorage.getItem("@user:token");
+        setAccountInfoAPI(token, type)
+            .then(res => {
+                authContext.setType(type);
+            })
+            .catch(error => {
+                setLoading(false);
+                displayFlashMessage("danger", "Error", error);
+            });
+
+    }
+
+    return (
+        <Background>
+            <Loading loading={loading} />
+
+            <View style={styles.container}>
+                <Text style={[styles.textColor, styles.textTitle]}>Bem Vindo</Text>
+                <Text style={[styles.textColor, styles.textDesc]}>
+                    Antes de começarmos, precisamos 
+                    que você configure sua conta.
+                </Text>
+                <Text style={[styles.textColor, styles.textDesc]}>
+                    Selecione o tipo de conta que deseja criar:
+                </Text>
+
+                <View style={styles.margin}>
+                    <Button 
+                        color="#F58738"
+                        round 
+                        uppercase
+                        style={styles.button}
+                        onPress={() => handleSetAccount(1)}
+                    >
+                        Aluno
+                    </Button>
+
+                    <Button 
+                        color="#F58738"
+                        round 
+                        uppercase
+                        style={styles.button}
+                        onPress={() => navigation.navigate("ConfigTeacher")}
+                    >
+                        Professor
+                    </Button>
+                </View>
             </View>
-        </View>
-    </Background>
-);
+        </Background>
+    );
+});
 
 const styles = StyleSheet.create({
    container: {
@@ -69,11 +95,3 @@ const styles = StyleSheet.create({
        marginTop: 40
    }
 });
-
-const mapStateToProps = state => {
-    return {
-        loading: state.account.loading
-    }
-}
-
-export default connect(mapStateToProps, { SetAccountInfo })(Account);

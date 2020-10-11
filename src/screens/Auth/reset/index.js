@@ -22,13 +22,14 @@ import { displayFlashMessage } from "../../../components/displayFlashMessage";
 
 const { width } = Dimensions.get("screen");
 const scrollWidth = width - 80;
+let index = 0;
 
 function Forgot({ navigation }) {
 
     const scrollRef = useRef(null);
-    let index = 0;
 
     const [loadingScreen, setLoadingScreen] = useState(false)
+    const [savedCode, setSetSavedCode] = useState('')
 
     const [values, setValues] = useState({
         email: "",
@@ -64,10 +65,7 @@ function Forgot({ navigation }) {
     const _checkEmail = index => {
         checkEmail(values["email"])
             .then(data => {
-                setValues({
-                    ...values,
-                    code: data.code
-                });
+                setSetSavedCode(data.code)
                 handleScroll(index);
             }).catch(error => {
                 displayFlashMessage("danger", "Error", error);
@@ -76,7 +74,7 @@ function Forgot({ navigation }) {
     }
 
     const _checkCode = index => {
-        if(savedCode.toString() === values["code"]) {
+        if(savedCode.toString() !== values["code"]) {
             displayFlashMessage("danger", "Error", "Código errado.");
             return;
         }

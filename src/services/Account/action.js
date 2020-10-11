@@ -74,32 +74,20 @@ const setBankAccountInfo = bankInfo => ({
 
 /* -- Actions functions -- */ 
 
-export const SetAccountInfo = (type, info) => {
+export const SetAccountInfo = (data) => {
 
     return dispatch => {
         dispatch(Request());
-        setAccountInfoAPI(type, info)
-            .then(data => {
 
-                dispatch(setConfig("SET_TYPE", {
-                    type: type
-                }));
+        dispatch(setConfig("UPDATE_ID", {
+            id: data.id
+        }));
 
-                dispatch(setConfig("UPDATE_ID", {
-                    type: data.id
-                }));
+        dispatch(setConfig("SET_NAME", {
+            name: data.complete_name
+        }));
 
-                dispatch(setConfig("SET_NAME", {
-                    type: data.complete_name
-                }));
-
-                dispatch(setAccountExtraInfoAll(info));
-
-                dispatch(Success());
-
-            }).catch(error => {
-                dispatch(Failure(error.message));
-            });
+        dispatch(Success());
     }
 }
 

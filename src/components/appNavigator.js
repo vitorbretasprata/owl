@@ -1,10 +1,6 @@
 import React, { memo, useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import Account from "../screens/Account/Account";
-import ConfigParent from "../screens/Account/Parent/config";
-import ConfigTeacher from "../screens/Account/Teacher/config";
-
 import * as Notifications from "expo-notifications";
 import * as Permissions from "expo-permissions";
 import AsyncStorage from "@react-native-community/async-storage";
@@ -19,8 +15,6 @@ import Configuration from "../screens/Dashboard/Configuration/index";
 
 import { registerToken } from "../services/Api/AccountApi";
 import { displayFlashMessage } from "./displayFlashMessage";
-
-
 
 const tabOptions = {
     headerShown: false
@@ -89,9 +83,6 @@ export default memo(() => {
             <Stack.Screen name="TabBottom" component={TabBottom} options={{...tabOptions}} />
             <Stack.Screen name="Lecture" component={Lecture} options={{...headerLectureStyle}} />
             <Stack.Screen name="Configuration" component={Configuration} options={{...headerStyle}} />
-            <Stack.Screen name="ConfigParent" component={ConfigParent} options={{ headerShown: false }} />
-            <Stack.Screen name="ConfigTeacher" component={ConfigTeacher} options={{ headerShown: false }} />
-            <Stack.Screen name="Account" component={Account} options={{ headerShown: false }} />
             <Stack.Screen name="TeacherProfile" component={TeacherProfile} options={{ headerShown: false }} />
             <Stack.Screen name="TeacherCalendar" component={TeacherCalendar} options={{ ...headerCalendarStyle }} />
         </Stack.Navigator>

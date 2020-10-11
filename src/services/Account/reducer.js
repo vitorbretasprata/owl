@@ -5,7 +5,6 @@ const initialState = {
     loading: false,
     error: null,
     name: "",
-    type: 0,
     dates: {},
     location: null,
     extraInfo: {}
@@ -29,11 +28,6 @@ const AccountReducer = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 error: 'action.payload.error'
-            }
-        case constants.SET_TYPE:
-            return {
-                ...state,
-                type: action.payload.type
             }
         case constants.SET_NAME:
             return {
@@ -61,7 +55,7 @@ const AccountReducer = (state = initialState, action) => {
         case constants.UPDATE_ID:
             return {
                 ...state,
-                id: action.payload
+                id: action.payload.id
             }
         case constants.UPDATE_LECTURES:
             return {

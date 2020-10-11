@@ -187,6 +187,7 @@ export default memo(({ navigation }) => {
                             attrName="email"
                             value={values["email"]}
                             updateMasterState={_handleChange}
+                            autoCapitalize="none"
                             icon="mail"
                             family="AntDesign"
                         />
