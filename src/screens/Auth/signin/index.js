@@ -86,7 +86,7 @@ function SignIn({ navigation, SetAccountInfo }) {
   const [loading, setLoading] = useState(false);
 
   const [values, setValues] = useState({
-      email: "herc@gmail.com",
+      email: "he5rc@gmail.com",
       password: "123456"
   });
   

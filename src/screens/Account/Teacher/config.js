@@ -1,4 +1,4 @@
-import React, { useRef, useReducer, useState, useEffect } from "react";
+import React, { useRef, useReducer, useState, useEffect, useContext, memo } from "react";
 import {
     View,
     Text,
@@ -7,20 +7,22 @@ import {
     TextInput,
     ActivityIndicator
 } from "react-native";
-import { connect } from "react-redux";
 import Animated from "react-native-reanimated";
 import { withTransition } from "react-native-redash";
 import { TextInputMask } from 'react-native-masked-text';
 import { FlatList, ScrollView, BaseButton } from "react-native-gesture-handler";
 import { showMessage } from "react-native-flash-message";
+import AsyncStorage from '@react-native-community/async-storage';
 
 import Background from "../components/background";
 import ProgressBar from "../components/progressBar";
 import YearsModal from "../components/modal";
 import Loading from "../../../components/loading";
-import { SetAccountInfo } from "../../../services/Account/action";
+import { setAccountInfoAPI } from '../../../services/Api/AccountApi';
 import { lecturesConstant } from "../../constants/index";
 import LectureItem from "./components/lectureItem";
+import AuthContext from '../../../context/authContext';
+
 
 const { Value, interpolate } = Animated;
 
@@ -48,9 +50,14 @@ const emptyClasses = {
     11: []
 }
 
-function ConfigTeacher({ SetAccountInfo, loading }) {
+export default memo(() => {
+    const authContext = useContext(AuthContext);
     
     const scrollRef = useRef(null);
+    const lectureRef = useRef(null);
+    const movementRef = useRef(null);
+
+    const [loading, setLoading] = useState(false);
 
     const [showModal, setShowModal] = useState(false);
     const [lectureSelected, setLectureSelected] = useState({});
@@ -108,24 +115,42 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
                     const type = 3;
                     const Info = {
                         lectures: selectedClasses,
-                        lectureTime,
-                        lectureValue,
-                        movementValue,
+                        lectureTime: parseInt(lectureTime, 10),
+                        lectureValue: lectureRef.current.getRawValue(),
+                        movementValue: movementRef.current.getRawValue(),
                         phone,
                         bankInfo: {
                             completeName: name,
                             cpf,
-                            agency,
-                            bankAccount
+                            agency: parseInt(agency, 10),
+                            bankAccount: parseInt(bankAccount, 10),
+                            code: "033"
                         }
                     }
-                    SetAccountInfo(type, Info);
+
+                    handleConfig(type, Info);
                 }
                 break;
             default: 
                 break; 
         }
         setButtonLoading(false);
+    }
+
+    const handleConfig = async (type, Info) => {
+        setLoading(true);
+
+        const token = await AsyncStorage.getItem("@user:token");
+
+        setAccountInfoAPI(token, type, Info)
+            .then(res => {
+                authContext.setType(type);
+            })
+            .catch(error => {
+                setLoading(false);
+                displayError(error);
+            });
+
     }
 
     const checkEmpty = field => {
@@ -221,15 +246,22 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
         });
     }
 
-    const handleLectureTime = text => setLectureTime(text);
-    const handleLectureValue = text => setLectureValue(text);
-    const handleMovementValue = text => setMovementValue(text);
+    const handleLectureTime = (text) => setLectureTime(text);
+    const handleLectureValue = (text) => setLectureValue(text);
+    const handleMovementValue = (text) => setMovementValue(text);
+
     const handleCompleteName = text => setName(text);
 
     const handleCPF = (maskedText, rawText) => setCPF(rawText);
     const handlePhone = (maskedText, rawText) => setPhone(rawText);
-    const handleAgency = (maskedText, rawText) => setAgency(rawText);
-    const handleBankAccount = (maskedText, rawText) => setBankAccount(rawText);
+    const handleAgency = (text) => {
+        text = text.replace(/[\.()\s-]/g, '')
+        setAgency(text);
+    }
+    const handleBankAccount = (text) => {
+        text = text.replace(/[\.()\s-]/g, '')
+        setBankAccount(text);
+    }
 
     const increment = () => {
         if(index <= 4 && position._value <= 0.99) {
@@ -319,12 +351,10 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
                         </Text>
                         <TextInputMask 
                             style={styles.input}
-                            type={'custom'}
+                            type={'only-numbers'}
                             placeholder="em minutos"
                             keyboardType="numeric"
-                            options={{
-                                mask: "999"
-                            }}
+                            maxLength={3}
                             value={lectureTime}
                             onChangeText={handleLectureTime}
                         />
@@ -381,7 +411,8 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
                                 keyboardType="numeric"
                                 value={agency}
                                 options={{
-                                    mask: "9999-9"
+                                    mask: "9999-9",
+                                    getRawValue: handleAgency
                                 }}
                                 includeRawValueInChangeText={true}
                                 onChangeText={handleAgency}
@@ -393,10 +424,10 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
                                 value={bankAccount}
                                 keyboardType="numeric"
                                 options={{
-                                    mask: "99.999-9"
+                                    mask: "99.999-9",
+                                    getRawValue: handleBankAccount
                                 }}
                                 includeRawValueInChangeText={true}
-                                onChangeText={handleBankAccount}
                             />
                         </View>
                     </View>
@@ -416,9 +447,9 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
                                     precision: 2,
                                     separator: ',',
                                     delimiter: '.',
-                                    unit: 'R$',
                                     suffixUnit: ''
                                 }}
+                                ref={lectureRef}
                                 value={lectureValue}
                                 onChangeText={handleLectureValue}
                             />
@@ -436,9 +467,9 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
                                     precision: 2,
                                     separator: ',',
                                     delimiter: '.',
-                                    unit: 'R$',
                                     suffixUnit: ''
                                 }}
+                                ref={movementRef}
                                 value={movementValue}
                                 onChangeText={handleMovementValue}
                             />
@@ -463,7 +494,7 @@ function ConfigTeacher({ SetAccountInfo, loading }) {
             </View>
         </Background>
     );
-}
+});
 
 const styles = StyleSheet.create({
    container: {
@@ -528,11 +559,3 @@ const styles = StyleSheet.create({
         fontSize: 15
    }
 });
-
-const mapStateToProps = state => {
-    return {
-        loading: state.account.loading
-    }
-}
-
-export default connect(mapStateToProps, { SetAccountInfo })(ConfigTeacher);

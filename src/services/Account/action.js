@@ -54,13 +54,6 @@ const updateSchedule = (type, date, lecture) => ({
     }
 });
 
-const setSchedule = (arr) => ({
-    type: constants.SET_SCHEDULE,
-    payload: {
-        schedules: arr
-    }
-});
-
 const clearUserAccount = () => ({
     type: constants.CLEAR_USER_ACCOUNT
 })
@@ -159,12 +152,6 @@ export const setLectures = (token, arr, key) => dispatch => {
 export const removeLecture = (date, lecture) => {
     return dispatch => {
         dispatch(updateSchedule(constants.REMOVE_SCHEDULE, date, lecture));
-    }
-}
-
-export const scheduleClass = (date, lecture) => {
-    return dispatch => {
-        
     }
 }
 

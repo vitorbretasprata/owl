@@ -25,20 +25,8 @@ export default memo(({ professor }) => (
                                 {professor.complete_name}
                             </Text>
                         </View>
-                        <Block row flex center height={25}>
-                            <Icon 
-                                family="Entypo"
-                                name="star"
-                                color="#F58738"
-                                size={20}
-                            />
-                            <Text style={styles.space}>
-                                4.5
-                            </Text>
-                        </Block>
                     </Block>
-                    
-                    <Block row>                
+                    <Block row>
                         <Block row flex center>
                             <Icon 
                                 family="Entypo"

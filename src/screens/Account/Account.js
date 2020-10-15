@@ -11,7 +11,7 @@ import AuthContext from '../../context/authContext';
 import { setAccountInfoAPI } from '../../services/Api/AccountApi';
 import { displayFlashMessage } from "../../components/displayFlashMessage";
 
-export default memo(() => {
+export default memo(({ navigation }) => {
     const authContext = useContext(AuthContext);
 
     const [loading, setLoading] = useState(false);

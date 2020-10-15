@@ -1,17 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, StyleSheet, Dimensions, StatusBar } from "react-native";
+import { View, StyleSheet, Dimensions, StatusBar, TextInput } from "react-native";
 import { connect } from "react-redux";
 import { BaseButton } from "react-native-gesture-handler";
 import { Icon } from "galio-framework";
-import AutoComplete from "react-native-autocomplete-input";
-
-import LectureItem from "../components/lectureItem";
-import { Lectures } from "../constants/constants";
-
 
 const { width, height } = Dimensions.get("screen");
 
-function SearchHeader() {
+function SearchHeader({ filterValue, handleFilter, handleFocusHeader }) {
 
     const inputRef = useRef(null);
     const [isFocused, setIsFocused] = useState(false);
@@ -20,35 +15,23 @@ function SearchHeader() {
     useEffect(() => {
         if(isFocused) {
             inputRef.current.focus();
-        }        
+        }
     }, [isFocused]);
-
-    const data = Lectures.filter(lecture => lecture.includes(search));
-
-    const handleInput = (text) => {
-        setSearch(text);
-    }
 
     const closeHeader = () => {
         if(isFocused) {
-            setIsFocused(false);
             inputRef.current.blur();
+            handleFocusHeader(false);
+            setIsFocused(false);
             return;
         } else {
             setSearch("");
         }
     }
-
-    const choose = (text) => setSearch(text);
-
-    const renderLecture = ({ item, index }) => <LectureItem item={item} condition={index === (Lectures.length - 1)} chooseLecture={choose} />
-    const extractor = (item, i) => i.toString();
-    const handleProfile = () => alert("Profile");
-
-    const handleFilter = () => alert("Filter");
-
+    
     const openHeader = () => {
         setIsFocused(true);
+        handleFocusHeader(true);
     }
 
     const clearInput = () => setSearch("");
@@ -72,19 +55,13 @@ function SearchHeader() {
                 {(!(search === "") || isFocused) && (
                     <View style={styles.containerInput}>
                         <View style={styles.autoCompleteInput}>
-                            <AutoComplete
-                                data={data} 
-                                defaultValue={search}
-                                onChangeText={handleInput}
+                            <TextInput
+                                value={filterValue}
+                                style={styles.autoCompleteContainer}
+                                onChangeText={handleFilter}
                                 ref={inputRef}
-                                renderItem={renderLecture}
                                 onFocus={openHeader}
-                                keyExtractor={extractor}
                                 onBlur={closeHeader}
-                                inputContainerStyle={styles.autoCompleteContainer}
-                                listContainerStyle={styles.autoCompleteListContainer}
-                                listStyle={styles.autoCompleteList}
-                                containerStyle={styles.containerAutoComplete}
                             />
                         </View>
                         {!(search === "") && (
@@ -151,15 +128,16 @@ const styles = StyleSheet.create({
     autoCompleteListContainer: {
         height,
         width,
-        backgroundColor: "#e3e3e3",
+        backgroundColor: "#000",
         position: "absolute",
         left: 0,
         marginLeft: -72,
         top: 45,
-        zIndex: 1000
     },
     autoCompleteList: {
-        width: "100%"
+        width: "100%",
+        backgroundColor: "#aaa",
+        zIndex: 10000
     },
     roundButton: {
         borderRadius: 20,
@@ -181,8 +159,9 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 0,
         top: 0,
-        width: 100
-    },    
+        width: 100,
+        zIndex: 1
+    },
     searchInput: {
        flex: 1,
        color: "#707070",
@@ -196,19 +175,3 @@ const styles = StyleSheet.create({
 })
 
 export default connect(null, null)(SearchHeader);
-
-/**
- * 
- * {isFocused && (
-                <View style={styles.sugestions}>
-                    <FlatList 
-                        data={Lectures}
-                        contentContainerStyle={styles.list}
-                        renderItem={renderLecture}
-                        keyExtractor={(item, index) => index}
-                        onRend
-                        
-                    />
-                </View>
-            )}
- */

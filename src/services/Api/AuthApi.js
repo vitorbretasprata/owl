@@ -18,8 +18,10 @@ export const requestLogin = (values) => {
                 signal: abortTime.signal
             }
 
-            fetch("https://4d5fa85eb216.ngrok.io/auth/login", init)
+            fetch("https://f594a61c0cab.ngrok.io/auth/login", init)
                 .then(async data => {
+
+                    console.log(data.status)
                     if(data.status === 404 || data.status === 500) {
 
                         const error = await data.json();
@@ -69,7 +71,7 @@ export const requestRegister = (values) => {
                 signal: abortTime.signal
             }
 
-            fetch("https://4d5fa85eb216.ngrok.io/auth/register", init)
+            fetch("https://f594a61c0cab.ngrok.io/auth/register", init)
                 .then(async data => {
 
                     if(data.status !== 200) {
@@ -119,7 +121,7 @@ export const checkEmail = email => {
                 signal: abortTime.signal
             }
 
-            fetch("https://4d5fa85eb216.ngrok.io/auth/confirmEmail", init)
+            fetch("https://f594a61c0cab.ngrok.io/auth/confirmEmail", init)
                 .then(async response => {
                     const dataJSON = await response.json();
 

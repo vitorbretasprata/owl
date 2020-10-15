@@ -8,7 +8,8 @@ import { fetchProfessors } from "../../../services/Lecture/action";
 import { getInfoAccount } from "../../../services/Account/action";
 import SearchHeader from "../components/header";
 import TeacherBlock from "../components/teacherBlock";
-import NotificationBlock from "../../Dashboard/Notifications/components/notification";
+
+import LectureList from "../components/lectureList";
 
 import AuthContext from "../../../context/authContext";
 
@@ -19,7 +20,8 @@ function Home({ fetchProfessors, fetchMoreProfessors, professors, loading, data,
 
     const [filter, setFilter] = useState("");
     const [refresh, setRefresh] = useState(false);
-    const [pagination, setPagination] = useState({})
+    const [pagination, setPagination] = useState({});
+    const [focusHeader, setFocusHeader] = useState(false);
     const [token, setToken] = useState("");
 
     useEffect(() => {
@@ -28,10 +30,17 @@ function Home({ fetchProfessors, fetchMoreProfessors, professors, loading, data,
     }, []);
 
 
+    const handleFilter = text => setFilter(text);
+    const selectFilter = lecture => setFilter(lecture);
+
     const renderEmptyList = () => <View style={styles.emptyList}><Text>Lista está vazia!</Text></View>;
 
     const renderFooter = () => {
         return null;
+    }
+
+    const handleHeader = (value) => {
+        setFocusHeader(value)
     }
 
     const extractor = (item) => item.id.toString();
@@ -39,9 +48,8 @@ function Home({ fetchProfessors, fetchMoreProfessors, professors, loading, data,
     const renderProfessor = ({ item, index }) => {
         return (
             <TouchableWithoutFeedback>
-                <NotificationBlock 
-                    cls="Aula"
-                    message="Sua aula com o professor Vitor Prata foi agendada para o dia 20/10/2020 as 20:30." 
+                <TeacherBlock
+                    professor={item}
                 />
             </TouchableWithoutFeedback>
         );
@@ -60,7 +68,18 @@ function Home({ fetchProfessors, fetchMoreProfessors, professors, loading, data,
         <SafeAreaView style={styles.container}>
             {!loading && (
                 <>
-                    <SearchHeader />
+                    <SearchHeader 
+                        filterValue={filter}
+                        handleFilter={handleFilter}
+                        handleFocusHeader={handleHeader}
+                    />
+                    {
+                        focusHeader && 
+                        <LectureList 
+                            filter={filter}
+                            choose={selectFilter}
+                        />
+                    }
                     <FlatList 
                         contentContainerStyle={styles.list}
                         data={professors}
