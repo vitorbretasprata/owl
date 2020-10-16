@@ -12,17 +12,27 @@ export default memo(({ chooseLecture, item, choose, filter }) => {
     const data = Lectures.filter(lecture => lecture.includes(filter));
 
     const extractor = (item, i) => i.toString();
+    const renderLecture = ({ item, index }) => <LectureItem item={item} chooseLecture={chooseFilter}/>
+    const renderSeparator = () => <View style={styles.divisor}/>;
 
-    const renderLecture = ({ item, index }) => <Text>1</Text>
-
-    const chooseFilter = () => {
-        console.log(item)
+    const chooseFilter = (item) => {
+        console.log("item: ", item)
         chooseLecture(item);
     }
 
+    const renderFooter = () => <View style={styles.footer}/>;
+
     return (
         <View style={styles.listContainer}>
-            
+            <FlatList 
+                data={data}
+                keyExtractor={extractor}
+                ItemSeparatorComponent={renderSeparator}
+                renderItem={renderLecture}
+                style={{ flex: 1 }}
+                contentContainerStyle={{ zIndex: 100 }}
+                ListFooterComponent={renderFooter}
+            />
         </View>
     );
 })
@@ -32,11 +42,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: 'space-between',
     },
-    lecture: {
-        paddingVertical: 10,
-        paddingHorizontal: 30,
-        fontSize: 16
-    },
     divisor: {
         height: 1,
         backgroundColor: "#d3d3d3",
@@ -44,11 +49,15 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         position: "absolute",
-        zIndex: 100,
+        zIndex: 2,
         backgroundColor: "#fff",
         top: statusBarHeight + 50,
         left: 0,
         width,
         height
+    },
+    footer: {
+        height: 50,
+        marginBottom: 30
     }
 })

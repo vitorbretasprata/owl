@@ -1,16 +1,14 @@
 import React, { useEffect, useState, useContext } from "react";
-import { StyleSheet, SafeAreaView, Dimensions, View, InteractionManager } from "react-native";
+import { StyleSheet, SafeAreaView, Dimensions, View, FlatList } from "react-native";
 import { connect } from "react-redux";
-import { FlatList, TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Text } from "galio-framework";
 
 import { fetchProfessors } from "../../../services/Lecture/action";
 import { getInfoAccount } from "../../../services/Account/action";
+
 import SearchHeader from "../components/header";
 import TeacherBlock from "../components/teacherBlock";
-
 import LectureList from "../components/lectureList";
-
 import AuthContext from "../../../context/authContext";
 
 const { width } = Dimensions.get("screen");
@@ -43,18 +41,9 @@ function Home({ fetchProfessors, fetchMoreProfessors, professors, loading, data,
         setFocusHeader(value)
     }
 
-    const extractor = (item) => item.id.toString();
-
-    const renderProfessor = ({ item, index }) => {
-        return (
-            <TouchableWithoutFeedback>
-                <TeacherBlock
-                    professor={item}
-                />
-            </TouchableWithoutFeedback>
-        );
-    }
-
+    const renderSeparator = () => <View style={styles.divisor}/>;
+    const renderProfessor = ({ item, index }) => <TeacherBlock professor={item} navigate={() => {}} />;
+    const extractor = (item, index) => index.toString();
     const renderMore = () => {}
 
     const refreshList = () => {
@@ -89,7 +78,7 @@ function Home({ fetchProfessors, fetchMoreProfessors, professors, loading, data,
                         ListFooterComponent={renderFooter}
                         onEndReached={renderMore}
                         onRefresh={refreshList}
-                        ItemSeparatorComponent={<View style={styles.divisor}/>}
+                        ItemSeparatorComponent={renderSeparator}
                         refreshing={refresh}
                     />
                 </>

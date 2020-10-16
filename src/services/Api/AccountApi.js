@@ -19,7 +19,7 @@ export const setAccountInfoAPI = (token, type, info = {}) => {
                 signal: abortTime.signal
             }
 
-            fetch("https://f594a61c0cab.ngrok.io/account/setAccountInfo", init)
+            fetch("https://87665b1ee355.ngrok.io/account/setAccountInfo", init)
                 .then(async response => {
 
                     if(response.status !== 200) {
@@ -64,7 +64,7 @@ export const getInfoAccountAPI = (token, type) => {
                 signal: abortTime.signal
             }
 
-            fetch("https://f594a61c0cab.ngrok.io/account/getAccountInfo", init)
+            fetch("https://87665b1ee355.ngrok.io/account/getAccountInfo", init)
                 .then(async response => {
 
                     if(response.status === 500) {
@@ -132,7 +132,7 @@ export const setBankAccountAPI = (token, bankInfo, id) => {
                 signal: abortTime.signal
             }
 
-            fetch("https://f594a61c0cab.ngrok.io/account/updateTeacherBankInfo", init)
+            fetch("https://87665b1ee355.ngrok.io/account/updateTeacherBankInfo", init)
                 .then(async response => {
 
                     if(response.status === 500) {
@@ -175,7 +175,7 @@ export const fetchActivityDayAPI = (date, token) => {
                 signal: abortTime.signal
             }
 
-            fetch("https://f594a61c0cab.ngrok.io/teachers/getDate", init)
+            fetch("https://87665b1ee355.ngrok.io/teachers/getDate", init)
                 .then(async response => {
 
                     if(response.status === 500) {
@@ -245,7 +245,7 @@ export const updateTeacherLecturesAPI = (token, arr, key) => {
                 signal: abortTime.signal
             }
 
-            fetch("https://f594a61c0cab.ngrok.io/account/updateTeacherLectures", init)
+            fetch("https://87665b1ee355.ngrok.io/account/updateTeacherLectures", init)
                 .then(async response => {
 
                     if(response.status === 500) {
@@ -295,7 +295,7 @@ export const updateTeacherLectureInfoAPI = (token, phone, lectureTime, lectureVa
                 signal: abortTime.signal
             }
 
-            fetch("https://f594a61c0cab.ngrok.io/account/updateTeacherInfo", init)
+            fetch("https://87665b1ee355.ngrok.io/account/updateTeacherInfo", init)
                 .then(async response => {
 
                     if(response.status === 500) {
@@ -320,7 +320,6 @@ export const updateTeacherLectureInfoAPI = (token, phone, lectureTime, lectureVa
     });
 }
 
-
 export const registerToken = (token, authToken) => {
     return new Promise((resolve, reject) => {
         try {
@@ -341,7 +340,7 @@ export const registerToken = (token, authToken) => {
                 signal: abortTime.signal
             }
 
-            fetch("https://f594a61c0cab.ngrok.io/account/updatePushToken", init)
+            fetch("https://87665b1ee355.ngrok.io/account/updatePushToken", init)
                 .then(async response => {
 
                     if(response.status === 500) {
@@ -363,6 +362,102 @@ export const registerToken = (token, authToken) => {
         } catch(error) {
             console.log(error);
             reject("Ocorreu um problema ao tentar salvar suas configurações de notificação, tente novamente mais tarde.");
+        }
+    });
+}
+
+export const cancelLectureAPI = (id, token) => {
+    return new Promise((resolve, reject) => {
+        try {
+            let timeOut;
+            clearTimeout(timeOut);
+            const abortTime = new AbortController();
+
+            const init = {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json', 
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                signal: abortTime.signal
+            }
+
+            fetch("https://87665b1ee355.ngrok.io/teachers/cancel/" + id, init)
+                .then(async response => {
+
+                    console.log(response.status)
+
+                    if(response.status !== 200) {
+                        reject("Ocorreu um problema ao tentar cancelar a aula, tente novamente mais tarde.");
+                    }
+
+                    resolve("");
+                })
+                .catch(error => {
+                    console.log(error)
+                    reject("Ocorreu um problema ao tentar cancelar a aula, tente novamente mais tarde.");
+                });
+
+            timeOut = setTimeout(() => {
+                abortTime.abort();
+                reject("Não foi possível cancelar a aula, servidor não respondendo.");
+            }, 60000);
+
+        } catch(error) {
+            console.log(error);
+        }
+    });
+}
+
+
+export const fetchNotificationAPI = (page, token) => {
+    return new Promise((resolve, reject) => {
+        try {
+            let timeOut;
+            clearTimeout(timeOut);
+            const abortTime = new AbortController();
+
+            const init = {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json', 
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({
+                    limit : 15,
+                    page : page
+                }),
+                signal: abortTime.signal
+            }
+
+            fetch("https://87665b1ee355.ngrok.io/account/getNotifications", init)
+                .then(async response => {
+
+                    if(response.status !== 200) {
+                        reject("Ocorreu um problema ao tentar cancelar a aula, tente novamente mais tarde.");
+                    }
+
+                    const dataJSON = await response.json();
+
+                    resolve({
+                        total: dataJSON.total,
+                        data: dataJSON.data
+                    });
+                })
+                .catch(error => {
+                    console.log(error)
+                    reject("Ocorreu um problema ao tentar cancelar a aula, tente novamente mais tarde.");
+                });
+
+            timeOut = setTimeout(() => {
+                abortTime.abort();
+                reject("Não foi possível cancelar a aula, servidor não respondendo.");
+            }, 60000);
+
+        } catch(error) {
+            console.log(error);
         }
     });
 }

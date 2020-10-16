@@ -136,6 +136,7 @@ function SignIn({ navigation, SetAccountInfo }) {
         })
         .catch(error => {
             setLoading(false);
+            console.log(error)
             displayFlashMessage("danger", "Error", error);
         });
 

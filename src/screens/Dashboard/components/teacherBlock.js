@@ -1,13 +1,15 @@
 import React, { memo } from "react";
 import { Block, Text, Icon } from "galio-framework";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View,  } from "react-native";
+
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 import ProfilePicture from "./profilePicture";
 
 const lectures= ["Matemática", "Português", "Biologia", "Física", "Química", "Educação Física"]
 
-export default memo(({ professor }) => (
-    <>
+export default memo(({ professor, navigate }) => (
+    <TouchableWithoutFeedback onPress={navigate}>
         <Block 
             fluid 
             row
@@ -71,7 +73,7 @@ export default memo(({ professor }) => (
         <View style={[styles.wrap, styles.lectures]}>
             {lectures.map((x, i) => <Text key={i} style={styles.lecture}>{x}</Text>)}          
         </View>
-    </>    
+    </TouchableWithoutFeedback>
 ));
 
 const styles = StyleSheet.create({

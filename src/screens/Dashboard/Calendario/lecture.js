@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, SafeAreaView, InteractionManager } from "react-native";
 import { connect } from "react-redux";
+import AsyncStorage from "@react-native-community/async-storage"
 import { BaseButton } from "react-native-gesture-handler";
 
 import Modal from "./components/modalLecture";
@@ -14,7 +15,7 @@ function Lecture({ route, removeLecture, navigation }) {
     const [show, setShow] = useState(false);
 
     useEffect(() => {
-        InteractionManager.runAfterInteractions(() => {            
+        InteractionManager.runAfterInteractions(() => {
             if(route.params) {
                 setParams(route.params);
             } else {
@@ -22,11 +23,17 @@ function Lecture({ route, removeLecture, navigation }) {
             }
 
             setLoading(false);
-        });        
+        });
+
+        return () => {
+            setParams("")
+        }
     }, []);
 
-    const rmLecture = () => {
-        removeLecture(params.day, params.item);
+    const rmLecture = async () => {
+        const token = await AsyncStorage.getItem("@token:user");
+
+        removeLecture(params.item.id, token);
         navigation.goBack();
     }
 
@@ -57,14 +64,14 @@ function Lecture({ route, removeLecture, navigation }) {
             <Text style={styles.name}>{params.item.nome}</Text>
             <View style={styles.subContainer}>
                 <View>
-                    <Text style={{...styles.dataInfo, marginBottom: 15 }}>Matéria: {params.item.materia}</Text>
-                    <Text style={styles.dataInfo}>Horário: {params.item.horarioInicio} - {params.item.horarioTermino}</Text>
+                    <Text style={{...styles.dataInfo, marginBottom: 15 }}>Matéria: Não definida</Text>
+                    <Text style={styles.dataInfo}>Horário: {params.item.horarioInicio}</Text>
                 </View>
                 <View>
                     <Text style={{...styles.dataInfo, marginBottom: 15 }}>Local: {params.item.local}</Text>
-                    <Text style={styles.dataInfo}>Valor: {params.item.valor}</Text>
+                    <Text style={styles.dataInfo}>Valor total: R${params.item.valor}</Text>
                 </View>
-            </View>         
+            </View>
             <View style={styles.buttons}>
                 <BaseButton 
                     style={styles.btn}

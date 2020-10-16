@@ -7,6 +7,7 @@ const initialState = {
     name: "",
     dates: {},
     location: null,
+    type: 0,
     extraInfo: {}
 }
 
@@ -68,35 +69,12 @@ const AccountReducer = (state = initialState, action) => {
                     }
                 }
             }
-        case constants.REMOVE_SCHEDULE:
-            return {
-                ...state,
-                dates: {
-                    ...state.dates,
-                    [action.payload.date]: [
-                        ...(state.dates[action.payload.date].filter(item => (item !== action.payload.lecture))),
-                    ]
-                }
-            }
         case constants.ADD_SCHEDULE:
-
-            if(!state.dates[action.payload.date]) {
-                return {
-                    ...state,
-                    dates: {
-                        ...state.dates,
-                        [action.payload.date]: action.payload.lecture
-                    }
-                }
-            }
-
             return {
                 ...state,
                 dates: {
                     ...state.dates,
-                    [action.payload.date]: [
-                        ...(state.dates[action.payload.date].push(action.payload.lecture)),
-                    ]
+                    [action.payload.date]: action.payload.lecture
                 }
             }
         case constants.SET_SCHEDULE:

@@ -29,7 +29,7 @@ function Profile({ navigation, name, type, logOut }) {
     return (
         <SafeAreaView style={styles.container}>
             <HeaderSvg />
-            {loadingScreen && (
+            {!loadingScreen && (
                 <View style={styles.userContainer}>
                     <View style={styles.useInfo}>
                         <Text style={{...styles.spacing, ...styles.userName }}>

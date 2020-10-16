@@ -13,16 +13,14 @@ export const fetchProfessorsAPI = (filter, token) => {
                     'Authorization': 'Bearer ' + token
                 },
                 body: JSON.stringify({
-                    filter : {
-                        lecture_id: 1
-                    },
+                    filter : filter,
                     limit : 15,
                     page : 1
                 }),
                 signal: abortTime.signal
             }
 
-            fetch("https://f594a61c0cab.ngrok.io/teachers/listTeachers", init)
+            fetch("https://87665b1ee355.ngrok.io/teachers/listTeachers", init)
                 .then(async response => {
 
                     if(response.status === 500) {
@@ -30,9 +28,11 @@ export const fetchProfessorsAPI = (filter, token) => {
                     }
 
                     const dataJSON = await response.json();
-                    resolve(dataJSON);
+
+                    resolve(dataJSON.data);
                 })
-                .catch(response => {
+                .catch(error => {
+                    console.log(error)
                     reject("Ocorreu um problema ao carregas professores, tente novamente mais tarde.");
                 });
 
@@ -64,7 +64,7 @@ export const fetchProfessorAPI = (id, token) => {
                 signal: abortTime.signal
             }
 
-            fetch("https://f594a61c0cab.ngrok.io/teachers/getSelectedTeacher/" + id, init)
+            fetch("https://87665b1ee355.ngrok.io/teachers/getSelectedTeacher/" + id, init)
                 .then(async response => {
 
                     if(response.status === 500) {

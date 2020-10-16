@@ -1,6 +1,6 @@
 import * as RootStack from "../navigation/RootNavigate";
 import constants from "../constants";
-import { setAccountInfoAPI, getInfoAccountAPI, fetchActivityDayAPI, updateTeacherLecturesAPI, updateTeacherLectureInfoAPI } from "../Api/AccountApi";
+import { setAccountInfoAPI, getInfoAccountAPI, fetchActivityDayAPI, updateTeacherLecturesAPI, updateTeacherLectureInfoAPI, cancelLectureAPI } from "../Api/AccountApi";
 import { displayFlashMessage } from "../../components/displayFlashMessage";
 
 /* -- Actions states -- */ 
@@ -97,6 +97,7 @@ export const fetchActivityDay = (date, token) => {
                     const initHour = `${currentDate.getHours()}:${currentDate.getMinutes()}`;
 
                     return {
+                        id: lecture.id,
                         nome: "Vitor",
                         horarioInicio: initHour,
                         horarioFim: "",
@@ -138,7 +139,7 @@ export const setDays = (type) => {
     }
 }
 
-export const setLectures = (token, arr, key) => dispatch => {
+export const setLectures = (token, arr, key) => {
     return dispatch => {
         updateTeacherLecturesAPI.then(data => {
             dispatch(updateLectures(arr, key));
@@ -149,9 +150,15 @@ export const setLectures = (token, arr, key) => dispatch => {
     }
 };
 
-export const removeLecture = (date, lecture) => {
+export const removeLecture = (id, token) => {
     return dispatch => {
-        dispatch(updateSchedule(constants.REMOVE_SCHEDULE, date, lecture));
+        cancelLectureAPI(id, token)
+            .then(res => {
+                dispatch(displayFlashMessage("success", "Cancelar aula", "Aula foi cancelada com sucesso."));
+            })
+            .catch(error => {
+                dispatch(displayFlashMessage("danger", "Error", error));
+            });
     }
 }
 

@@ -29,11 +29,11 @@ const failGetProfessors = error => ({
 /* -- Actions functions -- */ 
 
 export const fetchProfessors = (filter, token) => {
-    return async dispatch => {
+    return dispatch => {
         dispatch(requestGetProfessors());
         fetchProfessorsAPI(filter, token)
             .then(response => {
-                dispatch(successGetProfessors(response.data));
+                dispatch(successGetProfessors(response));
             }).catch(error => {
                 dispatch(failGetProfessors(error));
             });
@@ -41,7 +41,7 @@ export const fetchProfessors = (filter, token) => {
 }
 
 export const fetchMoreProfessors = (filter, token) => {
-    return async dispatch => {
+    return dispatch => {
         dispatch(requestGetProfessors());
         fetchProfessorsAPI(filter, token)
             .then(response => {

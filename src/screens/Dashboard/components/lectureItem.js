@@ -5,10 +5,9 @@ import { Text } from "galio-framework";
 export default memo(({ chooseLecture, item }) => {
 
     const chooseFilter = () => {
+        console.log(item)
         chooseLecture(item);
     }
-
-    console.log(item)
 
     return (
         <TouchableOpacity onPress={chooseFilter}>

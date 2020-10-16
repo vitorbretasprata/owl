@@ -61,7 +61,6 @@ function SearchHeader({ filterValue, handleFilter, handleFocusHeader }) {
                                 onChangeText={handleFilter}
                                 ref={inputRef}
                                 onFocus={openHeader}
-                                onBlur={closeHeader}
                             />
                         </View>
                         {!(search === "") && (

@@ -17,7 +17,7 @@ const LectureReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                professors: [...action.payload.professors],
+                professors: action.payload.professors,
                 error: ""
             } 
 
@@ -32,7 +32,7 @@ const LectureReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                config: action.payload.error
+                error: action.payload.error
             }
         default: 
             return state;

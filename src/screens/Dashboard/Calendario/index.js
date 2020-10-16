@@ -25,8 +25,17 @@ function Calendario({ navigation, dates, fetchActivityDay, loading }) {
 
     useEffect(() => {
         InteractionManager.runAfterInteractions(() => {
-            getTodaysLectures();
+
+            (async () => {
+                const date = new Date();
+                const today = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+                const token = await AsyncStorage.getItem("@user:token");
+        
+                fetchActivityDay(today, token);
+            })();
+
             setLoadingScreen(false);
+
         });
     }, []);
 
@@ -39,11 +48,7 @@ function Calendario({ navigation, dates, fetchActivityDay, loading }) {
     }
 
     const getTodaysLectures = async () => {
-        const date = new Date();
-        const today = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
-        const token = await AsyncStorage.getItem("@user:token");
-
-        fetchActivityDay(today, token);
+        
     }
 
     const selectDay = async day => {
@@ -75,8 +80,8 @@ function Calendario({ navigation, dates, fetchActivityDay, loading }) {
         <TouchableWithoutFeedback onPress={() => viewLecture(item)}>
             <View style={styles.agendaDay}>
                 <Text style={styles.cardTitle}>{item.nome}</Text>
-                <Text style={styles.cardTime}>{item.horarioInicio}</Text>
-                <Text style={styles.cardValue}>{item.valor}</Text>
+                <Text style={styles.cardTime}>Horário: {item.horarioInicio}</Text>
+                <Text style={styles.cardValue}>R$ {item.valor}</Text>
                 <Text style={styles.cardLocation}>Local: {item.local}</Text>
             </View>
         </TouchableWithoutFeedback>
