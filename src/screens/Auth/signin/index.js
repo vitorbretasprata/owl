@@ -86,8 +86,8 @@ function SignIn({ navigation, SetAccountInfo }) {
   const [loading, setLoading] = useState(false);
 
   const [values, setValues] = useState({
-      email: "he5rc@gmail.com",
-      password: "123456"
+      email: "vitorbretasprata@gmail.com",
+      password: "Vitorbp123"
   });
   
   const isEnabled = values["password"].length > 0 && values["email"].length > 0;

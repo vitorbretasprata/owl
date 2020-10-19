@@ -20,25 +20,29 @@ export const fetchProfessorsAPI = (filter, token) => {
                 signal: abortTime.signal
             }
 
-            fetch("https://87665b1ee355.ngrok.io/teachers/listTeachers", init)
+            fetch("https://5260087c1190.ngrok.io/teachers/listTeachers", init)
                 .then(async response => {
 
                     if(response.status === 500) {
-                        reject("Ocorreu um problema ao carregas professores, tente novamente mais tarde.");
+                        reject("Ocorreu um problema ao carregar os professores, tente novamente mais tarde. 1");
+                        return;
                     }
 
                     const dataJSON = await response.json();
 
-                    resolve(dataJSON.data);
+                    resolve({
+                        data: dataJSON.data,
+                        total: dataJSON.meta.total
+                    });
                 })
                 .catch(error => {
                     console.log(error)
-                    reject("Ocorreu um problema ao carregas professores, tente novamente mais tarde.");
+                    reject("Ocorreu um problema ao carregar os professores, tente novamente mais tarde. 2");
                 });
 
             timeOut = setTimeout(() => {
                 abortTime.abort();
-                reject("Não foi possível carregar novos proferroes.");
+                reject("Não foi possível carregar os professores, servidor não respondendo.");
             }, 60000);
 
         } catch(error) {
@@ -64,7 +68,7 @@ export const fetchProfessorAPI = (id, token) => {
                 signal: abortTime.signal
             }
 
-            fetch("https://87665b1ee355.ngrok.io/teachers/getSelectedTeacher/" + id, init)
+            fetch("https://5260087c1190.ngrok.io/teachers/getSelectedTeacher/" + id, init)
                 .then(async response => {
 
                     if(response.status === 500) {

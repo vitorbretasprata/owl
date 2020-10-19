@@ -32,8 +32,8 @@ export const fetchProfessors = (filter, token) => {
     return dispatch => {
         dispatch(requestGetProfessors());
         fetchProfessorsAPI(filter, token)
-            .then(response => {
-                dispatch(successGetProfessors(response));
+            .then(res => {
+                console.log(res)
             }).catch(error => {
                 dispatch(failGetProfessors(error));
             });

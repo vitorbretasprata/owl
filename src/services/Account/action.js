@@ -141,12 +141,13 @@ export const setDays = (type) => {
 
 export const setLectures = (token, arr, key) => {
     return dispatch => {
-        updateTeacherLecturesAPI.then(data => {
-            dispatch(updateLectures(arr, key));
-            dispatch(displayFlashMessage("success", "Informações salvas", "Matérias salvas com sucesso."));
-        }).catch(error => {
-            dispatch(Failure(error.message));
-        });
+        updateTeacherLecturesAPI(token, arr, key)
+            .then(data => {
+                dispatch(updateLectures(arr, key));
+                dispatch(displayFlashMessage("success", "Informações salvas", "Matérias salvas com sucesso."));
+            }).catch(error => {
+                dispatch(Failure(error.message));
+            });
     }
 };
 
@@ -154,10 +155,10 @@ export const removeLecture = (id, token) => {
     return dispatch => {
         cancelLectureAPI(id, token)
             .then(res => {
-                dispatch(displayFlashMessage("success", "Cancelar aula", "Aula foi cancelada com sucesso."));
+                displayFlashMessage("success", "Cancelar aula", "Aula foi cancelada com sucesso.");
             })
             .catch(error => {
-                dispatch(displayFlashMessage("danger", "Error", error));
+                displayFlashMessage("danger", "Error", error);
             });
     }
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useContext } from "react";
 import { StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
 import { ScrollView } from "react-native-gesture-handler";
@@ -6,8 +6,11 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 import LectureComponents from "./components/lecturesComponents";
 import { getInfoAccount } from "../../../services/Account/action";
+import AuthContext from "../../../context/authContext";
 
-function Configuration({ type, extraInfo, getInfoAccount }) {
+
+function Configuration({ extraInfo, getInfoAccount }) {
+    const authContext = useContext(AuthContext);
 
     useEffect(() => {
         if(extraInfo === {}) {
@@ -17,14 +20,14 @@ function Configuration({ type, extraInfo, getInfoAccount }) {
 
     const getInfo = async () => {
         const token = await AsyncStorage.getItem("@user:token");
-        getInfoAccount(token, type);
+        getInfoAccount(token);
 
     }
 
     return (
         <ScrollView style={styles.container}>
             <View style={styles.section}>
-                {type === 3 && <LectureComponents />}
+                {authContext.type === 3 && <LectureComponents />}
             </View>
         </ScrollView>
     );
@@ -70,7 +73,6 @@ const styles = StyleSheet.create({
 
 const MapStateToProps = state => {
     return {
-        type: state.account.type,
         loading: state.account.loading,
         extraInfo: state.account.extraInfo
     }

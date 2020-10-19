@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { StyleSheet, SafeAreaView, Dimensions, View, InteractionManager } from "react-native";
 import { connect } from "react-redux";
 import { Text, Icon } from "galio-framework";
 import { RectButton } from "react-native-gesture-handler";
 import HeaderSvg from "../components/headerSvg";
 import { logOut } from "../../../services/Auth/action";
+import AuthContext from "../../../context/authContext";
 
 const { width, height } = Dimensions.get("screen");
 
-function Profile({ navigation, name, type, logOut }) {
+function Profile({ navigation, name, logOut }) {
+    const authContext = useContext(AuthContext);
+
     const [loadingScreen, setLoadingScreen] = useState(true);
 
     useEffect(() => {
@@ -36,11 +39,11 @@ function Profile({ navigation, name, type, logOut }) {
                             {name || "Visitante"}
                         </Text>
                         <Text style={{...styles.spacing, ...styles.userRole }}>
-                            {type === 3 ? "Professor" : "Estudante"}
+                            {authContext.type === 3 ? "Professor" : "Estudante"}
                         </Text>
                     </View>
                     <View>
-                        {type === 3 && (
+                        {authContext.type === 3 && (
                             <RectButton
                                 style={styles.btn}
                                 onPress={navigateToConfig}
@@ -129,7 +132,6 @@ const styles = StyleSheet.create({
 const MapStateToProps = state => {
     return {
         loading: state.lecture.loading,
-        type: state.account.type,
         name: state.account.name
     }
 }

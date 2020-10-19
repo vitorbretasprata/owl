@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, SafeAreaView, Dimensions, View } from "react-native";
+import { StyleSheet, SafeAreaView, Dimensions, View, StatusBar } from "react-native";
 import { connect } from "react-redux";
 import { FlatList } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-community/async-storage"
+import { Icon, Text } from "galio-framework";
 
 import NotificationBlock from "./components/notification";
 import { fetchNotificationAPI } from "../../../services/Api/AccountApi";
@@ -22,7 +23,7 @@ function Notifications({ loading }) {
     }, []);
 
     const getNotification = async () => {
-        const token = await AsyncStorage.getItem("@token:user");
+        const token = await AsyncStorage.getItem("@user:token");
         fetchNotificationAPI(page, token)
             .then(res => {
                 setLimit(res.limit);
@@ -53,6 +54,18 @@ function Notifications({ loading }) {
         }
     }
 
+    const renderEmpty = () => (
+        <View style={styles.emptyContainer}>
+            <Icon 
+                name="bell"
+                family="EvilIcons"
+                size={50}
+                color="#707070"
+            />
+            <Text style={styles.emptyText}>Nenhuma notificação encontrada!</Text>
+        </View>
+    );
+
     const renderSeparator = () => <View style={styles.divisor} />
 
     const extractor = (item) => item.id.toString();
@@ -62,6 +75,7 @@ function Notifications({ loading }) {
     return (
         <SafeAreaView style={styles.container}>
             <FlatList 
+                contentContainerStyle={styles.list}
                 onRefresh={refreshList}
                 data={notifications}
                 keyExtractor={extractor}
@@ -69,6 +83,7 @@ function Notifications({ loading }) {
                 refreshing={isRefreshing}
                 renderItem={renderNotification}
                 ItemSeparatorComponent={renderSeparator}
+                ListEmptyComponent={renderEmpty}
             />
         </SafeAreaView>
     );
@@ -80,10 +95,25 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center"
     },
+    list: {
+        flexGrow: 1,
+        width,
+        paddingHorizontal: 5,
+    },
     divisor: {
         height: 1,
         backgroundColor: "#e3e3e3",
         marginVertical: 15
+    },
+    emptyContainer: {
+        justifyContent: "center",
+        alignItems: "center",
+        flex: 1,
+    },
+    emptyText: {
+        color: "#707070",
+        fontSize: 18,
+        marginVertical: 5
     }
 });
 

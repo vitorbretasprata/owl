@@ -26,7 +26,7 @@ function Lecture({ route, removeLecture, navigation }) {
         });
 
         return () => {
-            setParams("")
+            setParams("");
         }
     }, []);
 
