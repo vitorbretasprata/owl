@@ -81,222 +81,222 @@ function LecturesComponent(
 
     return (
         <ScrollView style={styles.container}>
-                <LectureModal 
-                    showModal={showLectureModal}
-                    closeModal={closeLectureModal}
-                    selectedItem={selectedLecture}
-                    selectedItemArr={lectureArr}
-                    saveSelectedYears={updateLectures}
-                />
-                <BankModal 
-                    showModal={showBankModal}
-                    closeModal={closeBankModal}
-                    handleBankInfo={updateBankInfo}
-                />
-                <View style={styles.section}>
-                    <View style={styles.sectionTitle}>
-                        <Text style={styles.title}>
-                            Dados Bancários
+            <LectureModal 
+                showModal={showLectureModal}
+                closeModal={closeLectureModal}
+                selectedItem={selectedLecture}
+                selectedItemArr={lectureArr}
+                saveSelectedYears={updateLectures}
+            />
+            <BankModal 
+                showModal={showBankModal}
+                closeModal={closeBankModal}
+                handleBankInfo={updateBankInfo}
+            />
+            <View style={styles.section}>
+                <View style={styles.sectionTitle}>
+                    <Text style={styles.title}>
+                        Dados Bancários
+                    </Text>
+
+                    <BaseButton onPress={_showBankModal}>
+                        <Icon 
+                            name="edit"
+                            family="AntDesign"
+                            color="#F58738"
+                            size={25}
+                        />
+                    </BaseButton>
+                </View>
+
+                <View style={styles.bankInfoAlign}>
+                    <View style={{...styles.bankInfo }}>
+                        <Text style={styles.bankInfoTitle}>
+                            CPF
+                        </Text>
+                        <Text style={styles.value}>
+                            {bankInfo.cpf}
                         </Text>
 
-                        <BaseButton onPress={_showBankModal}>
-                            <Icon 
-                                name="edit"
-                                family="AntDesign"
-                                color="#F58738"
-                                size={25}
+                        <Text style={styles.bankInfoTitle}>
+                            Nome Completo
+                        </Text>
+                        <Text style={styles.value}>
+                            {bankInfo.completeName}
+                        </Text>
+                    </View>
+
+                    <View style={{...styles.bankInfo }}>
+                        <Text style={styles.bankInfoTitle}>
+                            Agência
+                        </Text>
+                        <Text style={styles.value}>
+                            {bankInfo.agency}
+                        </Text>
+
+                        <Text style={styles.bankInfoTitle}>
+                            Conta
+                        </Text>
+                        <Text style={styles.value}>
+                            {bankInfo.bankAccount}
+                        </Text>
+                    </View>
+                </View>
+            </View>
+
+            <View style={styles.separator} />
+
+            <View style={styles.section}>
+                <View style={styles.sectionTitle}>
+                    <Text style={styles.title}>
+                        Matérias Lecionadas
+                    </Text>
+                </View>
+
+                {
+                    lecturesConstant.
+                        map((lecture, index) => (
+                            <LectureList 
+                                arrayLength={lectures[index + 1].length} 
+                                handleClickModal={_showLectureModal} 
+                                itemName={lecture}
+                                keyCell={index}
                             />
-                        </BaseButton>
-                    </View>
-
-                    <View style={styles.bankInfoAlign}>
-                        <View style={{...styles.bankInfo }}>
-                            <Text style={styles.bankInfoTitle}>
-                                CPF
-                            </Text>
-                            <Text style={styles.value}>
-                                {bankInfo.cpf}
-                            </Text>
-
-                            <Text style={styles.bankInfoTitle}>
-                                Nome Completo
-                            </Text>
-                            <Text style={styles.value}>
-                                {bankInfo.completeName}
-                            </Text>
-                        </View>
-
-                        <View style={{...styles.bankInfo }}>
-                            <Text style={styles.bankInfoTitle}>
-                                Agência
-                            </Text>
-                            <Text style={styles.value}>
-                                {bankInfo.agency}
-                            </Text>
-
-                            <Text style={styles.bankInfoTitle}>
-                                Conta
-                            </Text>
-                            <Text style={styles.value}>
-                                {bankInfo.bankAccount}
-                            </Text>
-                        </View>
-                    </View>
-                </View>
-
-                <View style={styles.separator} />
-
-                <View style={styles.section}>
-                    <View style={styles.sectionTitle}>
-                        <Text style={styles.title}>
-                            Matérias Lecionadas
-                        </Text>
-                    </View>
-
-                    {
-                        lecturesConstant.
-                            map((lecture, index) => (
-                                <LectureList 
-                                    arrayLength={lectures[index + 1].length} 
-                                    handleClickModal={_showLectureModal} 
-                                    itemName={lecture}
-                                    keyCell={index}
-                                />
-                            )
                         )
-                    }
+                    )
+                }
 
-                </View>
+            </View>
 
-                <View style={styles.separator} />
+            <View style={styles.separator} />
 
-                <View style={styles.section}>
-                    <View style={[styles.sectionTitle, styles.editButtons]}>
-                        <Text style={styles.title}>
-                            Valores
-                        </Text>
-                        <View style={styles.alignIcons}>
-                            {!showEdit ? (
+            <View style={styles.section}>
+                <View style={[styles.sectionTitle, styles.editButtons]}>
+                    <Text style={styles.title}>
+                        Valores
+                    </Text>
+                    <View style={styles.alignIcons}>
+                        {!showEdit ? (
+                            <TouchableWithoutFeedback
+                                onPress={editMode}
+                            >
+                                <Icon 
+                                    family="AntDesign"
+                                    name="edit"
+                                    color="#F58738"
+                                    size={25}
+                                />
+                            </TouchableWithoutFeedback>
+                        ) : (
+                            <View style={styles.saveIcons}>
                                 <TouchableWithoutFeedback
-                                    onPress={editMode}
+                                    onPress={cancelEdit}
                                 >
                                     <Icon 
                                         family="AntDesign"
-                                        name="edit"
+                                        name="close"
                                         color="#F58738"
                                         size={25}
                                     />
                                 </TouchableWithoutFeedback>
-                            ) : (
-                                <View style={styles.saveIcons}>
-                                    <TouchableWithoutFeedback
-                                        onPress={cancelEdit}
-                                    >
-                                        <Icon 
-                                            family="AntDesign"
-                                            name="close"
-                                            color="#F58738"
-                                            size={25}
-                                        />
-                                    </TouchableWithoutFeedback>
-                                    <TouchableWithoutFeedback
-                                        onPress={saveEdit}  
-                                        style={{ marginLeft: 10 }}
-                                    >
-                                        <Icon 
-                                            family="AntDesign"
-                                            name="check"
-                                            color="#F58738"
-                                            size={25}
-                                        />
-                                    </TouchableWithoutFeedback>
-                                </View>
-                            )}
-                        </View>
+                                <TouchableWithoutFeedback
+                                    onPress={saveEdit}  
+                                    style={{ marginLeft: 10 }}
+                                >
+                                    <Icon 
+                                        family="AntDesign"
+                                        name="check"
+                                        color="#F58738"
+                                        size={25}
+                                    />
+                                </TouchableWithoutFeedback>
+                            </View>
+                        )}
+                    </View>
 
-                    </View>  
-                    <View style={styles.inputSection}>
-                        <Text style={styles.label}>Tempo de aula</Text>
-                        {!showEdit ? (
-                            <Text style={styles.value}>{timeLecture} minutos</Text>
-                        ) : (
-                            <TextInputMask 
-                                style={styles.input}
-                                type={'custom'}
-                                placeholder="em minutos"
-                                keyboardType="numeric"
-                                options={{
-                                    mask: "999"
-                                }}
-                                value={timeLecture}
-                                onChangeText={handleTimeLecture}
-                            />
-                        )}
-                    </View>
-                    <View style={styles.inputSection}>
-                        <Text style={styles.label}>Valor da aula</Text>
-                        {!showEdit ? (
-                            <Text style={styles.value}>{valueLecture}</Text>
-                        ) : (
-                            <TextInputMask 
-                                style={styles.input}
-                                type={'money'}
-                                keyboardType="decimal-pad"
-                                placeholder="R$ 0,00"
-                                options={{
-                                    precision: 2,
-                                    separator: ',',
-                                    delimiter: '.',
-                                    unit: 'R$',
-                                    suffixUnit: ''
-                                }}
-                                value={valueLecture}
-                                onChangeText={handleValueLecture}
-                            />
-                        )}
-                    </View>
-                    <View style={styles.inputSection}>
-                        <Text style={styles.label}>Taxa de deslocamento</Text> 
-                        {!showEdit ? (
-                            <Text style={styles.value}>{valueMovement}</Text>
-                        ) : (
-                            <TextInputMask 
-                                style={styles.input}
-                                type={'money'}
-                                keyboardType="decimal-pad"
-                                placeholder="R$ 0,00"
-                                options={{
-                                    precision: 2,
-                                    separator: ',',
-                                    delimiter: '.',
-                                    unit: 'R$',
-                                    suffixUnit: ''
-                                }}
-                                value={valueMovement}
-                                onChangeText={handleValueMovement}
-                            />
-                        )}
-                    </View>
-                    <View style={styles.inputSection}>
-                        <Text style={styles.label}>Telefone</Text> 
-                        {!showEdit ? (
-                            <Text style={styles.value}>{numberPhone}</Text>
-                        ) : (
-                            <TextInputMask 
-                                style={styles.input}
-                                type={'cel-phone'}
-                                keyboardType="decimal-pad"
-                                options={{
-                                    maskType: 'BRL',
-                                    withDDD: true,
-                                    dddMask: '(99) '
-                                }}
-                                value={numberPhone}
-                                onChangeText={handlePhone}
-                            />
-                        )}
-                    </View>
+                </View>  
+                <View style={styles.inputSection}>
+                    <Text style={styles.label}>Tempo de aula</Text>
+                    {!showEdit ? (
+                        <Text style={styles.value}>{timeLecture} minutos</Text>
+                    ) : (
+                        <TextInputMask 
+                            style={styles.input}
+                            type={'custom'}
+                            placeholder="em minutos"
+                            keyboardType="numeric"
+                            options={{
+                                mask: "999"
+                            }}
+                            value={timeLecture}
+                            onChangeText={handleTimeLecture}
+                        />
+                    )}
                 </View>
+                <View style={styles.inputSection}>
+                    <Text style={styles.label}>Valor da aula</Text>
+                    {!showEdit ? (
+                        <Text style={styles.value}>{valueLecture}</Text>
+                    ) : (
+                        <TextInputMask 
+                            style={styles.input}
+                            type={'money'}
+                            keyboardType="decimal-pad"
+                            placeholder="R$ 0,00"
+                            options={{
+                                precision: 2,
+                                separator: ',',
+                                delimiter: '.',
+                                unit: 'R$',
+                                suffixUnit: ''
+                            }}
+                            value={valueLecture}
+                            onChangeText={handleValueLecture}
+                        />
+                    )}
+                </View>
+                <View style={styles.inputSection}>
+                    <Text style={styles.label}>Taxa de deslocamento</Text> 
+                    {!showEdit ? (
+                        <Text style={styles.value}>{valueMovement}</Text>
+                    ) : (
+                        <TextInputMask 
+                            style={styles.input}
+                            type={'money'}
+                            keyboardType="decimal-pad"
+                            placeholder="R$ 0,00"
+                            options={{
+                                precision: 2,
+                                separator: ',',
+                                delimiter: '.',
+                                unit: 'R$',
+                                suffixUnit: ''
+                            }}
+                            value={valueMovement}
+                            onChangeText={handleValueMovement}
+                        />
+                    )}
+                </View>
+                <View style={styles.inputSection}>
+                    <Text style={styles.label}>Telefone</Text> 
+                    {!showEdit ? (
+                        <Text style={styles.value}>{numberPhone}</Text>
+                    ) : (
+                        <TextInputMask 
+                            style={styles.input}
+                            type={'cel-phone'}
+                            keyboardType="decimal-pad"
+                            options={{
+                                maskType: 'BRL',
+                                withDDD: true,
+                                dddMask: '(99) '
+                            }}
+                            value={numberPhone}
+                            onChangeText={handlePhone}
+                        />
+                    )}
+                </View>
+            </View>
         </ScrollView>
     );
 };

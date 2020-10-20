@@ -19,7 +19,7 @@ export const setAccountInfoAPI = (token, type, info = {}) => {
                 signal: abortTime.signal
             }
 
-            fetch("https://5260087c1190.ngrok.io/account/setAccountInfo", init)
+            fetch("https://4ca8f4abd941.ngrok.io/account/setAccountInfo", init)
                 .then(async response => {
 
                     if(response.status !== 200) {
@@ -52,19 +52,16 @@ export const getInfoAccountAPI = (token, type) => {
             const abortTime = new AbortController();
 
             const init = {
-                method: 'POST',
+                method: 'GET',
                 headers: {
                     'Accept': 'application/json', 
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + token
                 },
-                body: JSON.stringify({
-                    type: type
-                }),
                 signal: abortTime.signal
             }
 
-            fetch("https://5260087c1190.ngrok.io/account/getAccountInfo", init)
+            fetch("https://4ca8f4abd941.ngrok.io/account/getAccountInfo", init)
                 .then(async response => {
 
                     if(response.status === 500) {
@@ -92,6 +89,8 @@ export const getInfoAccountAPI = (token, type) => {
                         },
                         lectures: teacherLectures
                     }
+
+                    console.log(extraInfo)
                     resolve(extraInfo);
                 })
                 .catch(response => {
@@ -132,7 +131,7 @@ export const setBankAccountAPI = (token, bankInfo, id) => {
                 signal: abortTime.signal
             }
 
-            fetch("https://5260087c1190.ngrok.io/account/updateTeacherBankInfo", init)
+            fetch("https://4ca8f4abd941.ngrok.io/account/updateTeacherBankInfo", init)
                 .then(async response => {
 
                     if(response.status === 500) {
@@ -175,7 +174,7 @@ export const fetchActivityDayAPI = (date, token) => {
                 signal: abortTime.signal
             }
 
-            fetch("https://5260087c1190.ngrok.io/teachers/getDate", init)
+            fetch("https://4ca8f4abd941.ngrok.io/teachers/getDate", init)
                 .then(async response => {
 
                     if(response.status === 500) {
@@ -224,7 +223,7 @@ export const updateTeacherLecturesAPI = (token, arr, key) => {
                 signal: abortTime.signal
             }
 
-            fetch("https://5260087c1190.ngrok.io/account/updateTeacherLectures", init)
+            fetch("https://4ca8f4abd941.ngrok.io/account/updateTeacherLectures", init)
                 .then(async response => {
 
                     if(response.status === 500) {
@@ -274,7 +273,7 @@ export const updateTeacherLectureInfoAPI = (token, phone, lectureTime, lectureVa
                 signal: abortTime.signal
             }
 
-            fetch("https://5260087c1190.ngrok.io/account/updateTeacherInfo", init)
+            fetch("https://4ca8f4abd941.ngrok.io/account/updateTeacherInfo", init)
                 .then(async response => {
 
                     if(response.status === 500) {
@@ -319,7 +318,7 @@ export const registerToken = (token, authToken) => {
                 signal: abortTime.signal
             }
 
-            fetch("https://5260087c1190.ngrok.io/account/updatePushToken", init)
+            fetch("https://4ca8f4abd941.ngrok.io/account/updatePushToken", init)
                 .then(async response => {
 
                     if(response.status === 500) {
@@ -362,7 +361,7 @@ export const cancelLectureAPI = (id, token) => {
                 signal: abortTime.signal
             }
 
-            fetch("https://5260087c1190.ngrok.io/teachers/cancel/" + id, init)
+            fetch("https://4ca8f4abd941.ngrok.io/teachers/cancel/" + id, init)
                 .then(async response => {
 
                     console.log(id, response.status)
@@ -411,7 +410,7 @@ export const fetchNotificationAPI = (page, token) => {
                 signal: abortTime.signal
             }
 
-            fetch("https://5260087c1190.ngrok.io/account/getNotifications", init)
+            fetch("https://4ca8f4abd941.ngrok.io/account/getNotifications", init)
                 .then(async response => {
 
                     if(response.status !== 200) {

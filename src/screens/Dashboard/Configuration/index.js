@@ -1,5 +1,5 @@
-import React, { useEffect, useContext } from "react";
-import { StyleSheet, View } from "react-native";
+import React, { useEffect, useContext, useState } from "react";
+import { StyleSheet, View, Text } from "react-native";
 import { connect } from "react-redux";
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-community/async-storage";
@@ -12,16 +12,30 @@ import AuthContext from "../../../context/authContext";
 function Configuration({ extraInfo, getInfoAccount }) {
     const authContext = useContext(AuthContext);
 
+    const [loadingScreen, setLoadingScreen] = useState(true)
+
     useEffect(() => {
-        if(extraInfo === {}) {
-            getInfo();
-        }
+        getInfo();
+
+        setTimeout(() => {
+            setLoadingScreen(false);
+        }, 4000);
+
     }, []);
 
     const getInfo = async () => {
         const token = await AsyncStorage.getItem("@user:token");
-        getInfoAccount(token);
+        getInfoAccount(token, authContext.type);
+    }
 
+    if(loadingScreen) {
+        return (
+            <ScrollView style={styles.container}>
+                <Text style={styles.section}>
+                    Carregando...
+                </Text>
+            </ScrollView>
+        )
     }
 
     return (

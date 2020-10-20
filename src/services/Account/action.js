@@ -121,7 +121,7 @@ export const getInfoAccount = (token, type) => {
         dispatch(Request());
         getInfoAccountAPI(token, type)
             .then(data => {
-                dispatch(setAccountExtraInfoAll(data.extraInfo));
+                dispatch(setAccountExtraInfoAll(data));
             }).catch(error => {
                 displayFlashMessage("danger", "Error", error);
             });
